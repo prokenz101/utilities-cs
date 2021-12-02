@@ -2,7 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Threading;
-// using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Microsoft.Toolkit.Uwp.Notifications;
 
 namespace utilities_cs
@@ -11,10 +11,11 @@ namespace utilities_cs
     {
         public static void Notification(string title, string subtitle, int toastexpirationtime = 1)
         {
-            var toast = new ToastContentBuilder()
+            new ToastContentBuilder()
                 .AddText(title)
-                .AddText(subtitle);
-            toast.Show((toast) => toast.ExpirationTime = DateTime.Now.AddSeconds(toastexpirationtime));
+                .AddText(subtitle).Show();
+            Task.Delay((toastexpirationtime + 1) * 1000).Wait();
+            ToastNotificationManagerCompat.History.Clear();
 
         }
     }
