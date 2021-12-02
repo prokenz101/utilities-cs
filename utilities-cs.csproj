@@ -3,6 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
     <RootNamespace>utilities_cs</RootNamespace>
     <ApplicationIcon>csharp.ico</ApplicationIcon>
     <SignAssembly>false</SignAssembly>
