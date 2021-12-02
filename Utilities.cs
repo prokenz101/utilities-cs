@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using System.Drawing;
+using System.Reflection;
 
 namespace utilities_cs
 {
@@ -74,7 +76,7 @@ namespace utilities_cs
             );
             menu.Items.Add("Exit", null, delegate { Exit(); });
 
-            trayIcon.Icon = new System.Drawing.Icon(@"C:\Items\Code\utilities-cs\csharp.ico");
+            trayIcon.Icon = Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location);
             trayIcon.ContextMenuStrip = menu;
             trayIcon.Visible = true;
         }
