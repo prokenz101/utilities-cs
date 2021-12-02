@@ -5,8 +5,9 @@ namespace utilities_cs
 {
     public class Cursive
     {
-        public static void cursive(string text)
+        public static void cursive(string[] args)
         {
+            string text = string.Join(" ", args[1..]);
             List<string> converted = new();
             var cursive_char = new Dictionary<string, string>() {
                     {"a", "𝓪"}, {"b", "𝓫"}, {"c", "𝓬"}, {"d", "𝓭"}, {"e", "𝓮"},
@@ -31,7 +32,7 @@ namespace utilities_cs
             }
             var answer = string.Join("", converted);
             WindowsClipboard.SetText(answer);
-            Utils.Notification("Success!", "Message copied to clipboard.");
+            Utils.Notification("Success!", "Message copied to clipboard.", 3);
         }
     }
 }
