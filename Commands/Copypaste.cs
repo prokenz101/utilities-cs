@@ -7,6 +7,9 @@ namespace utilities_cs
     {
         public static void cp(string[] args)
         {
+            if (Utils.IndexTest(args, "Huh.", "It seems you did not input anything for copypaste to copy.", 4)) {
+                return;
+            }
             string text = string.Join(" ", args[1..]);
             Dictionary<string, string> cp_dict = new() {
 
