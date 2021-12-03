@@ -6,6 +6,9 @@ namespace utilities_cs
     {
         public static void Sarcasm_(string[] args)
         {
+            if (Utils.IndexTest(args, "Huh.", "It seems you did not input anything for sarcasm to 'sarcasm-ize'.", 4)) {
+                return;
+            }
             string text = string.Join(" ", args[1..]);
             List<string> converted = new();
             char current_case = 'u';
