@@ -1,12 +1,11 @@
 using System.Collections.Generic;
 
-namespace utilities_cs
-
-{
-    public class Cursive
-    {
-        public static void cursive(string[] args)
-        {
+namespace utilities_cs {
+    public class Cursive {
+        public static void cursive(string[] args) {
+            if (Utils.IndexTest(args, "Huh.", "It seems you did not input anything for cursive to work.", 4)) {
+                return;
+            }
             string text = string.Join(" ", args[1..]);
             List<string> converted = new();
             var cursive_char = new Dictionary<string, string>() {
@@ -22,12 +21,12 @@ namespace utilities_cs
                     {"T", "𝓣"}, {"U", "𝓤"}, {"V", "𝓥"}, {"W", "𝓦"}, {"Y", "𝓨"},
                     {"X", "𝓧"}, {"Z", "𝓩"}, {" ", " "}
                 };
-            foreach (char c in text)
-            {
+            foreach (char c in text) {
                 var replaced = cursive_char.GetValueOrDefault(c.ToString(), "");
-                if (replaced != "")
-                {
+                if (replaced != "") {
                     converted.Add(replaced);
+                } else {
+                    converted.Add(c.ToString());
                 }
             }
             var answer = string.Join("", converted);
