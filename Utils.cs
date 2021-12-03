@@ -5,66 +5,71 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Toolkit.Uwp.Notifications;
 
-namespace utilities_cs
-{
-    public class Utils
-    {
-        public static void Notification(string title, string subtitle, int toastexpirationtime = 1)
-        {
-            new ToastContentBuilder()
-                .AddText(title)
-                .AddText(subtitle).Show();
-            Task.Delay((toastexpirationtime + 1) * 1000).Wait();
-            ToastNotificationManagerCompat.History.Clear();
+namespace utilities_cs {
+    public class Utils {
 
+#nullable enable
+        private static Task? notificationTask;
+
+        public async static void Notification(string title, string subtitle, int toastexpirationtime = 1) {
+            if (notificationTask != null) {
+                await notificationTask;
+            }
+            notificationTask = Task.Run(() => {
+                new ToastContentBuilder()
+                    .AddText(title)
+                    .AddText(subtitle).Show();
+                Task.Delay((toastexpirationtime + 1) * 1000).Wait();
+                ToastNotificationManagerCompat.History.Clear();
+            });
         }
+        public static bool IndexTest(string[] args, string title, string subtitle, int duration = 1, int argscount = 1) {
+            // Returns true if IndexTest failed, i.e there were no arguments other than the command.
+            // Returns false if the program ran successfully with all arguments.
+            try {
+                string test = args[argscount];
+                return false;
+            } catch (IndexOutOfRangeException) {
+                Notification(title, subtitle, duration);
+                return true;
+            }
+        }
+
     }
 }
-static class WindowsClipboard
-{
-    public static void SetText(string text)
-    {
+static class WindowsClipboard {
+    public static void SetText(string text) {
         OpenClipboard();
 
         EmptyClipboard();
         IntPtr hGlobal = default;
-        try
-        {
+        try {
             var bytes = (text.Length + 1) * 2;
             hGlobal = Marshal.AllocHGlobal(bytes);
 
-            if (hGlobal == default)
-            {
+            if (hGlobal == default) {
                 ThrowWin32();
             }
 
             var target = GlobalLock(hGlobal);
 
-            if (target == default)
-            {
+            if (target == default) {
                 ThrowWin32();
             }
 
-            try
-            {
+            try {
                 Marshal.Copy(text.ToCharArray(), 0, target, text.Length);
-            }
-            finally
-            {
+            } finally {
                 GlobalUnlock(target);
             }
 
-            if (SetClipboardData(cfUnicodeText, hGlobal) == default)
-            {
+            if (SetClipboardData(cfUnicodeText, hGlobal) == default) {
                 ThrowWin32();
             }
 
             hGlobal = default;
-        }
-        finally
-        {
-            if (hGlobal != default)
-            {
+        } finally {
+            if (hGlobal != default) {
                 Marshal.FreeHGlobal(hGlobal);
             }
 
@@ -72,18 +77,14 @@ static class WindowsClipboard
         }
     }
 
-    public static void OpenClipboard()
-    {
+    public static void OpenClipboard() {
         var num = 10;
-        while (true)
-        {
-            if (OpenClipboard(default))
-            {
+        while (true) {
+            if (OpenClipboard(default)) {
                 break;
             }
 
-            if (--num == 0)
-            {
+            if (--num == 0) {
                 ThrowWin32();
             }
 
@@ -93,8 +94,7 @@ static class WindowsClipboard
 
     const uint cfUnicodeText = 13;
 
-    static void ThrowWin32()
-    {
+    static void ThrowWin32() {
         throw new Win32Exception(Marshal.GetLastWin32Error());
     }
 
