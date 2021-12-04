@@ -47,7 +47,9 @@ namespace utilities_cs {
             { "exponent", Exponent.exponent },
             { "ep", Exponent.exponent },
             { "flip", Flip.flip },
-            { "autoclick", Autoclick.autoclick }
+            { "autoclick", Autoclick.autoclick },
+            { "fraction", Fraction.fraction },
+            { "fc", Fraction.fraction }
         };
         public static void Utilities(string[] args) {
             var cmd = args[0].ToLower();
