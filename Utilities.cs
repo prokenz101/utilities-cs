@@ -24,7 +24,6 @@ namespace utilities_cs {
     public class UtilitiesAppContext : ApplicationContext {
         public static Dictionary<string, Action<string[]>> commands = new()
         {
-            { "cursive", Cursive.cursive },
             { "sarcasm", Sarcasm.Sarcasm_ },
             { "copypaste", Copypaste.cp },
             { "cp", Copypaste.cp },
@@ -32,17 +31,23 @@ namespace utilities_cs {
             { "uppercase", Upper.Uppercase },
             { "lower", Lower.Lowercase },
             { "lowercase", Lower.Lowercase },
+            { "cursive", Cursive.cursive },
             { "bubbletext", Bubble.bubbletext },
             { "bubble", Bubble.bubbletext },
             { "doublestruck", Doublestruck.dbs },
             { "dbs", Doublestruck.dbs },
+            { "creepy", Creepy.creepy },
             { "-", BrowserSearch.GoogleSearch },
             { "youtube", BrowserSearch.YouTubeSearch },
             { "yt", BrowserSearch.YouTubeSearch },
             { "images", BrowserSearch.ImageSearch },
             { "spacer", Spacer.spacer },
             { "spoilerspam", Spoilerspam.spoilerspam },
-            { "reverse", Reverse.reverse }
+            { "reverse", Reverse.reverse },
+            { "exponent", Exponent.exponent },
+            { "ep", Exponent.exponent },
+            { "flip", Flip.flip },
+            { "autoclick", Autoclick.autoclick }
         };
         public static void Utilities(string[] args) {
             var cmd = args[0].ToLower();
@@ -55,20 +60,22 @@ namespace utilities_cs {
             f.Invoke(args);
         }
         private NotifyIcon trayIcon;
-        private KeyboardHook hook;
 
         public UtilitiesAppContext() {
-            hook = new KeyboardHook();
-            hook.KeyPressed += delegate {
+            // making keyboard hook
+            
+            HookManager.AddHook(
+                "utilities",
+                ModifierKeys.Control,
+                Keys.F8,
+                () => {
                 SendKeys.SendWait("^a");
                 SendKeys.Send("^c");
                 SendKeys.Send("{ESC}");
                 string[] args = Clipboard.GetText().Split(" ");
                 Utilities(args);
-            };
-            try {
-                hook.RegisterHotKey(ModifierKeys.Control, Keys.F9);
-            } catch (InvalidOperationException) {
+            },
+                () => {
                 Utils.Notification(
                     "Something went wrong.",
                     @"utilities-cs was unable to register a hotkey.
@@ -77,6 +84,10 @@ This could be because you have multiple verions of the application running.",
                 );
                 Exit();
             }
+            );
+
+            // creating tray icon
+
             trayIcon = new NotifyIcon() {
                 Text = "utilities-cs"
             };
@@ -95,7 +106,7 @@ This could be because you have multiple verions of the application running.",
 
         public void Exit() {
             trayIcon.Visible = false;
-            hook.Dispose();
+            HookManager.UnregisterAllHooks();
             Application.Exit();
         }
     }
