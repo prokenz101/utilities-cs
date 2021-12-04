@@ -1,12 +1,8 @@
 using System.Collections.Generic;
 
-namespace utilities_cs
-
-{
-    public class Doublestruck
-    {
-        public static void dbs(string[] args)
-        {
+namespace utilities_cs {
+    public class Doublestruck {
+        public static void dbs(string[] args) {
             if (Utils.IndexTest(args, "Huh.", "It seems you did not input anything for doublestruck to work.", 4)) {
                 return;
             }
@@ -24,17 +20,14 @@ namespace utilities_cs
                     {"P", "ℙ"}, {"Q", "ℚ"}, {"R", "ℝ"}, {"S", "𝕊"}, {"T", "𝕋"},
                     {"U", "𝕌"}, {"V", "𝕍"}, {"W", "𝕎"}, {"X", "𝕏"}, {"Y", "𝕐"},
                     {"Z", "ℤ"}, {"1", "𝟙"}, {"2", "𝟚"}, {"3", "𝟛"}, {"4", "𝟜"},
-                    {"5", "𝟝"}, {"6", "𝟞"}, {"7", "𝟟"}, {"8", "𝟠"}, {"9", "𝟡"}, 
+                    {"5", "𝟝"}, {"6", "𝟞"}, {"7", "𝟟"}, {"8", "𝟠"}, {"9", "𝟡"},
                     {"0", "𝟘"}, {" ", " "}
                 };
-            foreach (char d in text)
-            {
+            foreach (char d in text) {
                 var replaced = dbs_char.GetValueOrDefault(d.ToString(), "");
-                if (replaced != "")
-                {
+                if (replaced != "") {
                     converted.Add(replaced);
-                }
-                else {
+                } else {
                     converted.Add(d.ToString());
                 }
             }
