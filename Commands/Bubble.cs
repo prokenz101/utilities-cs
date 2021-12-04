@@ -1,11 +1,8 @@
 using System.Collections.Generic;
 
-namespace utilities_cs
-{
-    public class Bubble
-    {
-        public static void bubbletext(string[] args)
-        {
+namespace utilities_cs {
+    public class Bubble {
+        public static void bubbletext(string[] args) {
             if (Utils.IndexTest(args, "Huh.", "It seems you did not input anything for bubble to work.", 4)) {
                 return;
             }
@@ -26,15 +23,11 @@ namespace utilities_cs
                 {"4", "④"}, {"5", "⑤"}, {"6", "⑥"}, {"7", "⑦"}, {"8", "⑧"},
                 {"9", "⑨"}, {"0", "⓪"}
                 };
-            foreach (char b in text)
-            {
+            foreach (char b in text) {
                 var replaced = bubble_char.GetValueOrDefault(b.ToString(), "");
-                if (replaced != "")
-                {
+                if (replaced != "") {
                     converted.Add(replaced);
-                }
-                else
-                {
+                } else {
                     converted.Add(b.ToString());
                 }
             }
