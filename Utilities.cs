@@ -49,7 +49,9 @@ namespace utilities_cs {
             { "flip", Flip.flip },
             { "autoclick", Autoclick.autoclick },
             { "fraction", Fraction.fraction },
-            { "fc", Fraction.fraction }
+            { "fc", Fraction.fraction },
+            { "lcm", lcm_class.lcm_main },
+            { "hcf", HCF.GCD },
         };
         public static void Utilities(string[] args) {
             var cmd = args[0].ToLower();
@@ -65,27 +67,27 @@ namespace utilities_cs {
 
         public UtilitiesAppContext() {
             // making keyboard hook
-            
+
             HookManager.AddHook(
                 "utilities",
                 ModifierKeys.Control,
                 Keys.F8,
                 () => {
-                SendKeys.SendWait("^a");
-                SendKeys.Send("^c");
-                SendKeys.Send("{ESC}");
-                string[] args = Clipboard.GetText().Split(" ");
-                Utilities(args);
-            },
+                    SendKeys.SendWait("^a");
+                    SendKeys.SendWait("^c");
+                    SendKeys.Send("{ESC}");
+                    string[] args = Clipboard.GetText().Split(" ");
+                    Utilities(args);
+                },
                 () => {
-                Utils.Notification(
-                    "Something went wrong.",
-                    @"utilities-cs was unable to register a hotkey.
+                    Utils.Notification(
+                        "Something went wrong.",
+                        @"utilities-cs was unable to register a hotkey.
 This could be because you have multiple verions of the application running.",
-                    6
-                );
-                Exit();
-            }
+                        6
+                    );
+                    Exit();
+                }
             );
 
             // creating tray icon
