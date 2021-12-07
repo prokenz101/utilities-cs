@@ -7,7 +7,7 @@
     <RootNamespace>utilities_cs</RootNamespace>
     <ApplicationIcon>csharp.ico</ApplicationIcon>
     <SignAssembly>false</SignAssembly>
-    <LangVersion>preview</LangVersion>
+    <LangVersion>latest</LangVersion>
     <PublishReadyToRun>true</PublishReadyToRun>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <PublishSingleFile>true</PublishSingleFile>
