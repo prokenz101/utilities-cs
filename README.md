@@ -30,7 +30,7 @@ Run `utilities-cs.exe`. It will not open any sort of window, but it should sit i
 
 Using this is very similar to the [python version](https://github.com/prokenz101/utilities) of utilities, only a change in the hotkey.
 
-Simply open [PowerToys Run] or any place when you can type text, type your command and press Ctrl + F8. If you don't know any commands then try `cursive hello world` as a test, then read the [wiki](https://github.com/prokenz101/utilities/wiki/Help-Center-(Windows)) for more info.
+Simply open [PowerToys Run](https://github.com/microsoft/powertoys) or any place when you can type text, type your command and press Ctrl + F8. If you don't know any commands then try `cursive hello world` as a test, then read the [wiki](https://github.com/prokenz101/utilities/wiki/Help-Center-(Windows)) for more info.
 
 If you are confused on what just happened when you ran a command, try reading the toast notification that follows. If there is no toast notification then something has probably gone wrong.
 
