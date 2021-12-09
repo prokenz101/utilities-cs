@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Drawing;
@@ -8,16 +9,22 @@ namespace utilities_cs {
     class Program {
         [STAThread]
         static void Main(string[] args) {
-            Application.EnableVisualStyles();
-            Application.SetHighDpiMode(HighDpiMode.SystemAware);
-            Application.SetCompatibleTextRenderingDefault(false);
+            // debug mode, only used for specific times
 
-            var app = new UtilitiesAppContext();
-            Application.ApplicationExit += delegate {
-                app.Exit();
-            };
+            bool Debug = false;
+            if (!Debug) {
+                Application.EnableVisualStyles();
+                Application.SetHighDpiMode(HighDpiMode.SystemAware);
+                Application.SetCompatibleTextRenderingDefault(false);
+                var app = new UtilitiesAppContext();
+                Application.ApplicationExit += delegate {
+                    app.Exit();
+                };
 
-            Application.Run(app);
+                Application.Run(app);
+            } else {
+                UtilitiesAppContext.Utilities(args);
+            }
         }
 
     }
@@ -52,6 +59,9 @@ namespace utilities_cs {
             { "fc", Fraction.fraction },
             { "lcm", lcm_class.lcm_main },
             { "hcf", HCF.GCD },
+            { "translate", Translate.Translator }
+            // { "binary", Binary.Bin },
+            // { "bin", Binary.Bin }
         };
         public static void Utilities(string[] args) {
             var cmd = args[0].ToLower();
@@ -66,7 +76,7 @@ namespace utilities_cs {
         private NotifyIcon trayIcon;
 
         public UtilitiesAppContext() {
-            // making keyboard hook
+            // making keyboard hook for ctrl + f8
 
             HookManager.AddHook(
                 "utilities",
@@ -97,8 +107,10 @@ This could be because you have multiple verions of the application running.",
             };
             var menu = new ContextMenuStrip();
 
-            menu.Items.Add("Help Center", null, delegate {
-                Utils.Notification("lmfao", "you thought there was a helpcenter?", 3);
+            menu.Items.Add("Wiki...", null, delegate {
+                Process.Start(new ProcessStartInfo(
+                "cmd", $"/c start https://github.com/prokenz101/utilities/wiki/Help-Center-(Windows)"
+            ) { CreateNoWindow = true });
             }
             );
             menu.Items.Add("Exit", null, delegate { Exit(); });
