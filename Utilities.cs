@@ -9,10 +9,10 @@ namespace utilities_cs {
     class Program {
         [STAThread]
         static void Main(string[] args) {
-            // debug mode, only used for specific times
-
-            bool Debug = false;
-            if (!Debug) {
+            #if UTILITIES_DEBUG
+                // debug mode, only used for specific times
+                UtilitiesAppContext.Utilities(args);
+            #else
                 Application.EnableVisualStyles();
                 Application.SetHighDpiMode(HighDpiMode.SystemAware);
                 Application.SetCompatibleTextRenderingDefault(false);
@@ -22,9 +22,7 @@ namespace utilities_cs {
                 };
 
                 Application.Run(app);
-            } else {
-                UtilitiesAppContext.Utilities(args);
-            }
+            #endif
         }
 
     }
@@ -59,9 +57,9 @@ namespace utilities_cs {
             { "fc", Fraction.fraction },
             { "lcm", lcm_class.lcm_main },
             { "hcf", HCF.GCD },
-            { "translate", Translate.Translator }
-            // { "binary", Binary.Bin },
-            // { "bin", Binary.Bin }
+            { "translate", Translate.Translator },
+            { "binary", Binary.Bin },
+            { "bin", Binary.Bin }
         };
         public static void Utilities(string[] args) {
             var cmd = args[0].ToLower();
