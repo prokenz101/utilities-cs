@@ -1,5 +1,5 @@
 # utilities-cs
-A version of [utilities-py](https://github.com/prokenz101/utilities) written in C#.
+A version of [utilities-py](https://github.com/prokenz101/utilities-py) written in C#.
  
 ## Installation:
 Check the [releases](https://github.com/prokenz101/utilities-cs/releases) and download the latest release based on self-contained and framework-dependent. If you do not know what those mean, then read the below text.
