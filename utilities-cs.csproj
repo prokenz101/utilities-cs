@@ -11,6 +11,9 @@
     <PublishReadyToRun>true</PublishReadyToRun>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <PublishSingleFile>true</PublishSingleFile>
+
+    <DefineConstants Condition="'$(DEBUG)'=='True'">UTILITIES_DEBUG</DefineConstants>
+
   </PropertyGroup>
 
   <ItemGroup>
