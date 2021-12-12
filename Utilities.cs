@@ -62,6 +62,8 @@ namespace utilities_cs {
             { "translate", Translate.Translator },
             { "binary", Binary.Bin },
             { "bin", Binary.Bin },
+            { "hex", Hex.Hexadecimal },
+            { "hexadecimal", Hex.Hexadecimal }
         };
         public static void Utilities(string[] args) {
             var cmd = args[0].ToLower();
