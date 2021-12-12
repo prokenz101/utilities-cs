@@ -1,6 +1,15 @@
 namespace utilities_cs {
     public class lcm_class {
         public static void lcm_main(string[] args) {
+            if (Utils.IndexTest(
+                    args,
+                    "Huh.",
+                    "It seems you did not input any number for the LCM Calculator to work.",
+                    4
+                )
+            ) {
+                return;
+            }
             int lcm(int a, int b) {
                 return (a / HCF.hcf_main(a, b)) * b;
             }
