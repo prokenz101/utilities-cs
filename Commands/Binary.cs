@@ -6,6 +6,9 @@ namespace utilities_cs {
     public class Binary {
         public static void Bin(string[] args) {
             string text = string.Join(' ', args[1..]);
+            if (Utils.IndexTest(args, "Huh.", "It seems you did not input anything for binary to convert.", 4)) {
+                return;
+            }
             bool FormatValid(string format) {
                 string allowableLetters = "01 ";
                 foreach (char c in format) {

@@ -6,6 +6,8 @@ using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
+# nullable disable
+
 namespace utilities_cs {
     public struct AutoclickData {
         public int interval;

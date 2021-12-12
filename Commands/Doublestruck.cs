@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 
+#nullable disable
+
 namespace utilities_cs {
     public class Doublestruck {
         public static void dbs(string[] args) {

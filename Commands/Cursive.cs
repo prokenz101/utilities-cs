@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 
+#nullable disable
+
 namespace utilities_cs {
     public class Cursive {
         public static void cursive(string[] args) {

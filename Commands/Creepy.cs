@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 
+# nullable disable
+
 namespace utilities_cs {
     public class Creepy {
         public static void creepy(string[] args) {
