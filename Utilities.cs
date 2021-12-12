@@ -5,30 +5,32 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.Reflection;
 
+# nullable disable
+
 namespace utilities_cs {
     class Program {
         [STAThread]
         static void Main(string[] args) {
-            #if UTILITIES_DEBUG
-                // debug mode, only used for specific times
-                UtilitiesAppContext.Utilities(args);
-            #else
-                Application.EnableVisualStyles();
-                Application.SetHighDpiMode(HighDpiMode.SystemAware);
-                Application.SetCompatibleTextRenderingDefault(false);
-                var app = new UtilitiesAppContext();
-                Application.ApplicationExit += delegate {
-                    app.Exit();
-                };
+#if UTILITIES_DEBUG
+            // debug mode, only used for specific times
+            UtilitiesAppContext.Utilities(args);
+#else
+            Application.EnableVisualStyles();
+            Application.SetHighDpiMode(HighDpiMode.SystemAware);
+            Application.SetCompatibleTextRenderingDefault(false);
+            var app = new UtilitiesAppContext();
+            Application.ApplicationExit += delegate {
+                app.Exit();
+            };
 
-                Application.Run(app);
-            #endif
+            Application.Run(app);
+#endif
         }
 
     }
     public class UtilitiesAppContext : ApplicationContext {
-        public static Dictionary<string, Action<string[]>> commands = new()
-        {
+        public static Dictionary<string, Action<string[]>> commands = new() {
+            { "help", Help.help },
             { "sarcasm", Sarcasm.Sarcasm_ },
             { "copypaste", Copypaste.cp },
             { "cp", Copypaste.cp },
@@ -59,7 +61,7 @@ namespace utilities_cs {
             { "hcf", HCF.GCD },
             { "translate", Translate.Translator },
             { "binary", Binary.Bin },
-            { "bin", Binary.Bin }
+            { "bin", Binary.Bin },
         };
         public static void Utilities(string[] args) {
             var cmd = args[0].ToLower();
@@ -107,7 +109,7 @@ This could be because you have multiple verions of the application running.",
 
             menu.Items.Add("Wiki...", null, delegate {
                 Process.Start(new ProcessStartInfo(
-                "cmd", $"/c start https://github.com/prokenz101/utilities/wiki/Help-Center-(Windows)"
+                "cmd", $"/c start https://github.com/prokenz101/utilities-py/wiki/Help-Center-(Windows)"
             ) { CreateNoWindow = true });
             }
             );
