@@ -9,6 +9,15 @@ namespace utilities_cs {
             return a;
         }
         public static void GCD(string[] args) {
+            if (Utils.IndexTest(
+                    args,
+                    "Huh.",
+                    "It seems you did not input any number for the HCF calculator to work.",
+                    4
+                )
+            ) {
+                return;
+            }
             int num1 = int.Parse(args[1]);
             int num2 = int.Parse(args[2]);
             int answer = hcf_main(num1, num2);
