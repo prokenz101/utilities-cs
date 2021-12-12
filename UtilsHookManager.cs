@@ -12,7 +12,7 @@ namespace utilities_cs {
                 keyboardHooks.Add(id, hook);
             } else { throw new HookExistsException(); }
         }
-        public static void AddHook(string id, ModifierKeys modifiers, Keys keys, Action onPressed, Action onFail = null) {
+        public static void AddHook(string id, ModifierKeys modifiers, Keys keys, Action onPressed, Action? onFail = null) {
             KeyboardHook hook = new();
             hook.KeyPressed += delegate {
                 onPressed();

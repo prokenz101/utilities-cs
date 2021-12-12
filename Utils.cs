@@ -8,9 +8,7 @@ using Microsoft.Toolkit.Uwp.Notifications;
 namespace utilities_cs {
     public class Utils {
 
-#nullable enable
         private static Task? notificationTask;
-
         public async static void Notification(string title, string subtitle, int toastexpirationtime = 1) {
             if (notificationTask != null) {
                 await notificationTask;
@@ -23,7 +21,15 @@ namespace utilities_cs {
                 ToastNotificationManagerCompat.History.Clear();
             });
         }
-        public static bool IndexTest(string[] args, string title, string subtitle, int duration = 1, int argscount = 1) {
+
+        public static bool IndexTest(
+                string[] args,
+                string title,
+                string subtitle,
+                int duration = 1,
+                int argscount = 1,
+                Action? ifOutOfRange = null
+            ) {
             // Returns true if IndexTest failed, i.e there were no arguments other than the command.
             // Returns false if the program ran successfully with all arguments.
             try {
@@ -31,10 +37,10 @@ namespace utilities_cs {
                 return false;
             } catch (IndexOutOfRangeException) {
                 Notification(title, subtitle, duration);
+                ifOutOfRange?.Invoke();
                 return true;
             }
         }
-
     }
 }
 static class WindowsClipboard {
