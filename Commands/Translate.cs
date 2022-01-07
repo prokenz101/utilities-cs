@@ -47,7 +47,6 @@ namespace utilities_cs {
             // if lang is not english, then use toOtherLang()
 
             foreach (var langAliases in languages.Keys) {
-                Utils.Notification("ok", languages[langAliases], 4);
                 if (langAliases.Contains(lang)) {
                     toOtherLang(languages[langAliases], text);
                     break;
