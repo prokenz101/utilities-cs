@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using Microsoft.Toolkit.Uwp.Notifications;
 
 namespace utilities_cs {
@@ -40,6 +41,23 @@ namespace utilities_cs {
                 ifOutOfRange?.Invoke();
                 return true;
             }
+        }
+
+        public static bool FormatValid(string allowable_char, string format) {
+            foreach (char c in format) {
+                if (!allowable_char.Contains(c.ToString()))
+                    return false;
+            }
+            return true;
+        }
+
+        public static Dictionary<string, string> invertKeyAndValue(Dictionary<string, string> dict) {
+            Dictionary<string, string> final_dict = new();
+            foreach (var key in dict.Keys) {
+                final_dict[dict[key]] = key;
+            }
+
+            return final_dict;
         }
     }
 }
