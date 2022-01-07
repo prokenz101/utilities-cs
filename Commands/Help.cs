@@ -7,7 +7,7 @@ namespace utilities_cs {
             Process.Start(
                 new ProcessStartInfo(
                         "cmd",
-                        $"/c start https://github.com/prokenz101/utilities-py/wiki/Help-Center-(Windows)"
+                        $"/c start https://github.com/prokenz101/utilities-py/wiki/Utilities-Wiki-(Windows,-C%23-and-Python)"
                     ) { CreateNoWindow = true }
             );
         }
