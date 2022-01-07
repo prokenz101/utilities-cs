@@ -2,3 +2,4 @@ obj
 bin
 .vscode
 build.ps1
+debug-build.ps1
