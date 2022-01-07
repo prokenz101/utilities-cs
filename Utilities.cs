@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Drawing;
 using System.Reflection;
+using System.Threading;
 
 # nullable disable
 
@@ -92,8 +93,10 @@ namespace utilities_cs {
                 ModifierKeys.Control,
                 Keys.F8,
                 () => {
-                    SendKeys.SendWait("^a");
-                    SendKeys.SendWait("^c");
+                    SendKeys.Send("^a");
+                    Thread.Sleep(25);
+                    SendKeys.Send("^c");
+                    Thread.Sleep(25);
                     SendKeys.Send("{ESC}");
                     string[] args = Clipboard.GetText().Split(" ");
                     Utilities(args);
