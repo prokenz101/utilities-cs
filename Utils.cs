@@ -10,6 +10,13 @@ namespace utilities_cs {
     public class Utils {
 
         private static Task? notificationTask;
+
+        /// <summary>
+        /// The primary notification method, used to send a Windows Toast Notification.
+        /// </summary>
+        /// <param name="title">The title of the notificaton.</param>
+        /// <param name="subtitle">The subtitle of the notification.</param>
+        /// <param name="toastexpirationtime">The amount of time that the toast will stay on screen.</param>
         public async static void Notification(string title, string subtitle, int toastexpirationtime = 1) {
             if (notificationTask != null) {
                 await notificationTask;
@@ -23,6 +30,16 @@ namespace utilities_cs {
             });
         }
 
+        /// <summary>
+        /// Returns true if IndexTest failed, i.e there were no arguments other than the command.
+        /// Returns false if the program ran successfully with all arguments.
+        /// </summary>
+        /// <param name="args">All arguments passed when pressing main Ctrl+F8 function.</param>
+        /// <param name="title">The title of the notification incase the indextest was false.</param>
+        /// <param name="subtitle">The subtitle of the notification incase the indextest was false.</param>
+        /// <param name="duration">The amount of time the notification stays on screen incase the indextest was false.</param>
+        /// <param name="argscount">The index that indextest will check to see if it exists.</param>
+        /// <param name="ifOutOfRange">Method that is called incase indextest is false.</param>
         public static bool IndexTest(
                 string[] args,
                 string title,
@@ -31,8 +48,7 @@ namespace utilities_cs {
                 int argscount = 1,
                 Action? ifOutOfRange = null
             ) {
-            // Returns true if IndexTest failed, i.e there were no arguments other than the command.
-            // Returns false if the program ran successfully with all arguments.
+            
             try {
                 string test = args[argscount];
                 return false;
@@ -43,15 +59,24 @@ namespace utilities_cs {
             }
         }
 
-        public static bool FormatValid(string allowable_char, string format) {
-            foreach (char c in format) {
+        /// <summary>
+        /// Checks if a string has only a certain set of characters.
+        /// </summary>
+        /// <param name="allowable_char">Set of characters that are allowed in the string.</param>
+        /// <param name="text">The text that is being checked.</param>
+        public static bool FormatValid(string allowable_char, string text) {
+            foreach (char c in text) {
                 if (!allowable_char.Contains(c.ToString()))
                     return false;
             }
             return true;
         }
 
-        public static Dictionary<string, string> invertKeyAndValue(Dictionary<string, string> dict) {
+        /// <summary>
+        /// Interchanges the position of key and value in a dictionary.
+        /// </summary>
+        /// <param name="dict">The dictionary that is inverted.</param>
+        public static Dictionary<string, string> invertKeyAndValue(Dictionary<string, string> dict) {            
             Dictionary<string, string> final_dict = new();
             foreach (var key in dict.Keys) {
                 final_dict[dict[key]] = key;
