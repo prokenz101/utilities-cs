@@ -54,6 +54,8 @@ namespace utilities_cs {
             { "exponent", Exponent.exponent },
             { "ep", Exponent.exponent },
             { "flip", Flip.flip },
+            { "flipped", Flip.flip },
+            { "upside-down", Flip.flip },
             { "autoclick", Autoclick.autoclick },
             { "fraction", Fraction.fraction },
             { "fc", Fraction.fraction },
@@ -63,7 +65,12 @@ namespace utilities_cs {
             { "binary", Binary.Bin },
             { "bin", Binary.Bin },
             { "hex", Hex.Hexadecimal },
-            { "hexadecimal", Hex.Hexadecimal }
+            { "hexadecimal", Hex.Hexadecimal },
+            { "emojify", Emojify.emojify },
+            { "title", Title.title },
+            { "titlecase", Title.title },
+            { "factorial", Factorial.factorial },
+            { "morse", Morse.MorseCodeTranslate }
         };
         public static void Utilities(string[] args) {
             var cmd = args[0].ToLower();
