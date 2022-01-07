@@ -9,15 +9,7 @@ namespace utilities_cs {
             if (Utils.IndexTest(args, "Huh.", "It seems you did not input anything for binary to convert.", 4)) {
                 return;
             }
-            bool FormatValid(string format) {
-                string allowableLetters = "01 ";
-                foreach (char c in format) {
-                    if (!allowableLetters.Contains(c.ToString()))
-                        return false;
-                }
-                return true;
-            }
-            if (!FormatValid(text)) {
+            if (!Utils.FormatValid("01 ", text)) {
                 byte[] ConvertToByteArray(string str, Encoding encoding) {
                     return encoding.GetBytes(str);
                 }
