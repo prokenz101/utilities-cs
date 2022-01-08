@@ -2,11 +2,11 @@ using System.Collections.Generic;
 
 namespace utilities_cs {
     public class Emojify {
-        public static void emojify(string[] args) {
+        public static string? emojify(string[] args, bool copy, bool notif) {
             string text = string.Join(' ', args[1..]);
 
             if (Utils.IndexTest(args, "Huh.", "It seems you did not input anything for utilities-cs to emojify.", 4)) {
-                return;
+                return null;
             }
 
             List<string> converted = new();
@@ -39,8 +39,9 @@ namespace utilities_cs {
                 }
             }
 
-            WindowsClipboard.SetText(string.Join(" ", converted));
-            Utils.Notification("Success!", "Message copied to clipboard.", 3);
+            Utils.CopyCheck(copy, string.Join(" ", converted));
+            Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
+            return string.Join(" ", converted);
         }
     }
 }

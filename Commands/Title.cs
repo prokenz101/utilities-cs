@@ -2,17 +2,18 @@ using System.Globalization;
 
 namespace utilities_cs {
     public class Title {
-        public static void title(string[] args) {
+        public static string? title(string[] args, bool copy, bool notif) {
             string text = string.Join(' ', args[1..]).ToLower();
 
             if (Utils.IndexTest(args, "Huh.", "It seems you did not input anything.", 4)) {
-                return;
+                return null;
             }
             TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
 
             string ans = textInfo.ToTitleCase(string.Join(" ", text));
-            WindowsClipboard.SetText(ans);
-            Utils.Notification("Success!", "Message copied to clipboard.", 3);
+            Utils.CopyCheck(copy, ans);
+            Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
+            return ans;
         }
     }
 }

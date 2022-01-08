@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace utilities_cs {
     public class Hex {
-        public static void Hexadecimal(string[] args) {
+        public static string? Hexadecimal(string[] args, bool copy, bool notif) {
             string text = string.Join(' ', args[1..]);
 
             string[] text_list = text.Split(" ");
@@ -12,13 +12,14 @@ namespace utilities_cs {
 
             if (IsHex(string.Join("", args[1..]))) {
                 string text_from_hex = Encoding.ASCII.GetString(toText(hex_with_dash));
-                WindowsClipboard.SetText(text_from_hex);
-                Utils.Notification("Success!", $"The message was: {text_from_hex}", 10);
-                return;
+                Utils.CopyCheck(copy, text_from_hex);
+                Utils.NotifCheck(notif, new string[] { "Success!", $"The message was: {text_from_hex}", "10" });
+                return text_from_hex;
             } else {
                 string hex_from_text = toHex(text);
-                WindowsClipboard.SetText(hex_from_text);
-                Utils.Notification("Success!", $"Message copied to clipboard.", 3);
+                Utils.CopyCheck(copy, hex_from_text);
+                Utils.NotifCheck(notif, new string[] { "Success!", $"Message copied to clipboard.", "3" });
+                return hex_from_text;
             }
         }
 

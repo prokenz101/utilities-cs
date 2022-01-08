@@ -2,9 +2,9 @@ using System.Collections.Generic;
 
 namespace utilities_cs {
     public class Fraction {
-        public static void fraction(string[] args) {
+        public static string? fraction(string[] args, bool copy, bool notif) {
             if (Utils.IndexTest(args, "Huh.", "It seems you did not input a fraction.", 3)) {
-                return;
+                return null;
             }
             string text = string.Join(" ", args[1..]);
             List<string> converted = new();
@@ -65,7 +65,7 @@ namespace utilities_cs {
                         "Either the code is broken, or you did not input the parameters correctly.",
                         4
                     );
-                    return;
+                    return null;
                 }
             }
 
@@ -81,7 +81,7 @@ namespace utilities_cs {
                             @"It seems you tried to input a character that's not supported.",
                             7
                         );
-                        return;
+                        return null;
                     }
                 } else {
                     Utils.Notification(
@@ -89,13 +89,14 @@ namespace utilities_cs {
                         "Either the code is broken, or you did not input the parameters correctly.",
                         4
                     );
-                    return;
+                    return null;
                 }
             }
 
             string fraction = string.Join("", converted);
-            WindowsClipboard.SetText(fraction);
-            Utils.Notification("Success!", "Message copied to clipboard.");
+            Utils.CopyCheck(copy, fraction);
+            Utils.NotifCheck(notif, new string[]{"Success!", "Message copied to clipboard.", "3"});
+            return fraction;
         }
     }
 }

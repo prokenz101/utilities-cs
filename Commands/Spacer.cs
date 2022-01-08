@@ -2,9 +2,9 @@ using System.Collections.Generic;
 
 namespace utilities_cs {
     public class Spacer {
-        public static void spacer(string[] args) {
+        public static string? spacer(string[] args, bool copy, bool notif) {
             if (Utils.IndexTest(args, "Huh.", "It seems you did not input anything for spacer to work.", 3)) {
-                return;
+                return null;
             }
             string text = string.Join(" ", args[1..]);
             List<string> converted = new();
@@ -13,8 +13,9 @@ namespace utilities_cs {
                 converted.Add(" ");
             }
             string answer = string.Join("", converted);
-            WindowsClipboard.SetText(answer);
-            Utils.Notification("Success!", "Message copied to clipboard.", 3);
+            Utils.CopyCheck(copy, answer);
+            Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
+            return answer;
         }
     }
 }

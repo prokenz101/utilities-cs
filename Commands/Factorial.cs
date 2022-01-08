@@ -2,7 +2,7 @@ using System.Numerics;
 
 namespace utilities_cs {
     public class Factorial {
-        public static void factorial(string[] args) {
+        public static string? factorial(string[] args, bool copy, bool notif) {
             try {
                 int n = int.Parse(args[1]);
                 int i = 1;
@@ -12,11 +12,13 @@ namespace utilities_cs {
                     v *= i;
                     i += 1;
                 }
-                WindowsClipboard.SetText(v.ToString());
-                Utils.Notification(v.ToString(), $"The factorial is: {v.ToString()}");
+                Utils.CopyCheck(copy, v.ToString());
+                Utils.NotifCheck(notif, new string[] { v.ToString(), $"The factorial is: {v.ToString()}", "5" });
+                return v.ToString();
 
             } catch {
                 Utils.Notification("Huh.", "It seems that the number you inputted was not a number.", 4);
+                return null;
             }
         }
     }

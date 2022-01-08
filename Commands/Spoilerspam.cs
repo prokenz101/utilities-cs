@@ -2,9 +2,9 @@ using System.Collections.Generic;
 
 namespace utilities_cs {
     public class Spoilerspam {
-        public static void spoilerspam(string[] args) {
+        public static string? spoilerspam(string[] args, bool copy, bool notif) {
             if (Utils.IndexTest(args, "Huh.", "It seems that you did not input anything for spoilerspam.", 3)) {
-                return;
+                return null;
             }
             string text = string.Join(" ", args[1..]);
             List<string> converted = new();
@@ -12,8 +12,9 @@ namespace utilities_cs {
                 converted.Add($"||{i}");
             }
             string answer = $"{string.Join("||", converted)}||";
-            WindowsClipboard.SetText(answer);
-            Utils.Notification("Success!", "Message copied to clipboard.", 3);
+            Utils.CopyCheck(copy, answer);
+            Utils.NotifCheck(notif, new string[]{"Success!", "Message copied to clipboard.", "3"});
+            return answer;
         }
     }
 }

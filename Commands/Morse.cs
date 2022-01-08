@@ -63,20 +63,20 @@ namespace utilities_cs {
             { " ", "/" }
         };
         static Dictionary<string, string> morseToText = Utils.invertKeyAndValue(textToMorse);
-        public static void MorseCodeTranslate(string[] args) {
+        public static string? MorseCodeTranslate(string[] args, bool copy, bool notif) {
             string text = string.Join(' ', args[1..]).ToLower();
             if (Utils.IndexTest(args, "Huh.", "It seems that you did not input anything for morse code to translate.")) {
-                return;
+                return null;
             }
 
             if (Utils.FormatValid("-./ ", text)) {
-                toText(text);
+                return toText(text, copy, notif);
             } else {
-                toMorse(text);
+                return toMorse(text, copy, notif);
             }
         }
 
-        public static void toMorse(string text) {
+        public static string toMorse(string text, bool copy, bool notif) {
             List<string> morse_converted = new();
             foreach (char t in text) {
                 if (textToMorse.ContainsKey(t.ToString())) {
@@ -87,11 +87,12 @@ namespace utilities_cs {
                 }
             }
 
-            Utils.Notification("Success!", "Message copied to clipboard.", 3);
-            WindowsClipboard.SetText(string.Join("", morse_converted));
+            Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
+            Utils.CopyCheck(copy, string.Join("", morse_converted));
+            return string.Join("", morse_converted);
         }
 
-        public static void toText(string morse) {
+        public static string toText(string morse, bool copy, bool notif) {
             List<string> text_converted = new();
             string[] text_array = morse.Split(" ");
 
@@ -103,8 +104,16 @@ namespace utilities_cs {
                 }
             }
 
-            Utils.Notification("Success!", $"The message was: {string.Join("", text_converted)}", 10);
-            WindowsClipboard.SetText(string.Join("", text_converted));
+            Utils.NotifCheck(
+                notif,
+                new string[] {
+                    "Success!",
+                    $"The message was: {string.Join("", text_converted)}",
+                    "10"
+                }
+            );
+            Utils.CopyCheck(copy, string.Join("", text_converted));
+            return string.Join("", text_converted);
         }
     }
 }

@@ -8,7 +8,7 @@ namespace utilities_cs {
             }
             return a;
         }
-        public static void GCD(string[] args) {
+        public static string? GCD(string[] args, bool copy, bool notif) {
             if (Utils.IndexTest(
                     args,
                     "Huh.",
@@ -16,13 +16,14 @@ namespace utilities_cs {
                     4
                 )
             ) {
-                return;
+                return null;
             }
             int num1 = int.Parse(args[1]);
             int num2 = int.Parse(args[2]);
             int answer = hcf_main(num1, num2);
-            WindowsClipboard.SetText(answer.ToString());
-            Utils.Notification("Success!", $"The answer was {answer}.", 5);
+            Utils.CopyCheck(copy, answer.ToString());
+            Utils.NotifCheck(notif, new string[] { "Success!", $"The answer was {answer}.", "5" });
+            return answer.ToString();
         }
     }
 }

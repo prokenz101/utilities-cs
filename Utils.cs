@@ -48,7 +48,7 @@ namespace utilities_cs {
                 int argscount = 1,
                 Action? ifOutOfRange = null
             ) {
-            
+
             try {
                 string test = args[argscount];
                 return false;
@@ -76,7 +76,7 @@ namespace utilities_cs {
         /// Interchanges the position of key and value in a dictionary.
         /// </summary>
         /// <param name="dict">The dictionary that is inverted.</param>
-        public static Dictionary<string, string> invertKeyAndValue(Dictionary<string, string> dict) {            
+        public static Dictionary<string, string> invertKeyAndValue(Dictionary<string, string> dict) {
             Dictionary<string, string> final_dict = new();
             foreach (var key in dict.Keys) {
                 final_dict[dict[key]] = key;
@@ -84,87 +84,118 @@ namespace utilities_cs {
 
             return final_dict;
         }
+
+        /// <summary>
+        /// Checks if the function being called is willing to copy something to the clipboard.
+        /// Primarily used for Format.
+        /// </summary>
+        /// <param name="copy">Boolean that is usually true and checks if the function wants to copy something.</param>
+        /// <param name="toCopy">The string that is to be copied to the clipboard if copy is true.</param>
+        public static void CopyCheck(bool copy, string toCopy) {
+            if (copy) {
+                WindowsClipboard.SetText(toCopy);
+            }
+        }
+
+        /// <summary>
+        /// Checks if the function being called is willing to send a notification.
+        /// Primarily used for Format.
+        /// </summary>
+        /// <param name="notif">Boolean that is usually true and checks if notification is gonna be sent.</param>
+        /// <param name="notifContent">The content for the notification, if it notif is true.</param>
+        public static void NotifCheck(bool notif, object[] notifContent) {
+# nullable disable
+            if (notif) {
+                Notification(
+                    notifContent[0].ToString(),
+                    notifContent[1].ToString(),
+                    int.Parse(notifContent[2].ToString())
+                );
+            }
+# nullable enable
+        }
     }
-}
-static class WindowsClipboard {
-    public static void SetText(string text) {
-        OpenClipboard();
 
-        EmptyClipboard();
-        IntPtr hGlobal = default;
-        try {
-            var bytes = (text.Length + 1) * 2;
-            hGlobal = Marshal.AllocHGlobal(bytes);
+    static class WindowsClipboard {
+        public static void SetText(string text) {
+            OpenClipboard();
 
-            if (hGlobal == default) {
-                ThrowWin32();
-            }
-
-            var target = GlobalLock(hGlobal);
-
-            if (target == default) {
-                ThrowWin32();
-            }
-
+            EmptyClipboard();
+            IntPtr hGlobal = default;
             try {
-                Marshal.Copy(text.ToCharArray(), 0, target, text.Length);
+                var bytes = (text.Length + 1) * 2;
+                hGlobal = Marshal.AllocHGlobal(bytes);
+
+                if (hGlobal == default) {
+                    ThrowWin32();
+                }
+
+                var target = GlobalLock(hGlobal);
+
+                if (target == default) {
+                    ThrowWin32();
+                }
+
+                try {
+                    Marshal.Copy(text.ToCharArray(), 0, target, text.Length);
+                } finally {
+                    GlobalUnlock(target);
+                }
+
+                if (SetClipboardData(cfUnicodeText, hGlobal) == default) {
+                    ThrowWin32();
+                }
+
+                hGlobal = default;
             } finally {
-                GlobalUnlock(target);
-            }
+                if (hGlobal != default) {
+                    Marshal.FreeHGlobal(hGlobal);
+                }
 
-            if (SetClipboardData(cfUnicodeText, hGlobal) == default) {
-                ThrowWin32();
+                CloseClipboard();
             }
-
-            hGlobal = default;
-        } finally {
-            if (hGlobal != default) {
-                Marshal.FreeHGlobal(hGlobal);
-            }
-
-            CloseClipboard();
         }
-    }
 
-    public static void OpenClipboard() {
-        var num = 10;
-        while (true) {
-            if (OpenClipboard(default)) {
-                break;
+        public static void OpenClipboard() {
+            var num = 10;
+            while (true) {
+                if (OpenClipboard(default)) {
+                    break;
+                }
+
+                if (--num == 0) {
+                    ThrowWin32();
+                }
+
+                Thread.Sleep(100);
             }
-
-            if (--num == 0) {
-                ThrowWin32();
-            }
-
-            Thread.Sleep(100);
         }
+
+        const uint cfUnicodeText = 13;
+
+        static void ThrowWin32() {
+            throw new Win32Exception(Marshal.GetLastWin32Error());
+        }
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        static extern IntPtr GlobalLock(IntPtr hMem);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool GlobalUnlock(IntPtr hMem);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool OpenClipboard(IntPtr hWndNewOwner);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool CloseClipboard();
+
+        [DllImport("user32.dll", SetLastError = true)]
+        static extern IntPtr SetClipboardData(uint uFormat, IntPtr data);
+
+        [DllImport("user32.dll")]
+        static extern bool EmptyClipboard();
     }
-
-    const uint cfUnicodeText = 13;
-
-    static void ThrowWin32() {
-        throw new Win32Exception(Marshal.GetLastWin32Error());
-    }
-
-    [DllImport("kernel32.dll", SetLastError = true)]
-    static extern IntPtr GlobalLock(IntPtr hMem);
-
-    [DllImport("kernel32.dll", SetLastError = true)]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    static extern bool GlobalUnlock(IntPtr hMem);
-
-    [DllImport("user32.dll", SetLastError = true)]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    static extern bool OpenClipboard(IntPtr hWndNewOwner);
-
-    [DllImport("user32.dll", SetLastError = true)]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    static extern bool CloseClipboard();
-
-    [DllImport("user32.dll", SetLastError = true)]
-    static extern IntPtr SetClipboardData(uint uFormat, IntPtr data);
-
-    [DllImport("user32.dll")]
-    static extern bool EmptyClipboard();
 }

@@ -1,12 +1,10 @@
 using System.Collections.Generic;
 
-#nullable disable
-
 namespace utilities_cs {
     public class Exponent {
-        public static void exponent(string[] args) {
+        public static string? exponent(string[] args, bool copy, bool notif) {
             if (Utils.IndexTest(args, "Huh.", "It seems that you did not input anything at all.", 3)) {
-                return;
+                return null;
             }
             string text = string.Join(" ", args[1..]);
             List<string> converted = new();
@@ -22,6 +20,9 @@ namespace utilities_cs {
                     {"v", "ᵛ"}, {"w", "ʷ"}, {"x", "ˣ"}, {"y", "ʸ"}, {"z", "ᶻ"},
                     {"(", "⁽"}, {")", "⁾"}, {" ", " "}
                 };
+
+# nullable disable
+
             foreach (char e in text) {
                 var replaced = exponents.GetValueOrDefault(e.ToString(), "");
                 if (replaced != "") {
@@ -30,9 +31,13 @@ namespace utilities_cs {
                     converted.Add(e.ToString());
                 }
             }
+
+# nullable enable
+
             var answer = string.Join("", converted);
-            WindowsClipboard.SetText(answer);
-            Utils.Notification("Success!", "Message copied to clipboard.", 3);
+            Utils.CopyCheck(copy, answer);
+            Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
+            return answer;
         }
     }
 }

@@ -2,9 +2,9 @@ using System.Collections.Generic;
 
 namespace utilities_cs {
     public class Sarcasm {
-        public static void Sarcasm_(string[] args) {
+        public static string? Sarcasm_(string[] args, bool copy, bool notif) {
             if (Utils.IndexTest(args, "Huh.", "It seems you did not input anything for sarcasm to 'sarcasm-ize'.", 4)) {
-                return;
+                return null;
             }
             string text = string.Join(" ", args[1..]);
             List<string> converted = new();
@@ -20,8 +20,9 @@ namespace utilities_cs {
                 }
             }
             string sarcasm_text = string.Join("", converted);
-            WindowsClipboard.SetText(sarcasm_text);
-            Utils.Notification("Success!", "Message copied to clipboard.", 3);
+            Utils.CopyCheck(copy, sarcasm_text);
+            Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
+            return sarcasm_text;
         }
     }
 }

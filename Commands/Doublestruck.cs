@@ -1,12 +1,10 @@
 using System.Collections.Generic;
 
-#nullable disable
-
 namespace utilities_cs {
     public class Doublestruck {
-        public static void dbs(string[] args) {
+        public static string? dbs(string[] args, bool copy, bool notif) {
             if (Utils.IndexTest(args, "Huh.", "It seems you did not input anything for doublestruck to work.", 4)) {
-                return;
+                return null;
             }
             string text = string.Join(" ", args[1..]);
             List<string> converted = new();
@@ -25,6 +23,9 @@ namespace utilities_cs {
                     {"5", "𝟝"}, {"6", "𝟞"}, {"7", "𝟟"}, {"8", "𝟠"}, {"9", "𝟡"},
                     {"0", "𝟘"}, {" ", " "}
                 };
+
+# nullable disable
+
             foreach (char d in text) {
                 var replaced = dbs_char.GetValueOrDefault(d.ToString(), "");
                 if (replaced != "") {
@@ -33,9 +34,13 @@ namespace utilities_cs {
                     converted.Add(d.ToString());
                 }
             }
+
+# nullable enable
+
             var answer = string.Join("", converted);
-            WindowsClipboard.SetText(answer);
-            Utils.Notification("Success!", "Message copied to clipboard.", 3);
+            Utils.CopyCheck(copy, answer);
+            Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
+            return answer;
         }
     }
 }

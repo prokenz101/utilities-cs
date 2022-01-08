@@ -1,12 +1,10 @@
 using System.Collections.Generic;
 
-#nullable disable
-
 namespace utilities_cs {
     public class Flip {
-        public static void flip(string[] args) {
+        public static string? flip(string[] args, bool copy, bool notif) {
             if (Utils.IndexTest(args, "Huh.", "It seems you did not input anything for flip to work.", 4)) {
-                return;
+                return null;
             }
             string text = string.Join(" ", args[1..]);
             List<string> converted = new();
@@ -22,6 +20,9 @@ namespace utilities_cs {
                     {"P", "Ԁ"}, {"Q", "Q"}, {"R", "ɹ"}, {"S", "S"}, {"T", "┴"},
                     {"U", "∩"}, {"V", "Λ"}, {"W", "M"}, {"X", "X"}, {"Y", "⅄"}, {"Z", "Z"}
                 };
+
+# nullable disable
+
             foreach (char f in text) {
                 var replaced = flipped_char.GetValueOrDefault(f.ToString(), "");
                 if (replaced != "") {
@@ -30,10 +31,14 @@ namespace utilities_cs {
                     converted.Add(f.ToString());
                 }
             }
+
+# nullable enable
+
             converted.Reverse();
             var answer = string.Join("", converted);
-            WindowsClipboard.SetText(answer);
-            Utils.Notification("Success!", "Message copied to clipboard.", 3);
+            Utils.CopyCheck(copy, answer);
+            Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
+            return answer;
         }
     }
 }

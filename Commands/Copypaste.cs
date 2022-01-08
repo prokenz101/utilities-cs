@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace utilities_cs {
     public class Copypaste {
-        public static void cp(string[] args) {
+        public static string? cp(string[] args, bool copy, bool notif) {
             if (Utils.IndexTest(args, "Huh.", "It seems you did not input anything for copypaste to copy.", 4)) {
-                return;
+                return null;
             }
             string text = string.Join(" ", args[1..]);
             Dictionary<string, string> cp_dict = new() {
@@ -59,17 +59,17 @@ namespace utilities_cs {
             };
 
             if (cp_dict.ContainsKey(text)) {
-                WindowsClipboard.SetText(cp_dict[text]);
-                Utils.Notification("Success!", "Message copied to clipboard.");
+                Utils.CopyCheck(copy, cp_dict[text]);
+                Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
+                return cp_dict[text];
             } else {
                 Utils.Notification(
                     "Welp.",
                     "It seems that utilities could not understand what word you were trying to copypaste.",
                     3
                 );
-                Environment.Exit(0);
+                return null;
             }
-
         }
     }
 }

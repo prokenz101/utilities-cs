@@ -2,9 +2,9 @@ using System.Collections.Generic;
 
 namespace utilities_cs {
     public class Reverse {
-        public static void reverse(string[] args) {
+        public static string? reverse(string[] args, bool copy, bool notif) {
             if (Utils.IndexTest(args, "Huh.", "It seems you did not input anything to reverse.", 3)) {
-                return;
+                return null;
             }
             string text = string.Join(" ", args[1..]);
             char[] text_array = text.ToCharArray();
@@ -14,8 +14,9 @@ namespace utilities_cs {
             }
             text_list.Reverse();
             string answer = string.Join("", text_list);
-            WindowsClipboard.SetText(answer);
-            Utils.Notification("Success!", "Message copied to clipboard.", 3);
+            Utils.CopyCheck(copy, answer);
+            Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
+            return answer;
         }
     }
 }

@@ -6,8 +6,6 @@ using System.Drawing;
 using System.Reflection;
 using System.Threading;
 
-# nullable disable
-
 namespace utilities_cs {
     class Program {
         [STAThread]
@@ -32,7 +30,16 @@ namespace utilities_cs {
     public class UtilitiesAppContext : ApplicationContext {
         public static Dictionary<string, Action<string[]>> commands = new() {
             { "help", Help.help },
+            { "-", BrowserSearch.GoogleSearch },
+            { "youtube", BrowserSearch.YouTubeSearch },
+            { "yt", BrowserSearch.YouTubeSearch },
+            { "images", BrowserSearch.ImageSearch },
+            { "autoclick", Autoclick.autoclick },
+            { "translate", Translate.Translator },
+        };
+        public static Dictionary<string, Func<string[], bool, bool, string?>> formattable_commands = new() {
             { "sarcasm", Sarcasm.Sarcasm_ },
+            { "spacer", Spacer.spacer },
             { "copypaste", Copypaste.cp },
             { "cp", Copypaste.cp },
             { "upper", Upper.Uppercase },
@@ -40,16 +47,11 @@ namespace utilities_cs {
             { "lower", Lower.Lowercase },
             { "lowercase", Lower.Lowercase },
             { "cursive", Cursive.cursive },
-            { "bubbletext", Bubble.bubbletext },
-            { "bubble", Bubble.bubbletext },
+            { "bubbletext", Bubble.BubbleText },
+            { "bubble", Bubble.BubbleText },
             { "doublestruck", Doublestruck.dbs },
             { "dbs", Doublestruck.dbs },
             { "creepy", Creepy.creepy },
-            { "-", BrowserSearch.GoogleSearch },
-            { "youtube", BrowserSearch.YouTubeSearch },
-            { "yt", BrowserSearch.YouTubeSearch },
-            { "images", BrowserSearch.ImageSearch },
-            { "spacer", Spacer.spacer },
             { "spoilerspam", Spoilerspam.spoilerspam },
             { "reverse", Reverse.reverse },
             { "exponent", Exponent.exponent },
@@ -57,12 +59,10 @@ namespace utilities_cs {
             { "flip", Flip.flip },
             { "flipped", Flip.flip },
             { "upside-down", Flip.flip },
-            { "autoclick", Autoclick.autoclick },
-            { "fraction", Fraction.fraction },
             { "fc", Fraction.fraction },
             { "lcm", lcm_class.lcm_main },
             { "hcf", HCF.GCD },
-            { "translate", Translate.Translator },
+            { "fraction", Fraction.fraction },
             { "binary", Binary.Bin },
             { "bin", Binary.Bin },
             { "hex", Hex.Hexadecimal },
@@ -75,13 +75,20 @@ namespace utilities_cs {
         };
         public static void Utilities(string[] args) {
             var cmd = args[0].ToLower();
-            var f = commands.GetValueOrDefault(cmd, (args) => Utils.Notification(
+            if (commands.ContainsKey(cmd)) {
+                Action<string[]> f = commands[cmd];
+                f.Invoke(args);
+            } else if (formattable_commands.ContainsKey(cmd)) {
+                Func<string[], bool, bool, string?> f = formattable_commands[cmd];
+                f.Invoke(args, true, true);
+            } else {
+                Utils.Notification(
                     "Welp.",
                     "It seems utilities couldn't understand what command you were trying to use.",
                     6
-                )
-            );
-            f.Invoke(args);
+                );
+            }
+
         }
         private NotifyIcon trayIcon;
 
@@ -121,7 +128,7 @@ This could be because you have multiple verions of the application running.",
 
             menu.Items.Add("Wiki...", null, delegate {
                 Process.Start(new ProcessStartInfo(
-                "cmd", $"/c start https://github.com/prokenz101/utilities-py/wiki/Help-Center-(Windows)"
+                "cmd", $"/c start https://github.com/prokenz101/utilities-py/wiki/Utilities-Wiki-(Windows,-C%23-and-Python)"
             ) { CreateNoWindow = true });
             }
             );

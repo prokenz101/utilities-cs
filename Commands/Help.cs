@@ -3,7 +3,6 @@ using System.Diagnostics;
 namespace utilities_cs {
     public class Help {
         public static void help(string[] args) {
-            // string text = string.Join(' ', args[1..]);
             Process.Start(
                 new ProcessStartInfo(
                         "cmd",

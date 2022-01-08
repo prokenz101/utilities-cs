@@ -1,12 +1,10 @@
 using System.Collections.Generic;
 
-# nullable disable
-
 namespace utilities_cs {
     public class Creepy {
-        public static void creepy(string[] args) {
+        public static string? creepy(string[] args, bool copy, bool notif) {
             if (Utils.IndexTest(args, "Huh.", "It seems you did not input anything for creepy to work.", 4)) {
-                return;
+                return null;
             }
             string text = string.Join(" ", args[1..]);
             List<string> converted = new();
@@ -23,6 +21,9 @@ namespace utilities_cs {
                     {"T", "T̵͓̫̠̈́̂̀̓́̍ͅ"}, {"U", "Ụ̷̡͚̻͇͆͑̉͋͝"}, {"V", "V̴̟̪͓͓̩̳̄̀͌̾̕"}, {"W", "W̵̞̯͛̿"}, {"X", "X̷͈͍̬́"},
                     {"Y", "Ỳ̶̖̣͌͜"}, {"Z", "Z̴̗͈̬̱̩̆̊͗"}, {" ", " "}
                 };
+
+# nullable disable
+
             foreach (char cr in text) {
                 var replaced = creepy_char.GetValueOrDefault(cr.ToString(), "");
                 if (replaced != "") {
@@ -31,9 +32,13 @@ namespace utilities_cs {
                     converted.Add(cr.ToString());
                 }
             }
+
+# nullable enable
+
             var answer = string.Join("", converted);
-            WindowsClipboard.SetText(answer);
-            Utils.Notification("Success!", "Message copied to clipboard.", 3);
+            Utils.CopyCheck(copy, answer);
+            Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
+            return answer;
         }
     }
 }
