@@ -1,5 +1,6 @@
 obj
 bin
 .vscode
+.vs
 build.ps1
 debug-build.ps1
