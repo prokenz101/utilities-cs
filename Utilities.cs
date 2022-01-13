@@ -36,6 +36,9 @@ namespace utilities_cs {
             { "images", BrowserSearch.ImageSearch },
             { "autoclick", Autoclick.autoclick },
             { "translate", Translate.Translator },
+            { "exit", UtilitiesExit.UtilsExit },
+            { "quit", UtilitiesExit.UtilsExit }
+
         };
         public static Dictionary<string, Func<string[], bool, bool, string?>> formattable_commands = new() {
             { "sarcasm", Sarcasm.Sarcasm_ },
@@ -71,7 +74,9 @@ namespace utilities_cs {
             { "title", Title.title },
             { "titlecase", Title.title },
             { "factorial", Factorial.factorial },
-            { "morse", Morse.MorseCodeTranslate }
+            { "morse", Morse.MorseCodeTranslate },
+            { "commaseperator", CommaSeperator.Cms },
+            { "cms", CommaSeperator.Cms }
         };
         public static void Utilities(string[] args) {
             var cmd = args[0].ToLower();
@@ -112,7 +117,7 @@ namespace utilities_cs {
                     Utils.Notification(
                         "Something went wrong.",
                         @"utilities-cs was unable to register a hotkey.
-This could be because you have multiple verions of the application running.",
+This could be because you have multiple instances of the application running.",
                         6
                     );
                     Exit();
