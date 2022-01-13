@@ -21,6 +21,23 @@ namespace utilities_cs {
             if (notificationTask != null) {
                 await notificationTask;
             }
+
+            string[] notifTooLong = new string[] {
+                "This notification was too long.",
+                "What you are looking for has probably been copied to your clipboard.",
+            };
+
+            // Check if title and subtitle are too long
+            if (title.Length > 54) {
+                title = notifTooLong[0];
+                subtitle = notifTooLong[1];
+                toastexpirationtime = 5;
+            } else if (subtitle.Length > 108) {
+                title = notifTooLong[0];
+                subtitle = notifTooLong[1];
+                toastexpirationtime = 5;
+            }
+
             notificationTask = Task.Run(() => {
                 new ToastContentBuilder()
                     .AddText(title)
@@ -103,13 +120,13 @@ namespace utilities_cs {
         /// </summary>
         /// <param name="notif">Boolean that is usually true and checks if notification is gonna be sent.</param>
         /// <param name="notifContent">The content for the notification, if it notif is true.</param>
-        public static void NotifCheck(bool notif, object[] notifContent) {
+        public static void NotifCheck(bool notif, string[] notifContent) {
 # nullable disable
             if (notif) {
                 Notification(
-                    notifContent[0].ToString(),
-                    notifContent[1].ToString(),
-                    int.Parse(notifContent[2].ToString())
+                    notifContent[0],
+                    notifContent[1],
+                    int.Parse(notifContent[2])
                 );
             }
 # nullable enable
