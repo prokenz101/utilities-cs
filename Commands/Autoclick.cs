@@ -65,11 +65,13 @@ namespace utilities_cs {
                 GroupCollection groups = match.Groups;
                 AutoclickData data = new(groups);
                 PerformAutoclick(data);
-            } else Utils.Notification(
-                "Huh.",
-                "The parameters for autoclick were not given properly. Try again.",
-                3
-            );
+            } else {
+                Utils.Notification(
+                    "Huh.",
+                    "The parameters for autoclick were not given properly. Try again.",
+                    3
+                );
+            }
         }
 
         public static void PerformAutoclick(AutoclickData data) {
