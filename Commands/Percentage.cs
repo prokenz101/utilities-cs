@@ -9,7 +9,7 @@ namespace utilities_cs {
             string text = string.Join(" ", args[1..]);
 
             // making regex
-            string regex_exp = @"(?<percent>\d+.?\d+)% (of) (?<number>\d+.?\d+)";
+            string regex_exp = @"(?<percent>\d+.?\d+)% of (?<number>\d+.?\d+)";
             Regex re = new Regex(regex_exp, RegexOptions.Compiled);
 
             if (re.IsMatch(text)) {
