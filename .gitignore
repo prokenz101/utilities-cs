@@ -2,5 +2,6 @@ obj
 bin
 .vscode
 .vs
+.vs/utilities-cs
 build.ps1
 debug-build.ps1
