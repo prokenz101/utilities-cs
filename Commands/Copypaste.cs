@@ -8,7 +8,6 @@ namespace utilities_cs {
             }
             string text = string.Join(" ", args[1..]);
             Dictionary<string, string> cp_dict = new() {
-
                 { "aigu e", "é" },
                 { "aigu E", "É" },
                 { "grave a", "à" },
@@ -52,9 +51,12 @@ namespace utilities_cs {
                 { "copyright", "©️" },
                 { "music", "♩♪♫♬" },
                 { "therefore", "∴" },
-                { "x", "𝑥" },
-                { "y", "𝑦" }
-
+                { "<==", "⇐" },
+                { "==>", "⇒" },
+                { "<-", "⭠" },
+                { "->", "⭢" },
+                { "<<-", "↞" },
+                { "->>", "↠" }
             };
 
             if (cp_dict.ContainsKey(text)) {
