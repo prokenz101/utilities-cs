@@ -1,5 +1,7 @@
 # utilities-cs
 A version of [utilities-py](https://github.com/prokenz101/utilities-py) written in C#.
+
+Utilities is a program that has several uses, most of them may not appeal to you for this is mostly used by me. There are commands like `cursive` that can convert text to cursive, commands like `commaseperator` that adds commas in between numbers like 487377 ⭢ 487,377 etc. Using utilities is very memory based, you must remember name and syntax of a command (although there is a Wiki incase you needed it).
  
 ## Installation:
 Check the [releases](https://github.com/prokenz101/utilities-cs/releases) and download the latest release based on self-contained and framework-dependent. If you do not know what those mean, then read the below text.
