@@ -64,7 +64,7 @@ namespace utilities_cs {
             { "upside-down", Flip.flip },
             { "fc", Fraction.fraction },
             { "lcm", lcm_class.lcm_main },
-            { "hcf", HCF.GCD },
+            { "hcf", HCF.hcf_main },
             { "fraction", Fraction.fraction },
             { "binary", Binary.Bin },
             { "bin", Binary.Bin },
@@ -76,7 +76,12 @@ namespace utilities_cs {
             { "factorial", Factorial.factorial },
             { "morse", Morse.MorseCodeTranslate },
             { "commaseperator", CommaSeperator.Cms },
-            { "cms", CommaSeperator.Cms }
+            { "cms", CommaSeperator.Cms },
+            { "percent", Percentage.Percent },
+            { "%", Percentage.Percent },
+            { "percentage", Percentage.Percent },
+            { "mathitalic", MathItalics.MathItalic },
+            { "mai", MathItalics.MathItalic }
         };
         public static void Utilities(string[] args) {
             var cmd = args[0].ToLower();
