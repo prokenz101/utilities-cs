@@ -36,6 +36,7 @@ namespace utilities_cs {
             { "images", BrowserSearch.ImageSearch },
             { "autoclick", Autoclick.autoclick },
             { "translate", Translate.Translator },
+            { "format", Formatter.formatter },
             { "exit", UtilitiesExit.UtilsExit },
             { "quit", UtilitiesExit.UtilsExit }
 
