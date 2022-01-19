@@ -6,7 +6,7 @@ namespace utilities_cs {
             if (Utils.IndexTest(args)) {
                 return null;
             }
-            
+
             try {
                 int n = int.Parse(args[1]);
                 int i = 1;
@@ -16,6 +16,7 @@ namespace utilities_cs {
                     v *= i;
                     i += 1;
                 }
+
                 Utils.CopyCheck(copy, v.ToString());
                 Utils.NotifCheck(notif, new string[] { v.ToString(), $"The factorial is: {v.ToString()}", "5" });
                 return v.ToString();
