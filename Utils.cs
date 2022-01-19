@@ -136,13 +136,13 @@ namespace utilities_cs {
         /// <param name="input">The string which is to be searched for integers.</param>
         public static List<int> RegexFindAllInts(string input) {
             List<int> ints = new();
-            List<Dictionary<Match, GroupCollection>> matchesAndGroups = RegexFind(input, @"(\d+)+");
+            Regex re = new Regex(@"(?<num>\d+)+");
 
-            foreach (Dictionary<Match, GroupCollection> dictMatchesAndGroups in matchesAndGroups) {
-                foreach (KeyValuePair<Match, GroupCollection> keyValuePair in dictMatchesAndGroups) {
-                    foreach (Group group in keyValuePair.Value) {
-                        ints.Add(int.Parse(group.ToString()));
-                    }
+            if (re.Matches(input).Count >= 1) {
+                MatchCollection matches = re.Matches(input);
+                foreach (Match match in matches) {
+                    GroupCollection groups = match.Groups;
+                    ints.Add(int.Parse(groups["num"].ToString()));
                 }
             }
 
