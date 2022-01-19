@@ -90,26 +90,29 @@ namespace utilities_cs {
             };
 
             // creating task for autoclicker
-            autoclickTask = Task.Factory.StartNew(() => {
-                var token = cancelTkn.Token;
-                Func<bool> shouldStop = () => token.IsCancellationRequested
-                    || MouseOperations.GetCursorPosition().toPoint() == topLeft.toPoint();
+            autoclickTask = Task.Factory.StartNew(
+                () => {
+                    var token = cancelTkn.Token;
+                    Func<bool> shouldStop = () => token.IsCancellationRequested
+                        || MouseOperations.GetCursorPosition().toPoint() == topLeft.toPoint();
 
-                Utils.Notification("Starting autoclicker...", "Press Ctrl + F7 to stop.");
-                Task.Delay(1500).Wait();
-                if (data.count == int.MaxValue) {
-                    while (true) {
-                        if (shouldStop()) break;
-                        click();
+                    Utils.Notification("Starting autoclicker...", "Press Ctrl + F7 to stop.");
+                    Task.Delay(1500).Wait();
+                    if (data.count == int.MaxValue) {
+                        while (true) {
+                            if (shouldStop()) break;
+                            click();
+                        }
+                    } else {
+                        for (int i = 0; i < data.count; i++) {
+                            if (shouldStop()) break;
+                            click();
+                        }
                     }
-                } else {
-                    for (int i = 0; i < data.count; i++) {
-                        if (shouldStop()) break;
-                        click();
-                    }
+                    stopAutoclick();
+
                 }
-                stopAutoclick();
-            });
+            );
 
             void stopAutoclick() {
                 cancelTkn.Cancel();
@@ -118,9 +121,8 @@ namespace utilities_cs {
             }
             void autoclickFailedToRegisterHotkey() {
                 Utils.Notification(
-                    "Something has gone wrong.",
-                    @"utilities-cs was unable to register a hotkey for stopping the autoclicker.
-This could be because you attempted to start another autoclicker.",
+                    "Something went wrong.",
+                    @"This might be because you might have attempted to start a second autoclicker.",
                     5
                 );
                 stopAutoclick();
