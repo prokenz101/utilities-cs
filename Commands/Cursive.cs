@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace utilities_cs {
     public class Cursive {
         public static string? cursive(string[] args, bool copy, bool notif) {
-            if (Utils.IndexTest(args, "Huh.", "It seems you did not input anything for cursive to work.", 4)) {
+            if (Utils.IndexTest(args)) {
                 return null;
             }
             string text = string.Join(" ", args[1..]);

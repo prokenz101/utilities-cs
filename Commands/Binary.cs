@@ -6,7 +6,7 @@ namespace utilities_cs {
     public class Binary {
         public static string? Bin(string[] args, bool copy, bool notif) {
             string text = string.Join(' ', args[1..]);
-            if (Utils.IndexTest(args, "Huh.", "It seems you did not input anything for binary to convert.", 4)) {
+            if (Utils.IndexTest(args)) {
                 return null;
             }
             if (!Utils.FormatValid("01 ", text)) {

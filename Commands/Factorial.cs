@@ -3,6 +3,10 @@ using System.Numerics;
 namespace utilities_cs {
     public class Factorial {
         public static string? factorial(string[] args, bool copy, bool notif) {
+            if (Utils.IndexTest(args)) {
+                return null;
+            }
+            
             try {
                 int n = int.Parse(args[1]);
                 int i = 1;

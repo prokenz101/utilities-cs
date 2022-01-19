@@ -5,7 +5,7 @@ namespace utilities_cs {
     public class CommaSeperator {
         public static string? Cms(string[] args, bool copy, bool notif) {
             string str_num = string.Join(' ', args[1..]);
-            if (Utils.IndexTest(args, "Huh.", "It seems you did not input anything to seperate with commas.", 4)) {
+            if (Utils.IndexTest(args)) {
                 return null;
             }
 

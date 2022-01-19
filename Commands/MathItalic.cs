@@ -3,11 +3,7 @@ using System.Collections.Generic;
 namespace utilities_cs {
     public class MathItalics {
         public static string? MathItalic(string[] args, bool copy, bool notif) {
-            if (Utils.IndexTest(
-                    args,
-                    "Huh.", "It seems you did not input anything to convert to Mathematical Italic.",
-                    3
-                )) {
+            if (Utils.IndexTest(args)) {
                 return null;
             }
 

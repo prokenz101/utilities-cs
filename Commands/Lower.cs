@@ -1,7 +1,7 @@
 namespace utilities_cs {
     public class Lower {
         public static string? Lowercase(string[] args, bool copy, bool notif) {
-            if (Utils.IndexTest(args, "Huh.", "It seems you did not input any text for lowercase.", 4)) {
+            if (Utils.IndexTest(args)) {
                 return null;
             }
             string text = string.Join(" ", args[1..]);

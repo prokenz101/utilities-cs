@@ -5,7 +5,7 @@ namespace utilities_cs {
         public static string? title(string[] args, bool copy, bool notif) {
             string text = string.Join(' ', args[1..]).ToLower();
 
-            if (Utils.IndexTest(args, "Huh.", "It seems you did not input anything.", 4)) {
+            if (Utils.IndexTest(args)) {
                 return null;
             }
             TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace utilities_cs {
     public class Exponent {
         public static string? exponent(string[] args, bool copy, bool notif) {
-            if (Utils.IndexTest(args, "Huh.", "It seems that you did not input anything at all.", 3)) {
+            if (Utils.IndexTest(args)) {
                 return null;
             }
             string text = string.Join(" ", args[1..]);

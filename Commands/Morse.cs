@@ -65,7 +65,7 @@ namespace utilities_cs {
         static Dictionary<string, string> morseToText = Utils.invertKeyAndValue(textToMorse);
         public static string? MorseCodeTranslate(string[] args, bool copy, bool notif) {
             string text = string.Join(' ', args[1..]).ToLower();
-            if (Utils.IndexTest(args, "Huh.", "It seems that you did not input anything for morse code to translate.")) {
+            if (Utils.IndexTest(args)) {
                 return null;
             }
 

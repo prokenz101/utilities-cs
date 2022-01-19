@@ -6,7 +6,7 @@ namespace utilities_cs {
     public class Formatter {
         public static void formatter(string[] args) {
             string text = string.Join(' ', args[1..]);
-            if (Utils.IndexTest(args, "Huh.", "It seems you did not input anything to format.")) {
+            if (Utils.IndexTest(args)) {
                 return;
             }
 

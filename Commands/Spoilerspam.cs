@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace utilities_cs {
     public class Spoilerspam {
         public static string? spoilerspam(string[] args, bool copy, bool notif) {
-            if (Utils.IndexTest(args, "Huh.", "It seems that you did not input anything for spoilerspam.", 3)) {
+            if (Utils.IndexTest(args)) {
                 return null;
             }
             string text = string.Join(" ", args[1..]);

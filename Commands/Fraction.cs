@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace utilities_cs {
     public class Fraction {
         public static string? fraction(string[] args, bool copy, bool notif) {
-            if (Utils.IndexTest(args, "Huh.", "It seems you did not input a fraction.", 3)) {
+            if (Utils.IndexTest(args)) {
                 return null;
             }
             string text = string.Join(" ", args[1..]);

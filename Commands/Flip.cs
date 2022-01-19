@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace utilities_cs {
     public class Flip {
         public static string? flip(string[] args, bool copy, bool notif) {
-            if (Utils.IndexTest(args, "Huh.", "It seems you did not input anything for flip to work.", 4)) {
+            if (Utils.IndexTest(args)) {
                 return null;
             }
             string text = string.Join(" ", args[1..]);

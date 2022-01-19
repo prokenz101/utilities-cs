@@ -5,7 +5,7 @@ namespace utilities_cs {
         public static string? emojify(string[] args, bool copy, bool notif) {
             string text = string.Join(' ', args[1..]);
 
-            if (Utils.IndexTest(args, "Huh.", "It seems you did not input anything for utilities-cs to emojify.", 4)) {
+            if (Utils.IndexTest(args)) {
                 return null;
             }
 

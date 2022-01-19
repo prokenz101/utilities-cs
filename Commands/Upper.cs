@@ -1,7 +1,7 @@
 namespace utilities_cs {
     public class Upper {
         public static string? Uppercase(string[] args, bool copy, bool notif) {
-            if (Utils.IndexTest(args, "Huh.", "It seems you did not input any text for uppercase.", 4)) {
+            if (Utils.IndexTest(args)) {
                 return null;
             }
             string text = string.Join(" ", args[1..]);
