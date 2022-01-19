@@ -85,7 +85,6 @@ namespace utilities_cs {
             { "%", Percentage.Percent },
             { "percentage", Percentage.Percent },
             { "mathitalic", MathItalics.MathItalic },
-            { "mai", MathItalics.MathItalic }
         };
         public static void Utilities(string[] args) {
             var cmd = args[0].ToLower();
@@ -125,8 +124,7 @@ namespace utilities_cs {
                 () => {
                     Utils.Notification(
                         "Something went wrong.",
-                        @"utilities-cs was unable to register a hotkey.
-This could be because you have multiple instances of the application running.",
+                        @"Are you opening multiple instances of utilities-cs?",
                         6
                     );
                     Exit();
