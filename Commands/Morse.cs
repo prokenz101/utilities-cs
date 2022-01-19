@@ -62,7 +62,7 @@ namespace utilities_cs {
             { "¡", "--...-" },
             { " ", "/" }
         };
-        static Dictionary<string, string> morseToText = Utils.invertKeyAndValue(textToMorse);
+        static Dictionary<string, string> morseToText = Utils.InvertKeyAndValue(textToMorse);
         public static string? MorseCodeTranslate(string[] args, bool copy, bool notif) {
             string text = string.Join(' ', args[1..]).ToLower();
             if (Utils.IndexTest(args)) {

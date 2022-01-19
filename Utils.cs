@@ -53,9 +53,6 @@ namespace utilities_cs {
         /// Returns false if the program ran successfully with all arguments.
         /// </summary>
         /// <param name="args">All arguments passed when pressing main Ctrl+F8 function.</param>
-        /// <param name="title">The title of the notification incase the indextest was false.</param>
-        /// <param name="subtitle">The subtitle of the notification incase the indextest was false.</param>
-        /// <param name="duration">The amount of time the notification stays on screen incase the indextest was false.</param>
         /// <param name="argscount">The index that indextest will check to see if it exists.</param>
         /// <param name="ifOutOfRange">Method that is called incase indextest is false.</param>
         public static bool IndexTest(
@@ -91,7 +88,7 @@ namespace utilities_cs {
         /// Interchanges the position of key and value in a dictionary.
         /// </summary>
         /// <param name="dict">The dictionary that is inverted.</param>
-        public static Dictionary<string, string> invertKeyAndValue(Dictionary<string, string> dict) {
+        public static Dictionary<string, string> InvertKeyAndValue(Dictionary<string, string> dict) {
             Dictionary<string, string> final_dict = new();
             foreach (var key in dict.Keys) {
                 final_dict[dict[key]] = key;
