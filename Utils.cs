@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Microsoft.Toolkit.Uwp.Notifications;
 
 namespace utilities_cs {
@@ -59,9 +60,6 @@ namespace utilities_cs {
         /// <param name="ifOutOfRange">Method that is called incase indextest is false.</param>
         public static bool IndexTest(
                 string[] args,
-                string title,
-                string subtitle,
-                int duration = 1,
                 int argscount = 1,
                 Action? ifOutOfRange = null
             ) {
@@ -70,7 +68,7 @@ namespace utilities_cs {
                 string test = args[argscount];
                 return false;
             } catch (IndexOutOfRangeException) {
-                Notification(title, subtitle, duration);
+                Notification("Huh.", "It seems you did not specify the parametes correctly.", 3);
                 ifOutOfRange?.Invoke();
                 return true;
             }
@@ -121,7 +119,9 @@ namespace utilities_cs {
         /// <param name="notif">Boolean that is usually true and checks if notification is gonna be sent.</param>
         /// <param name="notifContent">The content for the notification, if it notif is true.</param>
         public static void NotifCheck(bool notif, string[] notifContent) {
+
 # nullable disable
+
             if (notif) {
                 Notification(
                     notifContent[0],
@@ -129,11 +129,78 @@ namespace utilities_cs {
                     int.Parse(notifContent[2])
                 );
             }
+        }
+        /// <summary>
+        /// Returns all integers from a string using Regex.
+        /// </summary>
+        /// <param name="input">The string which is to be searched for integers.</param>
+        public static List<int> RegexFindAllInts(string input) {
+            List<int> ints = new();
+            List<Dictionary<Match, GroupCollection>> matchesAndGroups = RegexFind(input, @"(\d+)+");
+
+            foreach (Dictionary<Match, GroupCollection> dictMatchesAndGroups in matchesAndGroups) {
+                foreach (KeyValuePair<Match, GroupCollection> keyValuePair in dictMatchesAndGroups) {
+                    foreach (Group group in keyValuePair.Value) {
+                        ints.Add(int.Parse(group.ToString()));
+                    }
+                }
+            }
+
+            return ints;
+        }
+
 # nullable enable
+
+        /// <summary>
+        /// Uses Regex to search through a string using an expression.
+        /// Returns a List of DIctionaries where the Match is the key and a GroupCollection of that match is the value.
+        /// </summary>
+        /// <param name="input">The string that is to be searched.</param>
+        /// <param name="expression">The regex expression used to search through the input.</param>
+        /// <param name="useIsMatch">
+        /// If true, the function will use re.IsMatch() instead of re.Matches().Count,
+        /// this should only be used for expressions which are designed to have only one match.
+        /// </param>
+        public static List<Dictionary<Match, GroupCollection>>? RegexFind(
+                string input,
+                string expression,
+                bool useIsMatch = false,
+                Action? ifNotMatch = null
+            ) {
+
+            List<Dictionary<Match, GroupCollection>> matchesAndGroups = new();
+
+            Regex re = new Regex(expression);
+
+# nullable disable
+
+            Action matched = () => {
+                foreach (Match match in re.Matches(input)) {
+                    Dictionary<Match, GroupCollection> matchToGroups = new() { { match, match.Groups } };
+                    matchesAndGroups.Add(matchToGroups);
+                }
+            };
+
+            if (!useIsMatch) {
+                if (re.Matches(input).Count >= 1) {
+                    matched.Invoke();
+                } else {
+                    ifNotMatch?.Invoke();
+                    return null;
+                }
+            } else if (useIsMatch) {
+                if (re.IsMatch(input)) {
+                    matched.Invoke();
+                } else {
+                    ifNotMatch?.Invoke();
+                    return null;
+                }
+            }
+
+            return matchesAndGroups;
         }
     }
-
-    static class WindowsClipboard {
+    public class WindowsClipboard {
         public static void SetText(string text) {
             OpenClipboard();
 
@@ -179,7 +246,6 @@ namespace utilities_cs {
                 if (OpenClipboard(default)) {
                     break;
                 }
-
                 if (--num == 0) {
                     ThrowWin32();
                 }
