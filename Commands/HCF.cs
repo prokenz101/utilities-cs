@@ -25,37 +25,21 @@ namespace utilities_cs {
             return result;
         }
         public static string? hcf_main(string[] args, bool copy, bool notif) {
-            if (Utils.IndexTest(
-                    args,
-                    "Huh.",
-                    "It seems you did not input any number for the HCF calculator to work.",
-                    4
-                )
-            ) {
+            if (Utils.IndexTest(args)) {
                 return null;
             }
 
             string text = string.Join(" ", args);
 
-            string regex_exp = @"(\d+)+";
-            Regex re = new Regex(regex_exp);
-            MatchCollection matches = re.Matches(text);
-            List<BigInteger> nums = new();
+            List<int> nums_int = Utils.RegexFindAllInts(text);
+            List<BigInteger> nums_BigIntegers = new();
 
-# nullable disable
-
-            if (matches.Count >= 2) {
-                foreach (Match match in matches) {
-                    nums.Add(BigInteger.Parse(match.ToString()));
-                }
+            foreach (int num in nums_int) {
+                nums_BigIntegers.Add(num);
             }
 
-            BigInteger[] nums_array = nums.ToArray();
-
-# nullable enable
-
             try {
-                BigInteger answer = findGCD(nums_array, nums_array.Length);
+                BigInteger answer = findGCD(nums_BigIntegers.ToArray(), nums_BigIntegers.ToArray().Length);
                 Utils.CopyCheck(copy, answer.ToString());
                 Utils.NotifCheck(notif, new string[] { "Success!", $"The answer was {answer}.", "5" });
                 return answer.ToString();
