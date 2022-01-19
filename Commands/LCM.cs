@@ -40,37 +40,21 @@ namespace utilities_cs {
             }
         }
         public static string? lcm_main(string[] args, bool copy, bool notif) {
-            if (Utils.IndexTest(
-                    args,
-                    "Huh.",
-                    "It seems you did not input any number for the LCM Calculator to work.",
-                    4
-                )
-            ) {
+            if (Utils.IndexTest(args)) {
                 return null;
             }
 
             string text = string.Join(" ", args[1..]);
 
-            string regex_exp = @"(\d+)+";
-            Regex re = new Regex(regex_exp);
-            MatchCollection matches = re.Matches(text);
-            List<BigInteger> nums = new();
+            List<int> nums_int = Utils.RegexFindAllInts(text);
+            List<BigInteger> nums_BigInteger = new();
 
-# nullable disable
-
-            if (matches.Count >= 2) {
-                foreach (Match match in matches) {
-                    nums.Add(BigInteger.Parse(match.ToString()));
-                }
+            foreach (int num in nums_int) {
+                nums_BigInteger.Add(num);
             }
 
-            BigInteger[] nums_array = nums.ToArray();
-
-# nullable enable
-
             try {
-                BigInteger answer = lcm(nums_array);
+                BigInteger answer = lcm(nums_BigInteger.ToArray());
                 Utils.CopyCheck(copy, answer.ToString());
                 Utils.NotifCheck(notif, new string[] { "Success!", $"The answer was {answer}.", "5" });
                 return answer.ToString();
