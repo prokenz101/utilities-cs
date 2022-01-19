@@ -85,6 +85,10 @@ namespace utilities_cs {
             { "%", Percentage.Percent },
             { "percentage", Percentage.Percent },
             { "mathitalic", MathItalics.MathItalic },
+            { "mai", MathItalics.MathItalic },
+            { "randint", RandInt.Randint },
+            { "randnum", RandInt.Randint },
+            { "randchar", Randchar.RandomChar }
         };
         public static void Utilities(string[] args) {
             var cmd = args[0].ToLower();
