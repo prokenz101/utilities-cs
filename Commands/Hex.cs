@@ -6,6 +6,9 @@ namespace utilities_cs {
     public class Hex {
         public static string? Hexadecimal(string[] args, bool copy, bool notif) {
             string text = string.Join(' ', args[1..]);
+            if (Utils.IndexTest(args)) {
+                return null;
+            }
 
             string[] text_list = text.Split(" ");
             string hex_with_dash = string.Join("-", text_list);
