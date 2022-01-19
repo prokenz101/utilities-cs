@@ -37,6 +37,9 @@ namespace utilities_cs {
             { "autoclick", Autoclick.autoclick },
             { "translate", Translate.Translator },
             { "format", Formatter.formatter },
+            { "notification", Notification.Notify },
+            { "notify", Notification.Notify },
+            { "notif", Notification.Notify },
             { "exit", UtilitiesExit.UtilsExit },
             { "quit", UtilitiesExit.UtilsExit }
 
