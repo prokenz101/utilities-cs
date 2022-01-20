@@ -75,6 +75,7 @@ namespace utilities_cs {
             { "hexadecimal", Hex.Hexadecimal },
             { "hex", Hex.Hexadecimal },
             { "base64", Base64Conversion.Base64Convert },
+            { "base32", Base32Conversion.Base32Convert },
             { "emojify", Emojify.emojify },
             { "title", Title.title },
             { "titlecase", Title.title },
