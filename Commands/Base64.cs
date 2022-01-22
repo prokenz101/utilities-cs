@@ -9,10 +9,15 @@ namespace utilities_cs {
 
             string text = string.Join(' ', args[1..]);
             if (IsBase64String(text)) {
-                string ans = Base64Decode(text);
-                Utils.CopyCheck(copy, ans);
-                Utils.NotifCheck(notif, new string[] { "Success!", $"The message was: {ans}", "6" });
-                return ans;
+                try {
+                    string ans = Base64Decode(text);
+                    Utils.CopyCheck(copy, ans);
+                    Utils.NotifCheck(notif, new string[] { "Success!", $"The message was: {ans}", "6" });
+                    return ans;
+                } catch {
+                    Utils.Notification("Huh.", "An exception occured when converting this text to Base64.", 4);
+                    return null;
+                }
             } else {
                 string ans = Base64Encode(text);
                 Utils.CopyCheck(copy, ans);
