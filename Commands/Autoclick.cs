@@ -6,8 +6,6 @@ using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
-# nullable disable
-
 namespace utilities_cs {
     public struct AutoclickData {
         public int interval;
@@ -54,8 +52,8 @@ namespace utilities_cs {
         };
         static string reg_exp = @"(?<interval>\d+ )?(?<mb>left|right|middle)(?<count> \d+)?";
         static Regex re = new Regex(reg_exp, RegexOptions.Compiled);
-        private static Task autoclickTask;
-        private static CancellationTokenSource cancelTkn;
+        private static Task? autoclickTask;
+        private static CancellationTokenSource? cancelTkn;
 
         public static void autoclick(string[] args) {
             string text = string.Join(" ", args[1..]); // parameters of autoclick, like {interval} {mousebutton} etc
@@ -115,7 +113,9 @@ namespace utilities_cs {
             );
 
             void stopAutoclick() {
-                cancelTkn.Cancel();
+                if (cancelTkn != null) {
+                    cancelTkn.Cancel();
+                }
                 HookManager.UnregisterHook("autoclick_stop");
                 Utils.Notification("Stopped Autoclicker.", "The autoclicker was stopped.", 3);
             }

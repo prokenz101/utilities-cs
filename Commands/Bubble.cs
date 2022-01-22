@@ -23,16 +23,16 @@ namespace utilities_cs {
                 {"4", "④"}, {"5", "⑤"}, {"6", "⑥"}, {"7", "⑦"}, {"8", "⑧"},
                 {"9", "⑨"}, {"0", "⓪"}
                 };
-# nullable disable
+
             foreach (char b in text) {
                 var replaced = bubble_char.GetValueOrDefault(b.ToString(), "");
                 if (replaced != "") {
-                    converted.Add(replaced);
+                    converted.Add(replaced!);
                 } else {
                     converted.Add(b.ToString());
                 }
             }
-# nullable enable
+
             var answer = string.Join("", converted);
             Utils.CopyCheck(copy, answer);
             Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });

@@ -64,18 +64,14 @@ namespace utilities_cs {
                 { "Z", "𝑍" },
             };
 
-# nullable disable
-
             foreach (char d in text) {
                 var replaced = mathitalic_char.GetValueOrDefault(d.ToString(), "");
                 if (replaced != "") {
-                    converted.Add(replaced);
+                    converted.Add(replaced!);
                 } else {
                     converted.Add(d.ToString());
                 }
             }
-
-# nullable enable
 
             var answer = string.Join("", converted);
             Utils.CopyCheck(copy, answer);

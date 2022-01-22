@@ -11,8 +11,6 @@ namespace utilities_cs {
             string text = string.Join(" ", args[1..]);
             List<int> nums = Utils.RegexFindAllInts(text);
 
-# nullable disable
-
             Random rand = new Random(); 
             int randint = rand.Next(nums[0], nums[1]);
 

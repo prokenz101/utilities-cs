@@ -22,18 +22,14 @@ namespace utilities_cs {
                     {"Y", "Ỳ̶̖̣͌͜"}, {"Z", "Z̴̗͈̬̱̩̆̊͗"}, {" ", " "}
                 };
 
-# nullable disable
-
             foreach (char cr in text) {
                 var replaced = creepy_char.GetValueOrDefault(cr.ToString(), "");
                 if (replaced != "") {
-                    converted.Add(replaced);
+                    converted.Add(replaced!);
                 } else {
                     converted.Add(cr.ToString());
                 }
             }
-
-# nullable enable
 
             var answer = string.Join("", converted);
             Utils.CopyCheck(copy, answer);

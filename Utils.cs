@@ -9,7 +9,6 @@ using Microsoft.Toolkit.Uwp.Notifications;
 
 namespace utilities_cs {
     public class Utils {
-
         private static Task? notificationTask;
 
         /// <summary>
@@ -116,9 +115,6 @@ namespace utilities_cs {
         /// <param name="notif">Boolean that is usually true and checks if notification is gonna be sent.</param>
         /// <param name="notifContent">The content for the notification, if it notif is true.</param>
         public static void NotifCheck(bool notif, string[] notifContent) {
-
-# nullable disable
-
             if (notif) {
                 Notification(
                     notifContent[0],
@@ -137,16 +133,16 @@ namespace utilities_cs {
 
             if (re.Matches(input).Count >= 1) {
                 MatchCollection matches = re.Matches(input);
-                foreach (Match match in matches) {
-                    GroupCollection groups = match.Groups;
-                    ints.Add(int.Parse(groups["num"].ToString()));
+                foreach (Match? match in matches) {
+                    if (match != null) {
+                        GroupCollection groups = match.Groups;
+                        ints.Add(int.Parse(groups["num"].ToString()));
+                    }
                 }
             }
 
             return ints;
         }
-
-# nullable enable
 
         /// <summary>
         /// Uses Regex to search through a string using an expression.
@@ -169,12 +165,12 @@ namespace utilities_cs {
 
             Regex re = new Regex(expression);
 
-# nullable disable
-
             Action matched = () => {
-                foreach (Match match in re.Matches(input)) {
-                    Dictionary<Match, GroupCollection> matchToGroups = new() { { match, match.Groups } };
-                    matchesAndGroups.Add(matchToGroups);
+                foreach (Match? match in re.Matches(input)) {
+                    if (match != null) {
+                        Dictionary<Match, GroupCollection> matchToGroups = new() { { match, match.Groups } };
+                        matchesAndGroups.Add(matchToGroups);
+                    }
                 }
             };
 

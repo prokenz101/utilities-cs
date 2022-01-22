@@ -22,18 +22,14 @@ namespace utilities_cs {
                     {"X", "𝓧"}, {"Z", "𝓩"}, {" ", " "}
                 };
 
-# nullable disable
-
             foreach (char c in text) {
                 var replaced = cursive_char.GetValueOrDefault(c.ToString(), "");
                 if (replaced != "") {
-                    converted.Add(replaced);
+                    converted.Add(replaced!);
                 } else {
                     converted.Add(c.ToString());
                 }
             }
-
-# nullable enable
 
             var answer = string.Join("", converted);
             Utils.CopyCheck(copy, answer);

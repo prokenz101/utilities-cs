@@ -18,7 +18,7 @@ namespace utilities_cs {
             if (mode == "to") {
                 // convert text to base32
                 byte[] bytes = Encoding.ASCII.GetBytes(text);
-                string strToBase32 = Base32.ToBase32String(bytes);
+                string strToBase32 = Base32.ToBase32String(bytes)!;
 
                 Utils.CopyCheck(copy, strToBase32);
                 Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
@@ -26,7 +26,7 @@ namespace utilities_cs {
             } else if (mode == "from") {
                 try {
                     string base32ToString = System.Text.Encoding.Default.GetString(
-                        Base32.FromBase32String(text)
+                        Base32.FromBase32String(text)!
                 );
                     Utils.CopyCheck(copy, base32ToString);
                     Utils.NotifCheck(notif, new string[] { "Success!", $"The message was: {base32ToString}", "8" });
@@ -71,8 +71,8 @@ namespace utilities_cs {
         /// <param name="bytes">An array of bytes to convert to Base32 format</param>
         /// <returns>Returns a string representing byte array</returns>
 
-#nullable disable
-        internal static string ToBase32String(byte[] bytes) {
+
+        internal static string? ToBase32String(byte[] bytes) {
             if (bytes == null) {
                 return null;
             } else if (bytes.Length == 0) {
@@ -131,9 +131,9 @@ namespace utilities_cs {
         /// <param name="base32String">Base32 string to convert</param>
         /// <returns>Returns a byte array converted from the string</returns>
 
-#nullable disable
 
-        internal static byte[] FromBase32String(string base32String) {
+
+        internal static byte[]? FromBase32String(string base32String) {
             if (base32String == null) {
                 return null;
             } else if (base32String == string.Empty) {

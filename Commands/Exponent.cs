@@ -21,18 +21,14 @@ namespace utilities_cs {
                     {"(", "⁽"}, {")", "⁾"}, {" ", " "}
                 };
 
-# nullable disable
-
             foreach (char e in text) {
                 var replaced = exponents.GetValueOrDefault(e.ToString(), "");
                 if (replaced != "") {
-                    converted.Add(replaced);
+                    converted.Add(replaced!);
                 } else {
                     converted.Add(e.ToString());
                 }
             }
-
-# nullable enable
 
             var answer = string.Join("", converted);
             Utils.CopyCheck(copy, answer);

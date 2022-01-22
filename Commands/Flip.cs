@@ -21,18 +21,14 @@ namespace utilities_cs {
                     {"U", "∩"}, {"V", "Λ"}, {"W", "M"}, {"X", "X"}, {"Y", "⅄"}, {"Z", "Z"}
                 };
 
-# nullable disable
-
             foreach (char f in text) {
                 var replaced = flipped_char.GetValueOrDefault(f.ToString(), "");
                 if (replaced != "") {
-                    converted.Add(replaced);
+                    converted.Add(replaced!);
                 } else {
                     converted.Add(f.ToString());
                 }
             }
-
-# nullable enable
 
             converted.Reverse();
             var answer = string.Join("", converted);

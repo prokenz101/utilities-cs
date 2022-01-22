@@ -10,12 +10,9 @@ namespace utilities_cs {
             string text = string.Join(" ", args[1..]);
 
             // making regex
-            string regex_exp = @"(?<percent>\d+.?\d+)% of (?<number>\d+.?\d+)";
-            Regex re = new Regex(regex_exp, RegexOptions.Compiled);
-
-            var matchToGroups = Utils.RegexFind(
+            List<Dictionary<Match, GroupCollection>>? matchToGroups = Utils.RegexFind(
                 text,
-                @"(?<percent>\d+.?\d+)% of (?<number>\d+.?\d+)",
+                @"(?<percent>\d+(\.\d+)?)% of (?<number>\d+(\.\d+)?)",
                 useIsMatch: true,
                 () => {
                     Utils.Notification(
@@ -25,23 +22,24 @@ namespace utilities_cs {
                 }
             );
 
-# nullable disable
+            if (matchToGroups != null) {
+                List<float> nums = new();
 
-            List<float> nums = new();
-
-            foreach (Dictionary<Match, GroupCollection> dict in matchToGroups) {
-                foreach (KeyValuePair<Match, GroupCollection> kvp in dict) {
-                    nums.Add(float.Parse(kvp.Value["percent"].ToString()) / 100); // percentage in decimal
-                    nums.Add(float.Parse(kvp.Value["number"].ToString())); // number
+                foreach (Dictionary<Match, GroupCollection> dict in matchToGroups) {
+                    foreach (KeyValuePair<Match, GroupCollection> kvp in dict) {
+                        nums.Add(float.Parse(kvp.Value["percent"].ToString()) / 100); // percentage in decimal
+                        nums.Add(float.Parse(kvp.Value["number"].ToString())); // number
+                    }
                 }
-            }
 
                 float y = nums[0] * nums[1]; // answer
 
                 Utils.NotifCheck(notif, new string[] { "Success!", $"The Answer is {y}.", "5" });
                 Utils.CopyCheck(copy, y.ToString());
                 return y.ToString();
-
+            } else {
+                return null;
+            }
         }
     }
 }
