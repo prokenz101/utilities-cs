@@ -29,7 +29,7 @@ namespace utilities_cs {
     }
     public class UtilitiesAppContext : ApplicationContext {
         public static Dictionary<string, Action<string[]>> commands = new() {
-            { "help", Help.help },
+            { "help", Help.Wiki },
             { "-", BrowserSearch.GoogleSearch },
             { "youtube", BrowserSearch.YouTubeSearch },
             { "yt", BrowserSearch.YouTubeSearch },
@@ -37,6 +37,8 @@ namespace utilities_cs {
             { "autoclick", Autoclick.autoclick },
             { "translate", Translate.Translator },
             { "format", Formatter.formatter },
+            { "remind", Reminder.Remind },
+            { "reminder", Reminder.Remind },
             { "notification", Notification.Notify },
             { "notify", Notification.Notify },
             { "notif", Notification.Notify },
