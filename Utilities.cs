@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Collections.Generic;
-using System.Windows.Forms;
 using System.Drawing;
-using System.Reflection;
 using System.Threading;
+using System.Reflection;
+using System.Diagnostics;
+using System.Windows.Forms;
+using System.Collections.Generic;
 
 namespace utilities_cs {
     class Program {
@@ -30,13 +30,14 @@ namespace utilities_cs {
     public class UtilitiesAppContext : ApplicationContext {
         public static Dictionary<string, Action<string[]>> commands = new() {
             { "help", Help.Wiki },
+            { "settings", Settings.SettingsManager },
             { "-", BrowserSearch.GoogleSearch },
             { "youtube", BrowserSearch.YouTubeSearch },
             { "yt", BrowserSearch.YouTubeSearch },
             { "images", BrowserSearch.ImageSearch },
             { "autoclick", Autoclick.autoclick },
             { "translate", Translate.Translator },
-            { "format", Formatter.formatter },
+            { "format", Formatter.Format },
             { "remind", Reminder.Remind },
             { "reminder", Reminder.Remind },
             { "notification", Notification.Notify },
@@ -44,7 +45,6 @@ namespace utilities_cs {
             { "notif", Notification.Notify },
             { "exit", UtilitiesExit.UtilsExit },
             { "quit", UtilitiesExit.UtilsExit }
-
         };
         public static Dictionary<string, Func<string[], bool, bool, string?>> formattable_commands = new() {
             { "sarcasm", Sarcasm.Sarcasm_ },
@@ -103,10 +103,13 @@ namespace utilities_cs {
                 Func<string[], bool, bool, string?> f = formattable_commands[cmd];
                 f.Invoke(args, true, true);
             } else {
-                Utils.Notification(
-                    "Welp.",
-                    "It seems utilities couldn't understand what command you were trying to use.",
-                    6
+                Utils.NotifCheck(
+                    true,
+                    new string[] {
+                        "Welp.",
+                        "It seems utilities couldn't understand what command you were trying to use.",
+                        "6"
+                    }
                 );
             }
 
@@ -115,25 +118,31 @@ namespace utilities_cs {
 
         public UtilitiesAppContext() {
             // making keyboard hook for ctrl + f8
-
             HookManager.AddHook(
                 "utilities",
                 ModifierKeys.Control,
                 Keys.F8,
                 () => {
+                    SettingsJSON currentSettings = SettingsModifification.getSettings();
+                    int hotkeyDelay = currentSettings.copyingHotkeyDelay;
+                    bool pressEscape = currentSettings.pressEscape;
+
                     SendKeys.Send("^a");
-                    Thread.Sleep(25);
+                    Thread.Sleep(hotkeyDelay);
                     SendKeys.Send("^c");
-                    Thread.Sleep(25);
-                    SendKeys.Send("{ESC}");
+                    Thread.Sleep(hotkeyDelay);
+                    if (pressEscape) { SendKeys.Send("{ESC}"); }
                     string[] args = Clipboard.GetText().Split(" ");
                     Utilities(args);
                 },
                 () => {
-                    Utils.Notification(
-                        "Something went wrong.",
-                        @"Are you opening multiple instances of utilities-cs?",
-                        6
+                    Utils.NotifCheck(
+                        true,
+                        new string[] {
+                            "Something went wrong.",
+                            @"Are you opening multiple instances of utilities-cs?",
+                            "6"
+                        }
                     );
                     Exit();
                 }
