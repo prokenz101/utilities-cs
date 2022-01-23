@@ -32,14 +32,17 @@ namespace utilities_cs {
                     Utils.NotifCheck(notif, new string[] { "Success!", $"The message was: {base32ToString}", "8" });
                     return base32ToString;
                 } catch (ArgumentException) {
-                    Utils.Notification("Huh.", "Are you sure that text was actual Base32?", 3);
+                    Utils.NotifCheck(true, new string[] { "Huh.", "Are you sure that text was actual Base32?", "3" });
                     return null;
                 }
             } else {
-                Utils.Notification(
-                    "Huh.",
-                    "It seems you did not input a proper mode for Base32 to convert to.",
-                    4
+                Utils.NotifCheck(
+                    true,
+                    new string[] {
+                        "Huh.",
+                        "It seems you did not input a proper mode for Base32 to convert to.",
+                        "4"
+                    }
                 );
                 return null;
             }

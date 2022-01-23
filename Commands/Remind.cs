@@ -13,7 +13,7 @@ namespace utilities_cs {
                 @"(?<time>\d+)(?<unit>h|m|s)(?<text> .*)?",
                 useIsMatch: true,
                 () => {
-                    Utils.Notification("Huh.", "It seems the parameters were not given properly.");
+                    Utils.NotifCheck(true, new string[] { "Huh.", "It seems the parameters were not given properly.", "3" });
                 }
             );
 
@@ -50,24 +50,33 @@ namespace utilities_cs {
                         Task.Delay(time_seconds).Wait();
 
                         if (time == 1 && reminder_text == string.Empty) {
-                            Utils.Notification(
-                                "Reminder!",
-                                $"Hey! You set a reminder for 1 {word} and it's time!",
-                                6
+                            Utils.NotifCheck(
+                                true,
+                                new string[] {
+                                    "Reminder!",
+                                    $"Hey! You set a reminder for 1 {word} and it's time!",
+                                    "6"
+                                }
                             );
                             Console.WriteLine($"Reminder! Hey! You set a reminder for 1 {word} and it's time! 6");
                         } else if (reminder_text == string.Empty) {
-                            Utils.Notification(
-                                "Reminder!",
-                                $"Hey! You set a reminder for {time} {word}s and it's time!",
-                                6
+                            Utils.NotifCheck(
+                                true,
+                                new string[] {
+                                    "Reminder!",
+                                    $"Hey! You set a reminder for {time} {word}s and it's time!",
+                                    "6"
+                                }
                             );
                             Console.WriteLine($"Reminder! Hey! You set a reminder for {time} {word}s and it's time! 6");
                         } else {
-                            Utils.Notification(
-                                "Reminder!",
-                                $"Hey! Your reminder was: {reminder_text}",
-                                6
+                            Utils.NotifCheck(
+                                true,
+                                new string[] {
+                                    "Reminder!",
+                                    $"Hey! Your reminder was: {reminder_text}",
+                                    "6"
+                                }
                             );
                             Console.WriteLine("Reminder! Hey! Your reminder was: {reminder_text} 6");
                         }

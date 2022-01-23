@@ -64,10 +64,13 @@ namespace utilities_cs {
                 Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
                 return cp_dict[text];
             } else {
-                Utils.Notification(
-                    "Welp.",
-                    "It seems that utilities could not understand what word you were trying to copypaste.",
-                    3
+                Utils.NotifCheck(
+                    true,
+                    new string[] {
+                        "Welp.",
+                        "It seems that utilities could not understand what word you were trying to copypaste.",
+                        "3"
+                    }
                 );
                 return null;
             }

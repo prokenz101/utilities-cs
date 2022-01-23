@@ -15,7 +15,14 @@ namespace utilities_cs {
                     Utils.NotifCheck(notif, new string[] { "Success!", $"The message was: {ans}", "6" });
                     return ans;
                 } catch {
-                    Utils.Notification("Huh.", "An exception occured when converting this text to Base64.", 4);
+                    Utils.NotifCheck(
+                        true,
+                        new string[] {
+                            "Huh.",
+                            "An exception occured when converting this text to Base64.",
+                            "4"
+                        }
+                    );
                     return null;
                 }
             } else {

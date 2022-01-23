@@ -64,10 +64,13 @@ namespace utilities_cs {
                 AutoclickData data = new(groups);
                 PerformAutoclick(data);
             } else {
-                Utils.Notification(
-                    "Huh.",
-                    "The parameters for autoclick were not given properly. Try again.",
-                    3
+                Utils.NotifCheck(
+                    true,
+                    new string[] {
+                        "Huh.",
+                        "The parameters for autoclick were not given properly. Try again.",
+                        "3"
+                    }
                 );
             }
         }
@@ -94,7 +97,7 @@ namespace utilities_cs {
                     Func<bool> shouldStop = () => token.IsCancellationRequested
                         || MouseOperations.GetCursorPosition().toPoint() == topLeft.toPoint();
 
-                    Utils.Notification("Starting autoclicker...", "Press Ctrl + F7 to stop.");
+                    Utils.NotifCheck(true, new string[] {"Starting autoclicker...", "Press Ctrl + F7 to stop."});
                     Task.Delay(1500).Wait();
                     if (data.count == int.MaxValue) {
                         while (true) {
@@ -117,13 +120,16 @@ namespace utilities_cs {
                     cancelTkn.Cancel();
                 }
                 HookManager.UnregisterHook("autoclick_stop");
-                Utils.Notification("Stopped Autoclicker.", "The autoclicker was stopped.", 3);
+                Utils.NotifCheck(true, new string[] { "Stopped Autoclicker.", "The autoclicker was stopped.", "3" });
             }
             void autoclickFailedToRegisterHotkey() {
-                Utils.Notification(
-                    "Something went wrong.",
-                    @"This might be because you might have attempted to start a second autoclicker.",
-                    5
+                Utils.NotifCheck(
+                    true,
+                    new string[] {
+                        "Something went wrong.",
+                        @"This might be because you might have attempted to start a second autoclicker.",
+                        "5"
+                    }
                 );
                 stopAutoclick();
             }

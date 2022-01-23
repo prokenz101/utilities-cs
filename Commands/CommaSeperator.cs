@@ -13,7 +13,14 @@ namespace utilities_cs {
                 // Checking if number is an actual number
                 BigInteger.Parse(str_num);
             } catch {
-                Utils.Notification("Huh.", "It seems you did not input anything to seperate with commas.", 2);
+                Utils.NotifCheck(
+                    true,
+                    new string[] {
+                        "Huh.",
+                        "It seems you did not input anything to seperate with commas.",
+                        "2"
+                    }
+                );
                 return null;
             }
 

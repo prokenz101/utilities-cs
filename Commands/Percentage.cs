@@ -15,9 +15,13 @@ namespace utilities_cs {
                 @"(?<percent>\d+(\.\d+)?)% of (?<number>\d+(\.\d+)?)",
                 useIsMatch: true,
                 () => {
-                    Utils.Notification(
-                        "Huh.",
-                        "It seems you did not input the parameters correctly. Try '% 50% of 300'."
+                    Utils.NotifCheck(
+                        true,
+                        new string[] {
+                            "Huh.",
+                            "It seems you did not input the parameters correctly. Try '% 50% of 300'.",
+                            "3"
+                        }
                     );
                 }
             );

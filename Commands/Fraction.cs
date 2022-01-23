@@ -60,10 +60,13 @@ namespace utilities_cs {
                     string i = fraction_dict[x][0];
                     converted.Add(i);
                 } else {
-                    Utils.Notification(
-                        "Something went wrong.",
-                        "Either the code is broken, or you did not input the parameters correctly.",
-                        4
+                    Utils.NotifCheck(
+                        true,
+                        new string[] {
+                            "Something went wrong.",
+                            "Either the code is broken, or you did not input the parameters correctly.",
+                            "4"
+                        }
                     );
                     return null;
                 }
@@ -77,17 +80,24 @@ namespace utilities_cs {
                     if (i != "failed") {
                         converted.Add(i);
                     } else {
-                        Utils.Notification("Hey!",
-                            @"It seems you tried to input a character that's not supported.",
-                            7
+                        Utils.NotifCheck(
+                            true,
+                            new string[] {
+                                "Hey!",
+                                @"It seems you tried to input a character that's not supported.",
+                                "4"
+                            }
                         );
                         return null;
                     }
                 } else {
-                    Utils.Notification(
-                        "Something went wrong.",
-                        "Either the code is broken, or you did not input the parameters correctly.",
-                        4
+                    Utils.NotifCheck(
+                        true,
+                        new string[] {
+                            "Something went wrong.",
+                            "Either the code is broken, or you did not input the parameters correctly.",
+                            "4"
+                        }
                     );
                     return null;
                 }

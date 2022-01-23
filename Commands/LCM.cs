@@ -59,10 +59,13 @@ namespace utilities_cs {
                 Utils.NotifCheck(notif, new string[] { "Success!", $"The answer was {answer}.", "5" });
                 return answer.ToString();
             } catch {
-                Utils.Notification(
-                    "Huh.",
-                    "It seems you did not input a number. Try 'lcm 15 70' as an example.",
-                    8
+                Utils.NotifCheck(
+                    true,
+                    new string[] {
+                        "Huh.",
+                        "It seems you did not input a number. Try 'lcm 15 70' as an example.",
+                        "8"
+                    }
                 );
                 return null;
             }

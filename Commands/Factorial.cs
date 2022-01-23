@@ -22,7 +22,14 @@ namespace utilities_cs {
                 return v.ToString();
 
             } catch {
-                Utils.Notification("Huh.", "It seems that the number you inputted was not a number.", 4);
+                Utils.NotifCheck(
+                    true,
+                    new string[] {
+                        "Huh.",
+                        "It seems that the number you inputted was not a number.",
+                        "4"
+                    }
+                );
                 return null;
             }
         }

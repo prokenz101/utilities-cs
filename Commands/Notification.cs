@@ -11,7 +11,14 @@ namespace utilities_cs {
                 @"[""'](?<title>.*?)[""'],? [""'](?<subtitle>.*?)[""'],? (?<duration>\d+)",
                 useIsMatch: true,
                 () => {
-                    Utils.Notification("Huh.", "The parameters were not inputted properly.", 3);
+                    Utils.NotifCheck(
+                        true,
+                        new string[] {
+                            "Huh.",
+                            "The parameters were not inputted properly.",
+                            "3"
+                        }
+                    );
                 }
             );
 
@@ -25,7 +32,7 @@ namespace utilities_cs {
                     string subtitle = groups["subtitle"].ToString();
                     int duration = int.Parse(groups["duration"].ToString());
 
-                    Utils.Notification(title, subtitle, duration);
+                    Utils.NotifCheck(true, new string[] { title, subtitle, duration.ToString() });
                     return;
                 }
             }

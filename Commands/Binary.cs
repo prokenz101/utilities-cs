@@ -38,8 +38,7 @@ namespace utilities_cs {
                     Utils.CopyCheck(copy, string.Join("", chars));
                     return string.Join("", chars);
                 } catch {
-                    Utils.Notification("Huh.", @"There must be something wrong with the binary that you have inputted.
-Please double check that you can actually convert this binary to ASCII characters.", 3);
+                    Utils.NotifCheck(true, new string[] { "Huh.", @"Something went wrong with converting this binary.", "3" });
                     return null;
                 }
             }

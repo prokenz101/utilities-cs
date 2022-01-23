@@ -27,10 +27,13 @@ namespace utilities_cs {
             try {
                 int.Parse(text);
             } catch {
-                Utils.Notification(
-                    "Something went wrong.",
-                    "Either the number you entered was not a number, or it was too large.",
-                    5
+                Utils.NotifCheck(
+                    true,
+                    new string[] {
+                        "Something went wrong.",
+                        "Either the number you entered was not a number, or it was too large.",
+                        "5"
+                    }
                 );
             }
 
