@@ -4,18 +4,15 @@ using System.Text.RegularExpressions;
 
 namespace utilities_cs {
     public class Formatter {
-        public static void formatter(string[] args) {
+        public static void Format(string[] args) {
             string text = string.Join(' ', args[1..]);
             if (Utils.IndexTest(args)) {
                 return;
             }
 
             Dictionary<string, string> formatdict = new();
-
             Regex re = new Regex(@"{(?<command>[^}]+)}");
             MatchCollection matches = re.Matches(text);
-
-
 
             foreach (Match? i in matches) {
                 if (i != null) {
@@ -34,19 +31,19 @@ namespace utilities_cs {
                         }
 
                         formatdict[cmd] = output;
+                    } else {
+                        Utils.NotifCheck(true, new string[] { "Huh.", "Perhaps that was not a real command.", "4" });
                     }
                 }
             }
 
-            string result = formatdict.ReplaceKeyInString(text);
-            WindowsClipboard.SetText(result);
-            Utils.Notification("Success!", "Message copied to clipboard.", 3);
+            Utils.CopyCheck(true, formatdict.ReplaceKeyInString(text));
+            Utils.NotifCheck(true, new string[] { "Success!", "Message copied to clipboard.", "3" });
         }
     }
 
     public static class DictionaryExtensions {
         public static string ReplaceKeyInString(this Dictionary<string, string> dictionary, string inputString) {
-
             var regex = new Regex("{(.*?)}");
             var matches = regex.Matches(inputString);
             foreach (Match? match in matches) {
