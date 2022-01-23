@@ -5,3 +5,4 @@ bin
 .vs\utilities-cs
 build.ps1
 debug-build.ps1
+settings.json
