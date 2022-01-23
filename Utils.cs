@@ -1,10 +1,11 @@
 using System;
-using System.ComponentModel;
-using System.Runtime.InteropServices;
 using System.Threading;
+using System.Windows.Forms;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Runtime.InteropServices;
 using Microsoft.Toolkit.Uwp.Notifications;
 
 namespace utilities_cs {
@@ -103,8 +104,20 @@ namespace utilities_cs {
         /// <param name="copy">Boolean that is usually true and checks if the function wants to copy something.</param>
         /// <param name="toCopy">The string that is to be copied to the clipboard if copy is true.</param>
         public static void CopyCheck(bool copy, string toCopy) {
-            if (copy) {
+            SettingsJSON currentSettings = SettingsModifification.getSettings();
+            bool settingsDisallowed = currentSettings.disableClipboardManipulation;
+            bool autoPaste = currentSettings.autoPaste;
+            bool disableClipboardManipulation = currentSettings.disableClipboardManipulation;
+
+            if (copy && !settingsDisallowed) {
                 WindowsClipboard.SetText(toCopy);
+            }
+            
+            Console.WriteLine(autoPaste);
+
+            if (autoPaste && !disableClipboardManipulation) {
+                Thread.Sleep(100);
+                SendKeys.SendWait("^v");
             }
         }
 
@@ -115,7 +128,10 @@ namespace utilities_cs {
         /// <param name="notif">Boolean that is usually true and checks if notification is gonna be sent.</param>
         /// <param name="notifContent">The content for the notification, if it notif is true.</param>
         public static void NotifCheck(bool notif, string[] notifContent) {
-            if (notif) {
+            SettingsJSON currentSettings = SettingsModifification.getSettings();
+            bool settingsDisallowed = currentSettings.disableNotifications;
+
+            if (notif && !settingsDisallowed) {
                 Notification(
                     notifContent[0],
                     notifContent[1],
@@ -123,6 +139,7 @@ namespace utilities_cs {
                 );
             }
         }
+
         /// <summary>
         /// Returns all integers from a string using Regex.
         /// </summary>
