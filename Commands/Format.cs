@@ -28,9 +28,11 @@ namespace utilities_cs {
 
                         if (output == null) {
                             output = "errored";
+                            formatdict[cmd] = output;
+                        } else {
+                            formatdict[cmd] = output;
                         }
 
-                        formatdict[cmd] = output;
                     } else {
                         Utils.NotifCheck(true, new string[] { "Huh.", "Perhaps that was not a real command.", "4" });
                     }
