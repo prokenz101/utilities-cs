@@ -88,6 +88,8 @@ namespace utilities_cs {
             { "percent", Percentage.Percent },
             { "%", Percentage.Percent },
             { "percentage", Percentage.Percent },
+            { "cuberoot", CubeRoot.Cbrt },
+            { "cbrt", CubeRoot.Cbrt },
             { "mathitalic", MathItalics.MathItalic },
             { "mai", MathItalics.MathItalic },
             { "randint", RandInt.Randint },
