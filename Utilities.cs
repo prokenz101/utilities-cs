@@ -12,7 +12,9 @@ namespace utilities_cs {
         static void Main(string[] args) {
 #if UTILITIES_DEBUG
             // debug mode, only used for specific times
-            UtilitiesAppContext.Utilities(args);
+            string? copied_text = UtilitiesAppContext.Utilities(args);
+            if (copied_text != null) { Console.WriteLine(copied_text); }
+            
 #else
             Application.EnableVisualStyles();
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
@@ -25,7 +27,6 @@ namespace utilities_cs {
             Application.Run(app);
 #endif
         }
-
     }
     public class UtilitiesAppContext : ApplicationContext {
         public static Dictionary<string, Action<string[]>> commands = new() {
@@ -76,6 +77,7 @@ namespace utilities_cs {
             { "bin", Binary.Bin },
             { "hexadecimal", Hex.Hexadecimal },
             { "hex", Hex.Hexadecimal },
+            { "sha256", SHA256Hasher.SHA256Hash },
             { "base64", Base64Conversion.Base64Convert },
             { "base32", Base32Conversion.Base32Convert },
             { "emojify", Emojify.emojify },
@@ -96,14 +98,18 @@ namespace utilities_cs {
             { "randnum", RandInt.Randint },
             { "randchar", Randchar.RandomChar }
         };
-        public static void Utilities(string[] args) {
+        public static string? Utilities(string[] args) {
             var cmd = args[0].ToLower();
             if (commands.ContainsKey(cmd)) {
                 Action<string[]> f = commands[cmd];
                 f.Invoke(args);
+                return null;
             } else if (formattable_commands.ContainsKey(cmd)) {
                 Func<string[], bool, bool, string?> f = formattable_commands[cmd];
-                f.Invoke(args, true, true);
+                string? final_string = f.Invoke(args, true, true);
+                if (final_string != null) {
+                    return final_string;
+                } else return null;
             } else {
                 Utils.NotifCheck(
                     true,
@@ -113,11 +119,10 @@ namespace utilities_cs {
                         "6"
                     }
                 );
+                return null;
             }
-
         }
         private NotifyIcon trayIcon;
-
         public UtilitiesAppContext() {
             // making keyboard hook for ctrl + f8
             HookManager.AddHook(
@@ -176,5 +181,4 @@ namespace utilities_cs {
             Application.Exit();
         }
     }
-
 }
