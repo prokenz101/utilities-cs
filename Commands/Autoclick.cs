@@ -57,7 +57,7 @@ namespace utilities_cs {
 
         public static void autoclick(string[] args) {
             string text = string.Join(" ", args[1..]); // parameters of autoclick, like {interval} {mousebutton} etc
-            MatchCollection matches = re.Matches(text);
+            MatchCollection matches = re.Matches(text.ToLower());
             if (matches.Count > 0) {
                 var match = matches[0];
                 GroupCollection groups = match.Groups;
