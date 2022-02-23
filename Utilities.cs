@@ -14,7 +14,6 @@ namespace utilities_cs {
             // debug mode, only used for specific times
             string? copied_text = UtilitiesAppContext.Utilities(args);
             if (copied_text != null) { Console.WriteLine(copied_text); }
-            
 #else
             Application.EnableVisualStyles();
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
@@ -48,6 +47,7 @@ namespace utilities_cs {
             { "quit", UtilitiesExit.UtilsExit }
         };
         public static Dictionary<string, Func<string[], bool, bool, string?>> formattable_commands = new() {
+            { "all", All.ReturnAll },
             { "sarcasm", Sarcasm.Sarcasm_ },
             { "spacer", Spacer.spacer },
             { "copypaste", Copypaste.cp },
@@ -77,9 +77,13 @@ namespace utilities_cs {
             { "bin", Binary.Bin },
             { "hexadecimal", Hex.Hexadecimal },
             { "hex", Hex.Hexadecimal },
-            { "sha256", SHA256Hasher.SHA256Hash },
+            { "sha1", SHAHashing.SHA1Hash },
+            { "sha256", SHAHashing.SHA256Hash },
+            { "sha384", SHAHashing.SHA384Hash },
+            { "sha512", SHAHashing.SHA512Hash },
             { "base64", Base64Conversion.Base64Convert },
             { "base32", Base32Conversion.Base32Convert },
+            { "gzip", GZip.GZipConversion },
             { "emojify", Emojify.emojify },
             { "title", Title.title },
             { "titlecase", Title.title },
@@ -124,14 +128,26 @@ namespace utilities_cs {
         }
         private NotifyIcon trayIcon;
         public UtilitiesAppContext() {
+            SettingsJSON currentSettings = SettingsModifification.getSettings();
+            int hotkeyDelay = currentSettings.copyingHotkeyDelay;
+            Action registerHotkeyFailed = () => {
+                Utils.NotifCheck(
+                    true,
+                    new string[] {
+                        "Something went wrong.",
+                        @"Are you opening multiple instances of utilities-cs?",
+                        "6"
+                    }
+                );
+                Exit();
+            };
+
             // making keyboard hook for ctrl + f8
             HookManager.AddHook(
                 "utilities",
-                ModifierKeys.Control,
+                new ModifierKeys[] { ModifierKeys.Control },
                 Keys.F8,
                 () => {
-                    SettingsJSON currentSettings = SettingsModifification.getSettings();
-                    int hotkeyDelay = currentSettings.copyingHotkeyDelay;
                     bool pressEscape = currentSettings.pressEscape;
 
                     SendKeys.Send("^a");
@@ -142,21 +158,10 @@ namespace utilities_cs {
                     string[] args = Clipboard.GetText().Split(" ");
                     Utilities(args);
                 },
-                () => {
-                    Utils.NotifCheck(
-                        true,
-                        new string[] {
-                            "Something went wrong.",
-                            @"Are you opening multiple instances of utilities-cs?",
-                            "6"
-                        }
-                    );
-                    Exit();
-                }
+                registerHotkeyFailed
             );
 
             // creating tray icon
-
             trayIcon = new NotifyIcon() {
                 Text = "utilities-cs"
             };
