@@ -9,8 +9,8 @@ namespace utilities_cs {
                 return null;
             }
             TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
-
             string ans = textInfo.ToTitleCase(string.Join(" ", text));
+
             Utils.CopyCheck(copy, ans);
             Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
             return ans;
