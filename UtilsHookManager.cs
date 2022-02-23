@@ -30,7 +30,7 @@ namespace utilities_cs {
         /// <param name="onFail">Runs onFail method if an error occurs while registering hook.</param>
         public static void AddHook(
                 string id,
-                ModifierKeys modifiers,
+                ModifierKeys[] modifiers,
                 Keys keys, Action onPressed,
                 Action? onFail = null
             ) {
@@ -39,7 +39,11 @@ namespace utilities_cs {
                 onPressed();
             };
             try {
-                hook.RegisterHotKey(modifiers, keys);
+                if (modifiers.Length > 1) {
+                    hook.RegisterHotKey(modifiers[0] | modifiers[1], keys);
+                } else {
+                    hook.RegisterHotKey(modifiers[0], keys);
+                }
             } catch (InvalidOperationException) {
                 onFail?.Invoke();
                 return;
