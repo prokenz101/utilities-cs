@@ -79,7 +79,7 @@ namespace utilities_cs {
             cancelTkn = new CancellationTokenSource();
             HookManager.AddHook(
                 "autoclick_stop",
-                ModifierKeys.Control,
+                new ModifierKeys[] { ModifierKeys.Control },
                 Keys.F7,
                 stopAutoclick,
                 autoclickFailedToRegisterHotkey
@@ -97,7 +97,7 @@ namespace utilities_cs {
                     Func<bool> shouldStop = () => token.IsCancellationRequested
                         || MouseOperations.GetCursorPosition().toPoint() == topLeft.toPoint();
 
-                    Utils.NotifCheck(true, new string[] {"Starting autoclicker...", "Press Ctrl + F7 to stop."});
+                    Utils.NotifCheck(true, new string[] { "Starting autoclicker...", "Press Ctrl + F7 to stop." });
                     Task.Delay(1500).Wait();
                     if (data.count == int.MaxValue) {
                         while (true) {
