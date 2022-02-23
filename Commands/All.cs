@@ -64,7 +64,11 @@ namespace utilities_cs {
                 { "Hexadecimal", Hex.Hexadecimal },
                 { "Base64", Base64Conversion.Base64Convert },
                 { "Base32", Base32Conversion.Base32Convert },
-                { "GZip", GZip.GZipConversion }
+                { "GZip", GZip.GZipConversion },
+                { "SHA1", SHAHashing.SHA1Hash },
+                { "SHA256", SHAHashing.SHA256Hash },
+                { "SHA384", SHAHashing.SHA384Hash },
+                { "SHA512", SHAHashing.SHA512Hash },
             };
 
             List<string> b32AndGZipArgs = args[1..].ToList();
