@@ -1,14 +1,7 @@
-using System;
-using System.Threading;
-using System.Windows.Forms;
-using System.ComponentModel;
-using System.Threading.Tasks;
-using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using System.Runtime.InteropServices;
-using Microsoft.Toolkit.Uwp.Notifications;
 
 namespace utilities_cs {
+
     public class Utils {
         private static Task? notificationTask;
 
@@ -40,11 +33,11 @@ namespace utilities_cs {
             }
 
             notificationTask = Task.Run(() => {
-                new ToastContentBuilder()
+                new Microsoft.Toolkit.Uwp.Notifications.ToastContentBuilder()
                     .AddText(title)
                     .AddText(subtitle).Show();
                 Task.Delay((toastexpirationtime + 1) * 1000).Wait();
-                ToastNotificationManagerCompat.History.Clear();
+                Microsoft.Toolkit.Uwp.Notifications.ToastNotificationManagerCompat.History.Clear();
             });
         }
 
@@ -218,7 +211,7 @@ namespace utilities_cs {
             IntPtr hGlobal = default;
             try {
                 var bytes = (text.Length + 1) * 2;
-                hGlobal = Marshal.AllocHGlobal(bytes);
+                hGlobal = System.Runtime.InteropServices.Marshal.AllocHGlobal(bytes);
 
                 if (hGlobal == default) {
                     ThrowWin32();
@@ -231,7 +224,7 @@ namespace utilities_cs {
                 }
 
                 try {
-                    Marshal.Copy(text.ToCharArray(), 0, target, text.Length);
+                    System.Runtime.InteropServices.Marshal.Copy(text.ToCharArray(), 0, target, text.Length);
                 } finally {
                     GlobalUnlock(target);
                 }
@@ -243,7 +236,7 @@ namespace utilities_cs {
                 hGlobal = default;
             } finally {
                 if (hGlobal != default) {
-                    Marshal.FreeHGlobal(hGlobal);
+                    System.Runtime.InteropServices.Marshal.FreeHGlobal(hGlobal);
                 }
 
                 CloseClipboard();
@@ -267,28 +260,28 @@ namespace utilities_cs {
         const uint cfUnicodeText = 13;
 
         static void ThrowWin32() {
-            throw new Win32Exception(Marshal.GetLastWin32Error());
+            throw new System.ComponentModel.Win32Exception(System.Runtime.InteropServices.Marshal.GetLastWin32Error());
         }
 
-        [DllImport("kernel32.dll", SetLastError = true)]
+        [System.Runtime.InteropServices.DllImport("kernel32.dll", SetLastError = true)]
         static extern IntPtr GlobalLock(IntPtr hMem);
 
-        [DllImport("kernel32.dll", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
+        [System.Runtime.InteropServices.DllImport("kernel32.dll", SetLastError = true)]
+        [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Bool)]
         static extern bool GlobalUnlock(IntPtr hMem);
 
-        [DllImport("user32.dll", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
+        [System.Runtime.InteropServices.DllImport("user32.dll", SetLastError = true)]
+        [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Bool)]
         static extern bool OpenClipboard(IntPtr hWndNewOwner);
 
-        [DllImport("user32.dll", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
+        [System.Runtime.InteropServices.DllImport("user32.dll", SetLastError = true)]
+        [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Bool)]
         static extern bool CloseClipboard();
 
-        [DllImport("user32.dll", SetLastError = true)]
+        [System.Runtime.InteropServices.DllImport("user32.dll", SetLastError = true)]
         static extern IntPtr SetClipboardData(uint uFormat, IntPtr data);
 
-        [DllImport("user32.dll")]
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
         static extern bool EmptyClipboard();
     }
 }
