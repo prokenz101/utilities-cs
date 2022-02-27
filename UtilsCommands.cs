@@ -299,12 +299,17 @@ This has a risk of crashing your PC.",
                         });
                         return;
                     } else {
-                        await Task.Run(() => { Shuffle.getPer(text.ToCharArray()); });
-                        string ans = string.Join("\n", Shuffle.permutations);
-
-                        Utils.CopyCheck(true, ans);
-                        Utils.NotifCheck(true, new string[] { "Shuffled.", $@"All permutations copied to clipboard.
-Number of permutations: {Shuffle.permutations.Count}", "4" });
+                        await Task.Run(
+                            () => {
+                                HashSet<string> ansSet = Shuffle.getPer(text.ToCharArray());
+                                string ans = string.Join("\n", ansSet);
+                                Utils.CopyCheck(true, ans);
+                                Utils.NotifCheck(
+                                true, new string[] { "Shuffled.", $@"All permutations copied to clipboard.
+Number of permutations: {ansSet.Count}", "4" }
+                                );
+                            }
+                        );
                     }
                 }
             );

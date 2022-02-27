@@ -1,6 +1,5 @@
 namespace utilities_cs {
     public class Shuffle {
-        public static HashSet<string> permutations = new();
         public static void swap(ref char a, ref char b) {
             if (a == b) return;
 
@@ -9,12 +8,15 @@ namespace utilities_cs {
             b = temp;
         }
 
-        public static void getPer(char[] list) {
+        public static HashSet<string> getPer(char[] list) {
             int x = list.Length - 1;
-            getPer(list, 0, x);
+            HashSet<string> permutations = getPer(list, 0, x);
+            
+            return permutations;
         }
 
-        public static void getPer(char[] list, int k, int m) {
+        public static HashSet<string> getPer(char[] list, int k, int m) {
+            HashSet<string> permutations = new();
             if (k == m) {
                 permutations.Add(string.Join("", list));
             } else {
@@ -24,6 +26,8 @@ namespace utilities_cs {
                     swap(ref list[k], ref list[i]);
                 }
             }
+            
+            return permutations;
         }
     }
 }
