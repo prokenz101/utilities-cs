@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Windows.Forms;
-
 namespace utilities_cs {
     public class HookExistsException : Exception { }
     public class HookManager {
