@@ -17,7 +17,7 @@ namespace utilities_cs {
             if (button.HasValue) {
                 mousebutton = (MouseButton)button;
             } else {
-                throw new ArgumentException("bruh really?"); // never going to run
+                throw new ArgumentException("bruh really?"); //* never going to run
             }
         }
 
@@ -64,7 +64,7 @@ namespace utilities_cs {
                 Task.Delay(data.interval).Wait();
             };
 
-            // creating task for autoclicker
+            //* creating task for autoclicker
             autoclickTask = Task.Factory.StartNew(
                 () => {
                     var token = cancelTkn.Token;
