@@ -1,7 +1,6 @@
 using System.Text.RegularExpressions;
 
 namespace utilities_cs {
-
     public class Utils {
         private static Task? notificationTask;
 
@@ -21,7 +20,7 @@ namespace utilities_cs {
                 "What you are looking for has probably been copied to your clipboard.",
             };
 
-            // Check if title and subtitle are too long
+            //* Check if title and subtitle are too long
             if (title.Length > 54) {
                 title = notifTooLong[0];
                 subtitle = notifTooLong[1];
@@ -48,6 +47,7 @@ namespace utilities_cs {
         /// <param name="args">All arguments passed when pressing main Ctrl+F8 function.</param>
         /// <param name="argscount">The index that indextest will check to see if it exists.</param>
         /// <param name="ifOutOfRange">Method that is called incase indextest is false.</param>
+        /// <returns>A bool that will be false if IndexTest failed, and true if it didn't.</returns>
         public static bool IndexTest(
                 string[] args,
                 int argscount = 1,
@@ -69,6 +69,7 @@ namespace utilities_cs {
         /// </summary>
         /// <param name="allowable_char">Set of characters that are allowed in the string.</param>
         /// <param name="text">The text that is being checked.</param>
+        /// <returns>A bool that will be true if the text matches the format and false if it doesn't.</returns>
         public static bool FormatValid(string allowable_char, string text) {
             foreach (char c in text) {
                 if (!allowable_char.Contains(c.ToString()))
@@ -81,6 +82,7 @@ namespace utilities_cs {
         /// Interchanges the position of key and value in a dictionary.
         /// </summary>
         /// <param name="dict">The dictionary that is inverted.</param>
+        /// <returns>A dictionary with all keys and values inverted.</returns>
         public static Dictionary<string, string> InvertKeyAndValue(Dictionary<string, string> dict) {
             Dictionary<string, string> final_dict = new();
             foreach (var key in dict.Keys) {
@@ -92,7 +94,7 @@ namespace utilities_cs {
 
         /// <summary>
         /// Checks if the function being called is willing to copy something to the clipboard.
-        /// Primarily used for Format.
+        /// Primarily used because of Format.
         /// </summary>
         /// <param name="copy">Boolean that is usually true and checks if the function wants to copy something.</param>
         /// <param name="toCopy">The string that is to be copied to the clipboard if copy is true.</param>
@@ -105,7 +107,7 @@ namespace utilities_cs {
             if (copy && !settingsDisallowed) {
                 WindowsClipboard.SetText(toCopy);
             }
-            
+
             Console.WriteLine(autoPaste);
 
             if (autoPaste && !disableClipboardManipulation) {
@@ -116,7 +118,7 @@ namespace utilities_cs {
 
         /// <summary>
         /// Checks if the function being called is willing to send a notification.
-        /// Primarily used for Format.
+        /// Primarily used because of Format.
         /// </summary>
         /// <param name="notif">Boolean that is usually true and checks if notification is gonna be sent.</param>
         /// <param name="notifContent">The content for the notification, if it notif is true.</param>
@@ -137,6 +139,7 @@ namespace utilities_cs {
         /// Returns all integers from a string using Regex.
         /// </summary>
         /// <param name="input">The string which is to be searched for integers.</param>
+        /// <returns>A list of all integers that were captured by the Regex.</returns>
         public static List<int> RegexFindAllInts(string input) {
             List<int> ints = new();
             Regex re = new Regex(@"(?<num>\d+)+");
@@ -164,7 +167,8 @@ namespace utilities_cs {
         /// If true, the function will use re.IsMatch() instead of re.Matches().Count,
         /// this should only be used for expressions which are designed to have only one match.
         /// </param>
-        public static List<Dictionary<Match, GroupCollection>>? RegexFind(
+        /// <returns>A dictionary of all the matches which point to their groups.</returns>
+        public static Dictionary<Match, GroupCollection>? RegexFind(
                 string input,
                 string expression,
                 bool useIsMatch = false,
@@ -200,10 +204,17 @@ namespace utilities_cs {
                 }
             }
 
-            return matchesAndGroups;
+            return matchesAndGroups[0];
         }
     }
+    /// <summary>
+    /// Primary class for modifying and manipulating the windows clipboard.
+    /// </summary>
     public class WindowsClipboard {
+        /// <summary>
+        /// The method that sets the windows clipboard to the specified text.
+        /// </summary>
+        /// <param name="text">The text that is to be set to the clipboard.</param>
         public static void SetText(string text) {
             OpenClipboard();
 
