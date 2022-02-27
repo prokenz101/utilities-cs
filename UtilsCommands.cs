@@ -2,14 +2,25 @@ using System.Numerics;
 using System.Text.RegularExpressions;
 
 namespace utilities_cs {
+    /// <summary>
+    /// The hierarchy of all command-classes for all commands in utilities-cs
+    /// </summary>
     public abstract class Command {
         public string? CommandName { get; set; }
         public string[]? Aliases { get; set; }
         public static Dictionary<string, Func<string[], bool, bool, string?>> fCommands = new();
         public static Dictionary<string, Action<string[]>> rCommands = new();
-        public static string? ExecuteCommand(string cmd, string[] args) {
+        /// <summary>
+        /// Executes a command in either the rCommands dictionary or the fCommands dictionary.
+        /// </summary>
+        /// <param name="cmd">The name of the command to be excuted.</param>
+        /// <param name="args">The command arguments to be used when executing the command.</param>
+        /// <param name="copy">Controls whether the function is willing to copy text to the clipboard.</param>
+        /// <param name="notif">Controls whether the function is willing to send a notification.</param>
+        /// <returns>A string of the output of the command. This can also be null.</returns>
+        public static string? ExecuteCommand(string cmd, string[] args, bool copy = true, bool notif = true) {
             if (fCommands.ContainsKey(cmd)) {
-                string? output = fCommands[cmd].Invoke(args, true, true);
+                string? output = fCommands[cmd].Invoke(args, copy, notif);
                 if (output != null) { return output; } else { return null; }
             } else if (rCommands.ContainsKey(cmd)) {
                 rCommands[cmd].Invoke(args);
@@ -27,6 +38,10 @@ namespace utilities_cs {
             }
         }
     }
+
+    /// <summary>
+    /// The class that supports formattable commands.
+    /// </summary>
     public class FormattableCommand : Command {
         public Func<string[], bool, bool, string?>? Function;
         public FormattableCommand(
@@ -34,7 +49,7 @@ namespace utilities_cs {
             Func<string[], bool, bool, string?> function,
             string[]? aliases = null
         ) {
-            // setting all attributes for instance
+            //* setting all attributes for instance
             CommandName = commandName; Function = function; Aliases = aliases;
             if (aliases != null) {
                 fCommands.Add(commandName, function);
@@ -43,6 +58,13 @@ namespace utilities_cs {
                 fCommands.Add(commandName, function);
             }
         }
+        /// <summary>
+        /// A non-static command that allows you to execute a command immediately.
+        /// </summary>
+        /// <param name="args">The command arguments to be used when executing the command.</param>
+        /// <param name="copy">Controls whether the function is willing to copy text to the clipboard.</param>
+        /// <param name="notif">Controls whether the function is willing to send a notification.</param>
+        //! Mostly unused method. Only used for testing purposes.
         public void Execute(string[] args, bool copy, bool notif) {
             if (this.Function != null) {
                 string? output = this.Function.Invoke(args, copy, notif);
@@ -50,6 +72,14 @@ namespace utilities_cs {
             }
         }
 
+        /// <summary>
+        /// Finds the command in the fCommands dictionary and then executes it.
+        /// </summary>
+        /// <param name="cmd">The command to execute.</param>
+        /// <param name="args">The command arguments to be used when executing the command.</param>
+        /// <param name="copy">Controls whether the function is willing to copy text to the clipboard.</param>
+        /// <param name="notif">Controls whether the function is willing to send a notification.</param>
+        /// <returns>The output of the method that is ran. Value can be null.</returns>
         public static string? FindAndExecute(string cmd, string[] args, bool copy, bool notif) {
             if (fCommands.ContainsKey(cmd)) {
                 string? output = fCommands[cmd].Invoke(args, copy, notif);
@@ -59,6 +89,11 @@ namespace utilities_cs {
             }
         }
 
+        /// <summary>
+        /// Returns a FormattableCommand using the name of that command.
+        /// </summary>
+        /// <param name="cmd">The name of the command that is used to find the method and return it.</param>
+        /// <returns>The method of that command name.</returns>
         public static Func<string[], bool, bool, string?>? GetMethod(string cmd) {
             if (fCommands.ContainsKey(cmd)) {
                 Func<string[], bool, bool, string?> func = fCommands[cmd];
@@ -69,6 +104,7 @@ namespace utilities_cs {
         }
     }
 
+    /// <summary>The class that supports regular commands.</summary>
     public class RegularCommand : Command {
         public Action<string[]>? Function;
         public RegularCommand(
@@ -76,7 +112,7 @@ namespace utilities_cs {
             Action<string[]> function,
             string[]? aliases = null
         ) {
-            // setting all attributes for instance
+            //* setting all attributes for instance
             CommandName = commandName; Function = function; Aliases = aliases;
             if (aliases != null) {
                 rCommands.Add(commandName, function);
@@ -85,6 +121,10 @@ namespace utilities_cs {
                 rCommands.Add(commandName, function);
             }
         }
+
+        /// <summary>A non-static method that executes a command immediately.</summary>
+        /// <param name="args">The command arguments to be used when executing the command.</param>
+        //! Mostly unused method. Only used for testing purposes.
         public void Execute(string[] args) {
             if (this.Function != null) {
                 this.Function.Invoke(args);
@@ -92,12 +132,20 @@ namespace utilities_cs {
         }
     }
 
+    /// <summary>
+    /// The class containing all methods that are used for registering commands to the dictionaries.
+    /// </summary>
     public class RegisterCommands {
+        /// <summary>
+        /// The method that registers all regular commands.
+        /// </summary>
         public static void RegisterAllRCommands() {
             RegularCommand autoclick = new(
                 commandName: "autoclick",
                 function: (string[] args) => {
-                    string text = string.Join(" ", args[1..]); // parameters of autoclick, like {interval} {mousebutton} etc
+                    string text = string.Join(" ", args[1..]);
+                    //* parameters of autoclick, like {interval} {mousebutton} etc
+
                     MatchCollection matches = Autoclick.re.Matches(text.ToLower());
                     if (matches.Count > 0) {
                         var match = matches[0];
@@ -191,7 +239,7 @@ namespace utilities_cs {
                 function: (string[] args) => {
                     string text = string.Join(' ', args[1..]);
 
-                    List<Dictionary<Match, GroupCollection>>? matchToGroups = Utils.RegexFind(
+                    Dictionary<Match, GroupCollection>? matchToGroups = Utils.RegexFind(
                         text,
                         @"[""'](?<title>.*?)[""'],? [""'](?<subtitle>.*?)[""'],? (?<duration>\d+)",
                         useIsMatch: true,
@@ -208,9 +256,7 @@ namespace utilities_cs {
                     );
 
                     if (matchToGroups != null) {
-                        Dictionary<Match, GroupCollection> match = matchToGroups[0];
-
-                        foreach (KeyValuePair<Match, GroupCollection> kvp in match) {
+                        foreach (KeyValuePair<Match, GroupCollection> kvp in matchToGroups) {
                             GroupCollection groups = kvp.Value;
 
                             string title = groups["title"].ToString();
@@ -225,12 +271,50 @@ namespace utilities_cs {
                 aliases: new string[] { "notify", "notif" }
             );
 
+            RegularCommand shuffle = new(
+                commandName: "shuffle",
+                function: async (string[] args) => {
+                    if (Utils.IndexTest(args)) {
+                        return;
+                    }
+
+                    string text = string.Join(' ', args[1..]);
+                    //* quick check to see if the shuffling will actually take time
+                    HashSet<char> text_check = text.ToHashSet();
+                    if (text_check.Count > 10 && !(text_check.Count > 15)) {
+                        Utils.NotifCheck(
+                            true,
+                            new string[] {
+                                "Shuffling...",
+                                "This might take a while as your string is over 10 characters.",
+                                "4"
+                            }
+                        );
+                    } else if (text_check.Count > 15) {
+                        Utils.NotifCheck(true, new string[] {
+                            "You shouldn't do that.",
+                            $@"Your string can generate more than a billion permutations at max.
+This has a risk of crashing your PC.",
+                            "7"
+                        });
+                        return;
+                    } else {
+                        await Task.Run(() => { Shuffle.getPer(text.ToCharArray()); });
+                        string ans = string.Join("\n", Shuffle.permutations);
+
+                        Utils.CopyCheck(true, ans);
+                        Utils.NotifCheck(true, new string[] { "Shuffled.", $@"All permutations copied to clipboard.
+Number of permutations: {Shuffle.permutations.Count}", "4" });
+                    }
+                }
+            );
+
             RegularCommand remind = new(
                 commandName: "remind",
                 function: async (string[] args) => {
                     string text = string.Join(' ', args[1..]);
 
-                    List<Dictionary<Match, GroupCollection>>? list_of_dicts = Utils.RegexFind(
+                    Dictionary<Match, GroupCollection>? matchToGroups = Utils.RegexFind(
                         text,
                         @"(?<time>\d+)(?<unit>h|m|s)(?<text> .*)?",
                         useIsMatch: true,
@@ -246,18 +330,15 @@ namespace utilities_cs {
                         }
                     );
 
-                    if (list_of_dicts != null) {
-
+                    if (matchToGroups != null) {
                         List<int> time_enumerable = new();
                         List<char> unit_enumerable = new();
                         List<string> text_enumerable = new();
 
-                        foreach (Dictionary<Match, GroupCollection> dict in list_of_dicts) {
-                            foreach (KeyValuePair<Match, GroupCollection> kvp in dict) {
-                                time_enumerable.Add(int.Parse(kvp.Value["time"].ToString())); // float
-                                unit_enumerable.Add(kvp.Value["unit"].ToString().ToCharArray()[0]); // char
-                                text_enumerable.Add(kvp.Value["text"].ToString()); // string
-                            }
+                        foreach (KeyValuePair<Match, GroupCollection> kvp in matchToGroups) {
+                            time_enumerable.Add(int.Parse(kvp.Value["time"].ToString())); //* float
+                            unit_enumerable.Add(kvp.Value["unit"].ToString().ToCharArray()[0]); //* char
+                            text_enumerable.Add(kvp.Value["text"].ToString()); //* string
                         }
 
                         int time = time_enumerable[0];
@@ -270,7 +351,7 @@ namespace utilities_cs {
                             { 'h', new string[] { "3600", "hour" } }
                         };
 
-                        await Task.Run(() => {  // Task for reminder.
+                        await Task.Run(() => {  //* Task for reminder.
                             if (time_options.ContainsKey(unit)) {
                                 int multiplier = int.Parse(time_options[unit][0]);
                                 string word = time_options[unit][1].ToString();
@@ -358,7 +439,7 @@ namespace utilities_cs {
                     string lang = args[1];
                     string text = string.Join('+', args[2..]);
 
-                    // checking if lang is english
+                    //* checking if lang is english
 
                     foreach (var englishLangAliases in Translate.english_dict.Keys) {
                         if (lang == englishLangAliases) {
@@ -367,7 +448,7 @@ namespace utilities_cs {
                         }
                     }
 
-                    // if lang is not english, then use toOtherLang()
+                    //* if lang is not english, then use toOtherLang()
 
                     foreach (var langAliases in Translate.languages.Keys) {
                         if (langAliases.Contains(lang)) {
@@ -379,6 +460,9 @@ namespace utilities_cs {
             );
         }
 
+        /// <summary>
+        /// The method that registers all formattable commands.
+        /// </summary>
         public static void RegisterAllFCommands() {
             FormattableCommand all = new(
                 commandName: "all",
@@ -424,7 +508,7 @@ namespace utilities_cs {
                     }
 
                     if (mode == "to") {
-                        // convert text to base32
+                        //* convert text to base32
                         byte[] bytes = System.Text.Encoding.ASCII.GetBytes(text);
                         string strToBase32 = Base32.ToBase32String(bytes)!;
 
@@ -647,7 +731,7 @@ namespace utilities_cs {
                     string str_num = string.Join(' ', args[1..]);
 
                     try {
-                        // Checking if number is an actual number
+                        //* Checking if number is an actual number
                         System.Numerics.BigInteger.Parse(str_num);
                     } catch {
                         Utils.NotifCheck(
@@ -798,7 +882,7 @@ namespace utilities_cs {
                     }
 
                     string text = string.Join(' ', args[1..]);
-                    // testing if string is a double
+                    //* testing if string is a double
                     try {
                         Convert.ToDouble(text);
                     } catch (FormatException) {
@@ -806,7 +890,7 @@ namespace utilities_cs {
                         return null;
                     }
 
-                    // checking if there are commas in the number
+                    //* checking if there are commas in the number
                     if (text.Contains(",")) {
                         text = text.Replace(",", string.Empty);
                     }
@@ -1481,34 +1565,32 @@ Word count: {args[1..].Length}";
                     }
                     string text = string.Join(" ", args[1..]);
 
-                    // making regex
-                    List<Dictionary<Match, GroupCollection>>? matchToGroups = Utils.RegexFind(
-                text,
-                @"(?<percent>\d+(\.\d+)?)% of (?<number>\d+(\.\d+)?)",
-                useIsMatch: true,
-                () => {
-                    Utils.NotifCheck(
-                    true,
-                    new string[] {
+                    //* making regex
+                    Dictionary<Match, GroupCollection>? matchToGroups = Utils.RegexFind(
+                        text,
+                        @"(?<percent>\d+(\.\d+)?)% of (?<number>\d+(\.\d+)?)",
+                        useIsMatch: true,
+                        () => {
+                            Utils.NotifCheck(
+                            true,
+                            new string[] {
                             "Huh.",
                             "It seems you did not input the parameters correctly. Try '% 50% of 300'.",
                             "3"
-                                    }
-                );
-                }
-            );
+                                }
+                            );
+                        }
+                    );
 
                     if (matchToGroups != null) {
                         List<float> nums = new();
 
-                        foreach (Dictionary<Match, GroupCollection> dict in matchToGroups) {
-                            foreach (KeyValuePair<Match, GroupCollection> kvp in dict) {
-                                nums.Add(float.Parse(kvp.Value["percent"].ToString()) / 100); // percentage in decimal
-                                nums.Add(float.Parse(kvp.Value["number"].ToString())); // number
-                            }
+                        foreach (KeyValuePair<Match, GroupCollection> kvp in matchToGroups) {
+                            nums.Add(float.Parse(kvp.Value["percent"].ToString()) / 100); //* percentage in decimal
+                            nums.Add(float.Parse(kvp.Value["number"].ToString())); //* number
                         }
 
-                        float y = nums[0] * nums[1]; // answer
+                        float y = nums[0] * nums[1]; //* answer
 
                         Utils.NotifCheck(notif, new string[] { "Success!", $"The Answer is {y}.", "5" });
                         Utils.CopyCheck(copy, y.ToString());
@@ -1541,7 +1623,7 @@ Word count: {args[1..].Length}";
 
                     string text = string.Join(' ', args[1..]);
 
-                    // testing if text is a number
+                    //* testing if text is a number
                     try {
                         int.Parse(text);
                     } catch {
@@ -1730,25 +1812,6 @@ Word count: {args[1..].Length}";
                     Utils.CopyCheck(copy, Sb.ToString());
                     Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
                     return Sb.ToString();
-                }
-            );
-
-            FormattableCommand shuffle = new(
-                commandName: "shuffle",
-                function: (string[] args, bool copy, bool notif) => {
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
-
-                    string text = string.Join(' ', args[1..]);
-                    Shuffle.getPer(text.ToCharArray());
-
-                    string ans = string.Join("\n", Shuffle.permutations);
-                    Utils.CopyCheck(copy, ans);
-                    System.Console.WriteLine($"Number of permutations: {Shuffle.permutations.Count}");
-                    Utils.NotifCheck(notif, new string[] { "Success!", $@"Permutations copied to clipboard.
-Number of permutations: {Shuffle.permutations.Count}", "4" });
-                    return ans;
                 }
             );
 
