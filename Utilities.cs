@@ -8,7 +8,7 @@
             RegisterCommands.RegisterAllRCommands();
             RegisterCommands.RegisterAllFCommands();
 #if UTILITIES_DEBUG
-            // debug mode, only used for specific times
+            //* debug mode, only used for specific times
             string? copied_text = UtilitiesAppContext.Utilities(args);
             if (copied_text != null) { Console.WriteLine(copied_text); }
 #else
@@ -24,6 +24,7 @@
 #endif
         }
     }
+
     public class UtilitiesAppContext : ApplicationContext {
         public static string? Utilities(string[] args) {
             var cmd = args[0].ToLower();
@@ -46,7 +47,7 @@
                 Exit();
             };
 
-            // making keyboard hook for ctrl + f8
+            //* making keyboard hook for ctrl + f8
             HookManager.AddHook(
                 "utilities",
                 new ModifierKeys[] { ModifierKeys.Control },
@@ -65,7 +66,7 @@
                 registerHotkeyFailed
             );
 
-            // creating tray icon
+            //* creating tray icon
             trayIcon = new NotifyIcon() {
                 Text = "utilities-cs"
             };
