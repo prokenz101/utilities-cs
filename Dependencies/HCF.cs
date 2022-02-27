@@ -8,8 +8,8 @@ namespace utilities_cs {
             return hcf_exec(b % a, a);
         }
 
-        // Function to find gcd of 
-        // array of numbers
+        //* Function to find gcd of 
+        //* array of numbers
         public static System.Numerics.BigInteger findGCD(
             System.Numerics.BigInteger[] arr,
             System.Numerics.BigInteger n
