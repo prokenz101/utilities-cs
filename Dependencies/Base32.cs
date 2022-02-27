@@ -59,7 +59,7 @@ namespace utilities_cs {
                 outputBase32BytePosition += bitsAvailableInByte;
 
                 if (outputBase32BytePosition >= OutByteSize) {
-                    outputBase32Byte &= 0x1F;  // 0x1F = 00011111 in binary
+                    outputBase32Byte &= 0x1F;  //* 0x1F = 00011111 in binary
 
                     builder.Append(Base32Alphabet[outputBase32Byte]);
 
@@ -70,7 +70,7 @@ namespace utilities_cs {
             if (outputBase32BytePosition > 0) {
                 outputBase32Byte <<= (OutByteSize - outputBase32BytePosition);
 
-                outputBase32Byte &= 0x1F;  // 0x1F = 00011111 in binary
+                outputBase32Byte &= 0x1F;  //* 0x1F = 00011111 in binary
 
                 builder.Append(Base32Alphabet[outputBase32Byte]);
             }
