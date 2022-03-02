@@ -271,49 +271,6 @@ namespace utilities_cs {
                 aliases: new string[] { "notify", "notif" }
             );
 
-            RegularCommand shuffle = new(
-                commandName: "shuffle",
-                function: async (string[] args) => {
-                    if (Utils.IndexTest(args)) {
-                        return;
-                    }
-
-                    string text = string.Join(' ', args[1..]);
-                    //* quick check to see if the shuffling will actually take time
-                    HashSet<char> text_check = text.ToHashSet();
-                    if (text_check.Count > 10 && !(text_check.Count > 15)) {
-                        Utils.NotifCheck(
-                            true,
-                            new string[] {
-                                "Shuffling...",
-                                "This might take a while as your string is over 10 characters.",
-                                "4"
-                            }
-                        );
-                    } else if (text_check.Count > 15) {
-                        Utils.NotifCheck(true, new string[] {
-                            "You shouldn't do that.",
-                            $@"Your string can generate more than a billion permutations at max.
-This has a risk of crashing your PC.",
-                            "7"
-                        });
-                        return;
-                    } else {
-                        await Task.Run(
-                            () => {
-                                HashSet<string> ansSet = Shuffle.getPer(text.ToCharArray());
-                                string ans = string.Join("\n", ansSet);
-                                Utils.CopyCheck(true, ans);
-                                Utils.NotifCheck(
-                                true, new string[] { "Shuffled.", $@"All permutations copied to clipboard.
-Number of permutations: {ansSet.Count}", "4" }
-                                );
-                            }
-                        );
-                    }
-                }
-            );
-
             RegularCommand remind = new(
                 commandName: "remind",
                 function: async (string[] args) => {
@@ -819,7 +776,10 @@ Number of permutations: {ansSet.Count}", "4" }
                         { "<-", "⭠" },
                         { "->", "⭢" },
                         { "<<-", "↞" },
-                        { "->>", "↠" }
+                        { "->>", "↠" },
+                        { "int16maxvalue", Int16.MaxValue.ToString() },
+                        { "int32maxvalue", Int32.MaxValue.ToString() },
+                        { "int64maxvalue", Int64.MaxValue.ToString() }
                     };
 
                     if (cp_dict.ContainsKey(text)) {
