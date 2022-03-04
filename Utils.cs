@@ -10,7 +10,12 @@ namespace utilities_cs {
         /// <param name="title">The title of the notificaton.</param>
         /// <param name="subtitle">The subtitle of the notification.</param>
         /// <param name="toastexpirationtime">The amount of time that the toast will stay on screen.</param>
-        public async static void Notification(string title, string subtitle, int toastexpirationtime = 1) {
+        public async static void Notification(
+                string title,
+                string subtitle,
+                int toastexpirationtime = 1,
+                bool bypassLengthLimit = false
+            ) {
             if (notificationTask != null) {
                 await notificationTask;
             }
@@ -21,11 +26,11 @@ namespace utilities_cs {
             };
 
             //* Check if title and subtitle are too long
-            if (title.Length > 54) {
+            if (title.Length > 54 && !bypassLengthLimit) {
                 title = notifTooLong[0];
                 subtitle = notifTooLong[1];
                 toastexpirationtime = 5;
-            } else if (subtitle.Length > 108) {
+            } else if (subtitle.Length > 108 && !bypassLengthLimit) {
                 title = notifTooLong[0];
                 subtitle = notifTooLong[1];
                 toastexpirationtime = 5;
@@ -99,7 +104,6 @@ namespace utilities_cs {
         /// <param name="copy">Boolean that is usually true and checks if the function wants to copy something.</param>
         /// <param name="toCopy">The string that is to be copied to the clipboard if copy is true.</param>
         public static void CopyCheck(bool copy, string toCopy) {
-            SettingsJSON currentSettings = SettingsModifification.getSettings();
             SettingsJSON currentSettings = SettingsModification.GetSettings();
             bool settingsDisallowed = currentSettings.disableClipboardManipulation;
             bool autoPaste = currentSettings.autoPaste;
@@ -123,8 +127,7 @@ namespace utilities_cs {
         /// </summary>
         /// <param name="notif">Boolean that is usually true and checks if notification is gonna be sent.</param>
         /// <param name="notifContent">The content for the notification, if it notif is true.</param>
-        public static void NotifCheck(bool notif, string[] notifContent) {
-            SettingsJSON currentSettings = SettingsModifification.getSettings();
+        public static void NotifCheck(bool notif, string[] notifContent, bool bypassLengthLimit = false) {
             SettingsJSON currentSettings = SettingsModification.GetSettings();
             bool settingsDisallowed = currentSettings.disableNotifications;
 
@@ -132,7 +135,8 @@ namespace utilities_cs {
                 Notification(
                     notifContent[0],
                     notifContent[1],
-                    int.Parse(notifContent[2])
+                    int.Parse(notifContent[2]),
+                    bypassLengthLimit: bypassLengthLimit
                 );
             }
         }
