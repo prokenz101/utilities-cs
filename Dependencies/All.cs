@@ -1,6 +1,9 @@
 namespace utilities_cs {
     public class All {
         public static string? returnCategory(string[] args, string category, bool copy, bool notif) {
+            SettingsJSON currentSettings = SettingsModifification.getSettings();
+            bool shouldShowNames = currentSettings.allCommandHideNames;
+
             var buildCommandDictionary = (string[] commands) => (
                     from command in commands
                     select new Tuple<string, Func<string[], bool, bool, string>>(
@@ -30,18 +33,24 @@ namespace utilities_cs {
             Action<Dictionary<string, Func<string[], bool, bool, string?>>> base32AndGZIPCheck =
                 (Dictionary<string, Func<string[], bool, bool, string?>> dict) => {
                     foreach (KeyValuePair<string, Func<string[], bool, bool, string?>> kvp in dict) {
-                        switch (kvp.Key) {
-                            case "GZip":
-                                converted.Add(
-                                    $"{kvp.Key}: {kvp.Value.Invoke(b32AndGZipArgs.ToArray(), false, false)}"
-                                ); break;
-                            case "Base32":
-                                converted.Add(
-                                    $"{kvp.Key}: {kvp.Value.Invoke(b32AndGZipArgs.ToArray(), false, false)}"
-                                ); break;
-                            default:
-                                converted.Add($"{kvp.Key}: {kvp.Value.Invoke(args, false, false)}");
-                                break;
+                        if (kvp.Key == "GZip" | kvp.Key == "Base32") {
+                            try {
+                                string? output = kvp.Value.Invoke(b32AndGZipArgs.ToArray(), false, false);
+                                if (output != null) {
+                                    if (!shouldShowNames) {
+                                        converted.Add($"{kvp.Key}: {output}");
+                                    } else { converted.Add(output); }
+                                }
+                            } catch { }
+                        } else {
+                            try {
+                                string? output = kvp.Value.Invoke(args, false, false);
+                                if (output != null) {
+                                    if (!shouldShowNames) {
+                                        converted.Add($"{kvp.Key}: {output}");
+                                    } else { converted.Add(output!); }
+                                }
+                            } catch { }
                         }
                     }
                 };
@@ -54,7 +63,14 @@ namespace utilities_cs {
                 case "encodings": base32AndGZIPCheck(encodings); break;
                 case "fancy":
                     foreach (KeyValuePair<string, Func<string[], bool, bool, string?>> kvp in fancy) {
-                        converted.Add($@"{kvp.Key}: {kvp.Value.Invoke(args, false, false)}");
+                        try {
+                            string? output = kvp.Value.Invoke(args, false, false);
+                            if (output != null) {
+                                if (!shouldShowNames) {
+                                    converted.Add($@"{kvp.Key}: {output}");
+                                } else { converted.Add(output); }
+                            }
+                        } catch { }
                     }
                     break;
                 default:
