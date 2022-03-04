@@ -1,30 +1,4 @@
 namespace utilities_cs {
-    public class Settings {
-        RegularCommand settings = new(
-            commandName: "settings",
-            function: (string[] args) => {
-                string mode = args[1];
-
-                if (mode == "modify") {
-                    try {
-                        string setting = args[2];
-                        string value = args[3];
-                        SettingsJSON currentSettings = SettingsModifification.getSettings();
-                        SettingsModifification.modifySettings(currentSettings, setting, value);
-                    } catch (IndexOutOfRangeException) {
-                        Utils.NotifCheck(true, new string[] { "Huh.", "It seems you did not input a setting/value.", "3" });
-                    }
-
-                } else if (mode == "reset") {
-                    SettingsModifification.createDirAndJson();
-                    Utils.NotifCheck(true, new string[] { "Reset.", "All settings have been reset to default.", "4" });
-                } else {
-                    Utils.NotifCheck(true, new string[] { "Huh.", "It seems that was not a valid mode.", "3" });
-                }
-            }
-        );
-    }
-
     public class SettingsModifification {
         public static string utilitiesCsFolder = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
@@ -42,7 +16,7 @@ namespace utilities_cs {
                 return getSettings();
             }
         }
-        public static void modifySettings(SettingsJSON currentSettings, string setting, string value) {
+        public static void modifySetting(SettingsJSON currentSettings, string setting, string value) {
             Action mutuallyExclusive = () => {
                 Utils.NotifCheck(
                     true,
@@ -80,6 +54,9 @@ namespace utilities_cs {
                 case "pressEscape":
                     currentSettings.pressEscape = Convert.ToBoolean(ConvertToBoolOrInt("bool", value));
                     break;
+                case "allCommandHideNames":
+                    currentSettings.allCommandHideNames = Convert.ToBoolean(ConvertToBoolOrInt("bool", value));
+                    break;
             }
 
             string jsonString = System.Text.Json.JsonSerializer.Serialize<SettingsJSON>(currentSettings);
@@ -97,7 +74,8 @@ namespace utilities_cs {
                 disableClipboardManipulation = false,
                 copyingHotkeyDelay = 25,
                 autoPaste = false,
-                pressEscape = true
+                pressEscape = true,
+                allCommandHideNames = false
             };
 
             string jsonString = System.Text.Json.JsonSerializer.Serialize<SettingsJSON>(defaultSettings);
@@ -127,5 +105,6 @@ namespace utilities_cs {
         public int copyingHotkeyDelay { get; set; }
         public bool autoPaste { get; set; }
         public bool pressEscape { get; set; }
+        public bool allCommandHideNames { get; set; }
     }
 }
