@@ -29,9 +29,9 @@ namespace utilities_cs {
                 Utils.NotifCheck(
                     true,
                     new string[] {
-                    "Welp.",
-                    "It seems utilities couldn't understand what command you were trying to use.",
-                    "6"
+                        "Welp.",
+                        "It seems utilities couldn't understand what command you were trying to use.",
+                        "6"
                     }
                 );
                 return null;
@@ -113,7 +113,6 @@ namespace utilities_cs {
             string[]? aliases = null
         ) {
             //* setting all attributes for instance
-            CommandName = commandName; Function = function; Aliases = aliases;
             if (aliases != null) {
                 rCommands.Add(commandName, function);
                 foreach (string alias in aliases) { rCommands.Add(alias, function); }
@@ -305,7 +304,7 @@ namespace utilities_cs {
 
                         int time = time_enumerable[0];
                         char unit = unit_enumerable[0];
-                        string reminder_text = text_enumerable[0];
+                        string reminderText = text_enumerable[0];
 
                         Dictionary<char, string[]> time_options = new() {
                             { 's', new string[] { "1", "second" } },
@@ -321,7 +320,7 @@ namespace utilities_cs {
 
                                 Task.Delay(time_seconds).Wait();
 
-                                if (time == 1 && reminder_text == string.Empty) {
+                                if (time == 1 && reminderText == string.Empty) {
                                     Utils.NotifCheck(
                                         true,
                                         new string[] {
@@ -333,7 +332,7 @@ namespace utilities_cs {
                                     Console.WriteLine(
                                         $"Reminder! Hey! You set a reminder for 1 {word} and it's time! 6"
                                     );
-                                } else if (reminder_text == string.Empty) {
+                                } else if (reminderText == string.Empty) {
                                     Utils.NotifCheck(
                                         true,
                                         new string[] {
@@ -350,7 +349,7 @@ namespace utilities_cs {
                                         true,
                                         new string[] {
                                             "Reminder!",
-                                            $"Hey! Your reminder was: {reminder_text}",
+                                            $"Hey! Your reminder was: {reminderText}",
                                             "6"
                                         }
                                     ); Console.WriteLine("Reminder! Hey! Your reminder was: {reminder_text} 6");
@@ -445,9 +444,9 @@ namespace utilities_cs {
                         Utils.NotifCheck(
                             true,
                             new string[] {
-                "Huh.",
-                "It seems you did not input a valid category.",
-                "4"
+                                "Huh.",
+                                "It seems you did not input a valid category.",
+                                "4"
                             }
                         );
                         return null;
@@ -880,7 +879,6 @@ namespace utilities_cs {
             FormattableCommand cursive = new(
                 commandName: "cursive",
                 function: (string[] args, bool copy, bool notif) => {
-                    if (Utils.IndexTest(args)) {
                         return null;
                     }
                     string text = string.Join(" ", args[1..]);
@@ -1627,7 +1625,6 @@ Word count: {args[1..].Length}";
                     List<int> nums = Utils.RegexFindAllInts(text);
 
                     Random rand = new Random();
-                    int randint = rand.Next(nums[0], nums[1]);
 
                     Utils.CopyCheck(copy, randint.ToString());
                     Utils.NotifCheck(notif, new string[] { "Success!", $"The number was: {randint}", "5" });
