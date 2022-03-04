@@ -195,27 +195,43 @@ namespace utilities_cs {
                 commandName: "settings",
                 function: (string[] args) => {
                     string mode = args[1];
-                    if (mode == "modify") {
-                        try {
-                            string setting = args[2];
-                            string value = args[3];
-                            SettingsJSON currentSettings = SettingsModifification.getSettings();
-                            SettingsModifification.modifySetting(currentSettings, setting, value);
-                        } catch (IndexOutOfRangeException) {
-                            Utils.NotifCheck(true,
-                                new string[] {
+                    switch (mode) {
+                        case "modify":
+                            try {
+                                string setting = args[2];
+                                string value = args[3];
+                                SettingsJSON currentSettings = SettingsModification.GetSettings();
+                                SettingsModification.ModifySetting(currentSettings, setting, value);
+                            } catch (IndexOutOfRangeException) {
+                                Utils.NotifCheck(true,
+                                    new string[] {
                                     "Huh.",
                                     "It seems you did not input a setting/value.",
                                     "3"
-                                }
-                            );
-                        }
+                                    }
+                                );
+                            }
+                            break;
 
-                    } else if (mode == "reset") {
-                        SettingsModifification.createDirAndJson();
-                        Utils.NotifCheck(true, new string[] { "Reset.", "All settings have been reset to default.", "4" });
-                    } else {
-                        Utils.NotifCheck(true, new string[] { "Huh.", "It seems that was not a valid mode.", "3" });
+                        case "reset":
+                            SettingsModification.CreateDirAndJson();
+                            Utils.NotifCheck(
+                                true,
+                                new string[] { "Reset.", "All settings have been reset to default.", "4" }
+                            ); break;
+
+                        case "list":
+                            string settings = SettingsModification.ListAllSettings();
+                            Utils.CopyCheck(true, settings);
+                            Utils.NotifCheck(
+                                true,
+                                new string[] { "Success!", "The settings have been copied to your clipboard.", "3" }
+                            );
+                            break;
+
+                        default:
+                            Utils.NotifCheck(true, new string[] { "Huh.", "It seems that was not a valid mode.", "3" });
+                            break;
                     }
                 }
             );
@@ -935,8 +951,10 @@ namespace utilities_cs {
             FormattableCommand cursive = new(
                 commandName: "cursive",
                 function: (string[] args, bool copy, bool notif) => {
+                    if (Utils.IndexTest(args)) {
                         return null;
                     }
+
                     string text = string.Join(" ", args[1..]);
                     List<string> converted = new();
                     var cursive_char = new Dictionary<string, string>() {
@@ -1584,34 +1602,34 @@ Word count: {args[1..].Length}";
                     }
                     string text = string.Join(" ", args[1..]);
 
-                    //* making regex
-                    Dictionary<Match, GroupCollection>? matchToGroups = Utils.RegexFind(
-                        text,
-                        @"(?<percent>\d+(\.\d+)?)% of (?<number>\d+(\.\d+)?)",
-                        useIsMatch: true,
-                        () => {
-                            Utils.NotifCheck(
-                            true,
-                            new string[] {
+                //* making regex
+                Dictionary<Match, GroupCollection>? matchToGroups = Utils.RegexFind(
+                    text,
+                    @"(?<percent>\d+(\.\d+)?)% of (?<number>\d+(\.\d+)?)",
+                    useIsMatch: true,
+                    () => {
+                        Utils.NotifCheck(
+                        true,
+                        new string[] {
                             "Huh.",
                             "It seems you did not input the parameters correctly. Try '% 50% of 300'.",
                             "3"
-                                }
-                            );
-                        }
-                    );
+                            }
+                        );
+                    }
+                );
 
                     if (matchToGroups != null) {
                         List<float> nums = new();
 
                         foreach (KeyValuePair<Match, GroupCollection> kvp in matchToGroups) {
                             nums.Add(float.Parse(kvp.Value["percent"].ToString()) / 100); //* percentage in decimal
-                            nums.Add(float.Parse(kvp.Value["number"].ToString())); //* number
-                        }
+                        nums.Add(float.Parse(kvp.Value["number"].ToString())); //* number
+                    }
 
                         float y = nums[0] * nums[1]; //* answer
 
-                        Utils.NotifCheck(notif, new string[] { "Success!", $"The Answer is {y}.", "5" });
+                    Utils.NotifCheck(notif, new string[] { "Success!", $"The Answer is {y}.", "5" });
                         Utils.CopyCheck(copy, y.ToString());
                         return y.ToString();
                     } else {
@@ -1642,8 +1660,8 @@ Word count: {args[1..].Length}";
 
                     string text = string.Join(' ', args[1..]);
 
-                    //* testing if text is a number
-                    try {
+                //* testing if text is a number
+                try {
                         int.Parse(text);
                     } catch {
                         Utils.NotifCheck(
@@ -1680,8 +1698,8 @@ Word count: {args[1..].Length}";
                     string text = string.Join(" ", args[1..]);
                     List<int> nums = Utils.RegexFindAllInts(text);
 
-                    //* quick check to see if the first num is greater than second
-                    if (nums[0] > nums[1]) {
+                //* quick check to see if the first num is greater than second
+                if (nums[0] > nums[1]) {
                         Utils.NotifCheck(
                             true,
                             new string[] {

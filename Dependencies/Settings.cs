@@ -1,22 +1,30 @@
 namespace utilities_cs {
-    public class SettingsModifification {
+    public class SettingsModification {
+        public static SettingsJSON defaultSettings = new SettingsJSON {
+            disableNotifications = false,
+            disableClipboardManipulation = false,
+            copyingHotkeyDelay = 25,
+            autoPaste = false,
+            pressEscape = true,
+            allCommandHideNames = false
+        };
         public static string utilitiesCsFolder = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             "utilities-cs"
         );
         public static string settingsJsonPath = Path.Combine(utilitiesCsFolder, "settings.json");
-        public static SettingsJSON getSettings() {
+        public static SettingsJSON GetSettings() {
             try {
                 string jsonString = File.ReadAllText(settingsJsonPath);
                 SettingsJSON settings = System.Text.Json.JsonSerializer.Deserialize<SettingsJSON>(jsonString)!;
                 return settings;
             } catch {
-                createDirAndJson();
+                CreateDirAndJson();
                 Thread.Sleep(500);
-                return getSettings();
+                return GetSettings();
             }
         }
-        public static void modifySetting(SettingsJSON currentSettings, string setting, string value) {
+        public static void ModifySetting(SettingsJSON currentSettings, string setting, string value) {
             Action mutuallyExclusive = () => {
                 Utils.NotifCheck(
                     true,
@@ -63,23 +71,25 @@ namespace utilities_cs {
             try {
                 File.WriteAllText(settingsJsonPath, jsonString);
             } catch (DirectoryNotFoundException) {
-                createDirAndJson();
+                CreateDirAndJson();
             }
 
             Utils.NotifCheck(true, new string[] { "Modified.", $"'{setting}' has been changed to {value}.", "4" });
         }
-        public static void createDirAndJson() {
-            SettingsJSON defaultSettings = new SettingsJSON {
-                disableNotifications = false,
-                disableClipboardManipulation = false,
-                copyingHotkeyDelay = 25,
-                autoPaste = false,
-                pressEscape = true,
-                allCommandHideNames = false
-            };
 
+        public static string ListAllSettings() {
+            List<string> settings = new();
+            foreach (var i in defaultSettings.GetType().GetProperties()) {
+                settings.Add(i.Name);
+            }
+
+            string allSettings = string.Join("\n", settings);
+            return allSettings;
+        }
+
+        public static void CreateDirAndJson() {
             string jsonString = System.Text.Json.JsonSerializer.Serialize<SettingsJSON>(defaultSettings);
-            Directory.CreateDirectory(SettingsModifification.utilitiesCsFolder);
+            Directory.CreateDirectory(SettingsModification.utilitiesCsFolder);
             File.WriteAllText(settingsJsonPath, jsonString);
         }
 
