@@ -33,7 +33,7 @@
         }
         private NotifyIcon trayIcon;
         public UtilitiesAppContext() {
-            SettingsJSON currentSettings = SettingsModifification.getSettings();
+            SettingsJSON currentSettings = SettingsModification.GetSettings();
             int hotkeyDelay = currentSettings.copyingHotkeyDelay;
             Action registerHotkeyFailed = () => {
                 Utils.NotifCheck(

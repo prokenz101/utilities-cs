@@ -100,6 +100,7 @@ namespace utilities_cs {
         /// <param name="toCopy">The string that is to be copied to the clipboard if copy is true.</param>
         public static void CopyCheck(bool copy, string toCopy) {
             SettingsJSON currentSettings = SettingsModifification.getSettings();
+            SettingsJSON currentSettings = SettingsModification.GetSettings();
             bool settingsDisallowed = currentSettings.disableClipboardManipulation;
             bool autoPaste = currentSettings.autoPaste;
             bool disableClipboardManipulation = currentSettings.disableClipboardManipulation;
@@ -124,6 +125,7 @@ namespace utilities_cs {
         /// <param name="notifContent">The content for the notification, if it notif is true.</param>
         public static void NotifCheck(bool notif, string[] notifContent) {
             SettingsJSON currentSettings = SettingsModifification.getSettings();
+            SettingsJSON currentSettings = SettingsModification.GetSettings();
             bool settingsDisallowed = currentSettings.disableNotifications;
 
             if (notif && !settingsDisallowed) {
