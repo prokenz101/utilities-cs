@@ -164,6 +164,35 @@ namespace utilities_cs {
                 }
             );
 
+            RegularCommand settings = new(
+                commandName: "settings",
+                function: (string[] args) => {
+                    string mode = args[1];
+                    if (mode == "modify") {
+                        try {
+                            string setting = args[2];
+                            string value = args[3];
+                            SettingsJSON currentSettings = SettingsModifification.getSettings();
+                            SettingsModifification.modifySetting(currentSettings, setting, value);
+                        } catch (IndexOutOfRangeException) {
+                            Utils.NotifCheck(true,
+                                new string[] {
+                                    "Huh.",
+                                    "It seems you did not input a setting/value.",
+                                    "3"
+                                }
+                            );
+                        }
+
+                    } else if (mode == "reset") {
+                        SettingsModifification.createDirAndJson();
+                        Utils.NotifCheck(true, new string[] { "Reset.", "All settings have been reset to default.", "4" });
+                    } else {
+                        Utils.NotifCheck(true, new string[] { "Huh.", "It seems that was not a valid mode.", "3" });
+                    }
+                }
+            );
+
             RegularCommand exit = new(
                 commandName: "exit",
                 function: (string[] args) => {
