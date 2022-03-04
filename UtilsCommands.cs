@@ -1624,7 +1624,21 @@ Word count: {args[1..].Length}";
                     string text = string.Join(" ", args[1..]);
                     List<int> nums = Utils.RegexFindAllInts(text);
 
+                    //* quick check to see if the first num is greater than second
+                    if (nums[0] > nums[1]) {
+                        Utils.NotifCheck(
+                            true,
+                            new string[] {
+                                "Huh.",
+                                "Unfortunately the minimum value of the random number cannot be higher than the max value.",
+                                "5"
+                            }
+                        );
+                        return null;
+                    }
+
                     Random rand = new Random();
+                    int randint = rand.Next(nums[0], nums[1] + 1);
 
                     Utils.CopyCheck(copy, randint.ToString());
                     Utils.NotifCheck(notif, new string[] { "Success!", $"The number was: {randint}", "5" });
