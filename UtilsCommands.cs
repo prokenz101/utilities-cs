@@ -126,6 +126,7 @@ namespace utilities_cs {
             string[]? aliases = null
         ) {
             //* setting all attributes for instance
+            CommandName = commandName.ToLower(); Function = function; Aliases = aliases;
             if (aliases != null) {
                 rCommands.Add(commandName, function);
                 foreach (string alias in aliases) { rCommands.Add(alias, function); }
