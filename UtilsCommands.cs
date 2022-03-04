@@ -73,6 +73,19 @@ namespace utilities_cs {
         }
 
         /// <summary>
+        /// Lists all currently registered FormattableCommands.
+        /// </summary>
+        /// <returns>A string with all currently registered Commands, seperated by newlines.</returns>
+        public static string ListAllFCommands() {
+            List<string> fCommandsList = new();
+            foreach (KeyValuePair<string, Func<string[], bool, bool, string?>> i in Command.fCommands) {
+                fCommandsList.Add(i.Key);
+            }
+
+            return string.Join("\n", fCommandsList);
+        }
+
+        /// <summary>
         /// Finds the command in the fCommands dictionary and then executes it.
         /// </summary>
         /// <param name="cmd">The command to execute.</param>
@@ -119,6 +132,19 @@ namespace utilities_cs {
             } else {
                 rCommands.Add(commandName, function);
             }
+        }
+
+        /// <summary>
+        /// Lists all currently registered Regular Commands.
+        /// </summary>
+        /// <returns>A string with every RegularCommand, seperated by newlines.</returns>
+        public static string ListAllRCommands() {
+            List<string> rCommandsList = new();
+            foreach (KeyValuePair<string, Action<string[]>> i in Command.rCommands) {
+                rCommandsList.Add(i.Key);
+            }
+
+            return string.Join("\n", rCommandsList);
         }
 
         /// <summary>A non-static method that executes a command immediately.</summary>
