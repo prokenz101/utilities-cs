@@ -1,8 +1,7 @@
 namespace utilities_cs {
     public class All {
         public static string? returnCategory(string[] args, string category, bool copy, bool notif) {
-            SettingsJSON currentSettings = SettingsModification.GetSettings();
-            bool shouldShowNames = currentSettings.allCommandHideNames;
+            bool shouldShowNames = UtilitiesAppContext.currentSettings.allCommandHideNames;
 
             var buildCommandDictionary = (string[] commands) => (
                     from command in commands

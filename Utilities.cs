@@ -32,9 +32,11 @@
             if (output != null) { return output; } else { return null; }
         }
         private NotifyIcon trayIcon;
+
+        public static SettingsJSON currentSettings = SettingsModification.GetSettings();
+
         public UtilitiesAppContext() {
-            SettingsJSON currentSettings = SettingsModification.GetSettings();
-            int hotkeyDelay = currentSettings.copyingHotkeyDelay;
+
             Action registerHotkeyFailed = () => {
                 Utils.NotifCheck(
                     true,
@@ -53,6 +55,7 @@
                 new ModifierKeys[] { ModifierKeys.Control },
                 Keys.F8,
                 () => {
+                    int hotkeyDelay = currentSettings.copyingHotkeyDelay;
                     bool pressEscape = currentSettings.pressEscape;
 
                     SendKeys.Send("^a");

@@ -104,10 +104,9 @@ namespace utilities_cs {
         /// <param name="copy">Boolean that is usually true and checks if the function wants to copy something.</param>
         /// <param name="toCopy">The string that is to be copied to the clipboard if copy is true.</param>
         public static void CopyCheck(bool copy, string toCopy) {
-            SettingsJSON currentSettings = SettingsModification.GetSettings();
-            bool settingsDisallowed = currentSettings.disableClipboardManipulation;
-            bool autoPaste = currentSettings.autoPaste;
-            bool disableClipboardManipulation = currentSettings.disableClipboardManipulation;
+            bool settingsDisallowed = UtilitiesAppContext.currentSettings.disableClipboardManipulation;
+            bool autoPaste = UtilitiesAppContext.currentSettings.autoPaste;
+            bool disableClipboardManipulation = UtilitiesAppContext.currentSettings.disableClipboardManipulation;
 
             if (copy && !settingsDisallowed) {
                 WindowsClipboard.SetText(toCopy);
@@ -128,8 +127,7 @@ namespace utilities_cs {
         /// <param name="notif">Boolean that is usually true and checks if notification is gonna be sent.</param>
         /// <param name="notifContent">The content for the notification, if it notif is true.</param>
         public static void NotifCheck(bool notif, string[] notifContent, bool bypassLengthLimit = false) {
-            SettingsJSON currentSettings = SettingsModification.GetSettings();
-            bool settingsDisallowed = currentSettings.disableNotifications;
+            bool settingsDisallowed = UtilitiesAppContext.currentSettings.disableNotifications;
 
             if (notif && !settingsDisallowed) {
                 Notification(

@@ -78,6 +78,7 @@ namespace utilities_cs {
                 CreateDirAndJson();
             }
 
+            UtilitiesAppContext.currentSettings = SettingsModification.GetSettings();
             Utils.NotifCheck(true, new string[] { "Modified.", $"'{setting}' has been changed to {value}.", "4" });
         }
 
