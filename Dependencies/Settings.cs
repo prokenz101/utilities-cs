@@ -8,11 +8,14 @@ namespace utilities_cs {
             pressEscape = true,
             allCommandHideNames = false
         };
+
         public static string utilitiesCsFolder = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             "utilities-cs"
         );
+
         public static string settingsJsonPath = Path.Combine(utilitiesCsFolder, "settings.json");
+
         public static SettingsJSON GetSettings() {
             try {
                 string jsonString = File.ReadAllText(settingsJsonPath);
@@ -24,6 +27,7 @@ namespace utilities_cs {
                 return GetSettings();
             }
         }
+
         public static void ModifySetting(SettingsJSON currentSettings, string setting, string value) {
             Action mutuallyExclusive = () => {
                 Utils.NotifCheck(
@@ -75,6 +79,15 @@ namespace utilities_cs {
             }
 
             Utils.NotifCheck(true, new string[] { "Modified.", $"'{setting}' has been changed to {value}.", "4" });
+        }
+
+        public static void OpenSettingsJSON() {
+            System.Diagnostics.Process.Start(
+                new System.Diagnostics.ProcessStartInfo(
+                    "cmd",
+                    $"/c start {settingsJsonPath}"
+                ) { CreateNoWindow = true }
+            );
         }
 
         public static string ListAllSettings() {

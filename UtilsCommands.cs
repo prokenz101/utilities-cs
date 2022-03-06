@@ -229,6 +229,10 @@ namespace utilities_cs {
                             );
                             break;
 
+                        case "open":
+                            SettingsModification.OpenSettingsJSON();
+                            break;
+
                         default:
                             Utils.NotifCheck(true, new string[] { "Huh.", "It seems that was not a valid mode.", "3" });
                             break;
