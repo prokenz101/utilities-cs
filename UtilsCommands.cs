@@ -1594,6 +1594,32 @@ Word count: {args[1..].Length}";
                 aliases: new string[] { "morsecode" }
             );
 
+            FormattableCommand divide = new(
+                commandName: "divide",
+                function: (string[] args, bool copy, bool notif) => {
+                    if (Utils.IndexTest(args)) {
+                        return null;
+                    }
+
+                    string text = string.Join(" ", args[1..]);
+                    List<int> ints = Utils.RegexFindAllInts(text);
+
+                    int dividedNum = ints[0] / ints[1]; int remainder = ints[0] % ints[1];
+
+                    Func<string, string> returnNum = (string ans) => {
+                        Utils.CopyCheck(copy, ans);
+                        Utils.NotifCheck(notif, new string[] { "Success!", ans, "5" });
+                        return ans;
+                    };
+
+                    if (remainder != 0) {
+                        return returnNum($"Answer: {dividedNum} and Remainder: {remainder}");
+                    } else {
+                        return returnNum($"Answer: {dividedNum}");
+                    }
+                }
+            );
+
             FormattableCommand percentage = new(
                 commandName: "percentage",
                 function: (string[] args, bool copy, bool notif) => {
