@@ -5,7 +5,7 @@ namespace utilities_cs {
     /// <summary>
     /// The hierarchy of all command-classes for all commands in utilities-cs
     /// </summary>
-    public abstract class Command {
+    public class Command {
         public string? CommandName { get; set; }
         public string[]? Aliases { get; set; }
         public static Dictionary<string, Func<string[], bool, bool, string?>> fCommands = new();
@@ -44,6 +44,7 @@ namespace utilities_cs {
     /// </summary>
     public class FormattableCommand : Command {
         public Func<string[], bool, bool, string?>? Function;
+        
         public FormattableCommand(
             string commandName,
             Func<string[], bool, bool, string?> function,
@@ -58,6 +59,7 @@ namespace utilities_cs {
                 fCommands.Add(commandName, function);
             }
         }
+
         /// <summary>
         /// A non-static command that allows you to execute a command immediately.
         /// </summary>
