@@ -248,7 +248,7 @@ namespace utilities_cs {
             RegularCommand format = new(
                 commandName: "format",
                 function: (string[] args) => {
-                    string text = string.Join(' ', args[1..]);
+                    string text = string.Join(" ", args[1..]);
                     if (Utils.IndexTest(args)) {
                         return;
                     }
@@ -308,7 +308,7 @@ namespace utilities_cs {
             RegularCommand notification = new(
                 commandName: "notification",
                 function: (string[] args) => {
-                    string text = string.Join(' ', args[1..]);
+                    string text = string.Join(" ", args[1..]);
 
                     Dictionary<Match, GroupCollection>? matchToGroups = Utils.RegexFind(
                         text,
@@ -345,7 +345,7 @@ namespace utilities_cs {
             RegularCommand remind = new(
                 commandName: "remind",
                 function: async (string[] args) => {
-                    string text = string.Join(' ', args[1..]);
+                    string text = string.Join(" ", args[1..]);
 
                     Dictionary<Match, GroupCollection>? matchToGroups = Utils.RegexFind(
                         text,
@@ -533,7 +533,7 @@ namespace utilities_cs {
                         return null;
                     }
 
-                    string text = string.Join(' ', args[2..]);
+                    string text = string.Join(" ", args[2..]);
                     string mode = args[1];
 
                     if (text.Contains("=")) {
@@ -586,7 +586,7 @@ namespace utilities_cs {
                         return null;
                     }
 
-                    string text = string.Join(' ', args[1..]);
+                    string text = string.Join(" ", args[1..]);
                     if (IsBase64.IsBase64String(text)) {
                         try {
                             string ans = Base64Convert.Base64Decode(text);
@@ -618,7 +618,7 @@ namespace utilities_cs {
             FormattableCommand binary = new(
                 commandName: "binary",
                 function: (string[] args, bool copy, bool notif) => {
-                    string text = string.Join(' ', args[1..]);
+                    string text = string.Join(" ", args[1..]);
                     if (Utils.IndexTest(args)) {
                         return null;
                     }
@@ -917,7 +917,7 @@ namespace utilities_cs {
                         return null;
                     }
 
-                    string text = string.Join(' ', args[1..]);
+                    string text = string.Join(" ", args[1..]);
                     //* testing if string is a double
                     try {
                         Convert.ToDouble(text);
@@ -1031,7 +1031,7 @@ namespace utilities_cs {
             FormattableCommand emojify = new(
                 commandName: "emojify",
                 function: (string[] args, bool copy, bool notif) => {
-                    string text = string.Join(' ', args[1..]);
+                    string text = string.Join(" ", args[1..]);
 
                     if (Utils.IndexTest(args)) {
                         return null;
@@ -1308,7 +1308,7 @@ namespace utilities_cs {
                     }
 
                     string mode = args[1];
-                    string text = string.Join(' ', args[2..]);
+                    string text = string.Join(" ", args[2..]);
                     if (mode == "to") {
                         try {
                             string compressed = GZip.Compress(text);
@@ -1406,7 +1406,7 @@ namespace utilities_cs {
             FormattableCommand hexadecimal = new(
                 commandName: "hexadecimal",
                 function: (string[] args, bool copy, bool notif) => {
-                    string text = string.Join(' ', args[1..]);
+                    string text = string.Join(" ", args[1..]);
                     if (Utils.IndexTest(args)) {
                         return null;
                     }
@@ -1472,7 +1472,7 @@ namespace utilities_cs {
                         return null;
                     }
 
-                    string text = string.Join(' ', args[1..]);
+                    string text = string.Join(" ", args[1..]);
                     string len = $@"Character count: {text.Length.ToString()}
 Word count: {args[1..].Length}";
                     Utils.NotifCheck(notif, new string[] { "Success!", len, "5" });
@@ -1503,7 +1503,7 @@ Word count: {args[1..].Length}";
                         return null;
                     }
 
-                    string text = string.Join(' ', args[1..]);
+                    string text = string.Join(" ", args[1..]);
                     List<string> converted = new();
                     Dictionary<string, string> mathitalic_char = new() {
                         { "a", "𝑎" },
@@ -1580,7 +1580,7 @@ Word count: {args[1..].Length}";
             FormattableCommand morse = new(
                 commandName: "morse",
                 function: (string[] args, bool copy, bool notif) => {
-                    string text = string.Join(' ', args[1..]).ToLower();
+                    string text = string.Join(" ", args[1..]).ToLower();
                     if (Utils.IndexTest(args)) {
                         return null;
                     }
@@ -1602,34 +1602,34 @@ Word count: {args[1..].Length}";
                     }
                     string text = string.Join(" ", args[1..]);
 
-                //* making regex
-                Dictionary<Match, GroupCollection>? matchToGroups = Utils.RegexFind(
-                    text,
-                    @"(?<percent>\d+(\.\d+)?)% of (?<number>\d+(\.\d+)?)",
-                    useIsMatch: true,
-                    () => {
-                        Utils.NotifCheck(
-                        true,
-                        new string[] {
-                            "Huh.",
-                            "It seems you did not input the parameters correctly. Try '% 50% of 300'.",
-                            "3"
-                            }
-                        );
-                    }
-                );
+                    //* making regex
+                    Dictionary<Match, GroupCollection>? matchToGroups = Utils.RegexFind(
+                        text,
+                        @"(?<percent>\d+(\.\d+)?)% of (?<number>\d+(\.\d+)?)",
+                        useIsMatch: true,
+                        () => {
+                            Utils.NotifCheck(
+                                true,
+                                new string[] {
+                                    "Huh.",
+                                    "It seems you did not input the parameters correctly. Try '% 50% of 300'.",
+                                    "3"
+                                }
+                            );
+                        }
+                    );
 
                     if (matchToGroups != null) {
                         List<float> nums = new();
 
                         foreach (KeyValuePair<Match, GroupCollection> kvp in matchToGroups) {
                             nums.Add(float.Parse(kvp.Value["percent"].ToString()) / 100); //* percentage in decimal
-                        nums.Add(float.Parse(kvp.Value["number"].ToString())); //* number
-                    }
+                            nums.Add(float.Parse(kvp.Value["number"].ToString())); //* number
+                        }
 
                         float y = nums[0] * nums[1]; //* answer
 
-                    Utils.NotifCheck(notif, new string[] { "Success!", $"The Answer is {y}.", "5" });
+                        Utils.NotifCheck(notif, new string[] { "Success!", $"The Answer is {y}.", "5" });
                         Utils.CopyCheck(copy, y.ToString());
                         return y.ToString();
                     } else {
@@ -1658,10 +1658,10 @@ Word count: {args[1..].Length}";
                     "U", "V", "W", "X", "Y", "Z"
                 };
 
-                    string text = string.Join(' ', args[1..]);
+                    string text = string.Join(" ", args[1..]);
 
-                //* testing if text is a number
-                try {
+                    //* testing if text is a number
+                    try {
                         int.Parse(text);
                     } catch {
                         Utils.NotifCheck(
@@ -1698,8 +1698,8 @@ Word count: {args[1..].Length}";
                     string text = string.Join(" ", args[1..]);
                     List<int> nums = Utils.RegexFindAllInts(text);
 
-                //* quick check to see if the first num is greater than second
-                if (nums[0] > nums[1]) {
+                    //* quick check to see if the first num is greater than second
+                    if (nums[0] > nums[1]) {
                         Utils.NotifCheck(
                             true,
                             new string[] {
@@ -1905,7 +1905,7 @@ Word count: {args[1..].Length}";
             FormattableCommand title = new(
                 commandName: "titlecase",
                 function: (string[] args, bool copy, bool notif) => {
-                    string text = string.Join(' ', args[1..]).ToLower();
+                    string text = string.Join(" ", args[1..]).ToLower();
 
                     if (Utils.IndexTest(args)) {
                         return null;
