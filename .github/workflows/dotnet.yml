@@ -20,7 +20,7 @@ jobs:
     - name: Publish project
       run: dotnet publish -c Release --self-contained false
     - name: Show directory
-      run: dir
+      run: dir .\bin\
     - uses: actions/upload-artifact@v3.0.0
       with:
         name: my-artifact
