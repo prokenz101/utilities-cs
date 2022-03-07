@@ -2051,6 +2051,49 @@ Word count: {args[1..].Length}";
                 },
                 aliases: new string[] { "upper" }
             );
+
+            FormattableCommand camelcase = new(
+                commandName: "camelcase",
+                function: (string[] args, bool copy, bool notif) => {
+                    if (Utils.IndexTest(args)) {
+                        return null;
+                    }
+
+                    Func<string, string> output = (string result) => {
+                        Utils.CopyCheck(copy, result);
+                        Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
+                        return result;
+                    };
+
+                    List<string> ans = new();
+                    ans.Add(args[1].ToLower());
+
+                    try {
+                        var test = args[2];
+                        foreach (string i in args[2..]) {
+                            ans.Add(Utils.Capitalise(i));
+                        }
+                    } catch (IndexOutOfRangeException) {
+                        return output(ans[0]);
+                    }
+
+                    return output(string.Join("", ans));
+                }
+            );
+
+            FormattableCommand snakecase = new(
+                commandName: "snakecase",
+                function: (string[] args, bool copy, bool notif) => {
+                    if (Utils.IndexTest(args)) {
+                        return null;
+                    }
+
+                    string text = string.Join("_", args[1..]).ToLower();
+                    Utils.CopyCheck(copy, text);
+                    Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
+                    return text;
+                }
+            );
         }
     }
 }
