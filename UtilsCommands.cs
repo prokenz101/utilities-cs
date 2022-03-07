@@ -44,7 +44,7 @@ namespace utilities_cs {
     /// </summary>
     public class FormattableCommand : Command {
         public Func<string[], bool, bool, string?>? Function;
-        
+
         public FormattableCommand(
             string commandName,
             Func<string[], bool, bool, string?> function,
@@ -207,9 +207,9 @@ namespace utilities_cs {
                             } catch (IndexOutOfRangeException) {
                                 Utils.NotifCheck(true,
                                     new string[] {
-                                    "Huh.",
-                                    "It seems you did not input a setting/value.",
-                                    "3"
+                                        "Huh.",
+                                        "It seems you did not input a setting/value.",
+                                        "3"
                                     }
                                 );
                             }
@@ -268,9 +268,9 @@ namespace utilities_cs {
                     foreach (System.Text.RegularExpressions.Match? i in matches) {
                         if (i != null) {
                             System.Text.RegularExpressions.GroupCollection groups = i.Groups;
-                            System.Text.RegularExpressions.Group main_group = groups["command"];
+                            System.Text.RegularExpressions.Group mainGroup = groups["command"];
 
-                            string cmd = main_group.ToString();
+                            string cmd = mainGroup.ToString();
                             string[] splitcommand = cmd.Split(" ");
 
                             string? output = FormattableCommand.FindAndExecute(
@@ -370,33 +370,33 @@ namespace utilities_cs {
                     );
 
                     if (matchToGroups != null) {
-                        List<int> time_enumerable = new();
-                        List<char> unit_enumerable = new();
-                        List<string> text_enumerable = new();
+                        List<int> timeEnumerable = new();
+                        List<char> unitEnumerable = new();
+                        List<string> textEnumerable = new();
 
                         foreach (KeyValuePair<Match, GroupCollection> kvp in matchToGroups) {
-                            time_enumerable.Add(int.Parse(kvp.Value["time"].ToString())); //* float
-                            unit_enumerable.Add(kvp.Value["unit"].ToString().ToCharArray()[0]); //* char
-                            text_enumerable.Add(kvp.Value["text"].ToString()); //* string
+                            timeEnumerable.Add(int.Parse(kvp.Value["time"].ToString())); //* float
+                            unitEnumerable.Add(kvp.Value["unit"].ToString().ToCharArray()[0]); //* char
+                            textEnumerable.Add(kvp.Value["text"].ToString()); //* string
                         }
 
-                        int time = time_enumerable[0];
-                        char unit = unit_enumerable[0];
-                        string reminderText = text_enumerable[0];
+                        int time = timeEnumerable[0];
+                        char unit = unitEnumerable[0];
+                        string reminderText = textEnumerable[0];
 
-                        Dictionary<char, string[]> time_options = new() {
+                        Dictionary<char, string[]> timeOptions = new() {
                             { 's', new string[] { "1", "second" } },
                             { 'm', new string[] { "60", "minute" } },
                             { 'h', new string[] { "3600", "hour" } }
                         };
 
                         await Task.Run(() => {  //* Task for reminder.
-                            if (time_options.ContainsKey(unit)) {
-                                int multiplier = int.Parse(time_options[unit][0]);
-                                string word = time_options[unit][1].ToString();
-                                int time_seconds = (time * 1000) * multiplier;
+                            if (timeOptions.ContainsKey(unit)) {
+                                int multiplier = int.Parse(timeOptions[unit][0]);
+                                string word = timeOptions[unit][1].ToString();
+                                int timeSeconds = (time * 1000) * multiplier;
 
-                                Task.Delay(time_seconds).Wait();
+                                Task.Delay(timeSeconds).Wait();
 
                                 if (time == 1 && reminderText == string.Empty) {
                                     Utils.NotifCheck(
@@ -407,9 +407,6 @@ namespace utilities_cs {
                                             "6"
                                         }
                                     );
-                                    Console.WriteLine(
-                                        $"Reminder! Hey! You set a reminder for 1 {word} and it's time! 6"
-                                    );
                                 } else if (reminderText == string.Empty) {
                                     Utils.NotifCheck(
                                         true,
@@ -419,9 +416,6 @@ namespace utilities_cs {
                                             "6"
                                         }
                                     );
-                                    Console.WriteLine(
-                                        $"Reminder! Hey! You set a reminder for {time} {word}s and it's time! 6"
-                                    );
                                 } else {
                                     Utils.NotifCheck(
                                         true,
@@ -430,7 +424,7 @@ namespace utilities_cs {
                                             $"Hey! Your reminder was: {reminderText}",
                                             "6"
                                         }
-                                    ); Console.WriteLine("Reminder! Hey! Your reminder was: {reminder_text} 6");
+                                    );
                                 }
                             }
                         });
@@ -442,9 +436,9 @@ namespace utilities_cs {
             RegularCommand googleSearch = new(
                 commandName: "-",
                 function: (string[] args) => {
-                    string search_query = string.Join("+", args[1..]);
+                    string searchQuery = string.Join("+", args[1..]);
                     System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(
-                        "cmd", $"/c start https://google.com/search?q={search_query}"
+                        "cmd", $"/c start https://google.com/search?q={searchQuery}"
                     ) { CreateNoWindow = true });
                 },
                 aliases: new string[] { "gs" }
@@ -453,9 +447,9 @@ namespace utilities_cs {
             RegularCommand youtubeSearch = new(
                 commandName: "youtube",
                 function: (string[] args) => {
-                    string search_query = string.Join("+", args[1..]);
+                    string searchQuery = string.Join("+", args[1..]);
                     System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(
-                        "cmd", $"/c start https://youtube.com/results?search_query={search_query}"
+                        "cmd", $"/c start https://youtube.com/results?search_query={searchQuery}"
                     ) { CreateNoWindow = true });
                 },
                 aliases: new string[] { "yt" }
@@ -464,10 +458,10 @@ namespace utilities_cs {
             RegularCommand imageSearch = new(
                 commandName: "images",
                 function: (string[] args) => {
-                    string search_query = string.Join("+", args[1..]);
+                    string searchQuery = string.Join("+", args[1..]);
                     System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(
                         "cmd",
-                        $"/c start https://www.google.com/search?q={search_query}^&safe=strict^&tbm=isch^&sxsrf=ALeKk029ouHDkHfq3RFVc8WpFzOvZZ8s4g%3A1624376552976^&source=hp^&biw=1536^&bih=763^&ei=6ATSYIOrOduJhbIPzda7yAs^&oq=hello^&gs_lcp=CgNpbWcQAzIFCAAQsQMyBQgAELEDMgIIADICCAAyAggAMgIIADICCAAyBQgAELEDMgUIABCxAzICCAA6BwgjEOoCECc6BAgjECc6CAgAELEDEIMBUNIGWKcJYLELaABwAHgAgAGPAogByAqSAQUwLjEuNZgBAKABAaoBC2d3cy13aXotaW1nsAEK^&sclient=img^&ved=0ahUKEwiDv62byqvxAhXbREEAHU3rDrkQ4dUDCAc^&uact=5"
+                        $"/c start https://www.google.com/search?q={searchQuery}^&safe=strict^&tbm=isch^&sxsrf=ALeKk029ouHDkHfq3RFVc8WpFzOvZZ8s4g%3A1624376552976^&source=hp^&biw=1536^&bih=763^&ei=6ATSYIOrOduJhbIPzda7yAs^&oq=hello^&gs_lcp=CgNpbWcQAzIFCAAQsQMyBQgAELEDMgIIADICCAAyAggAMgIIADICCAAyBQgAELEDMgUIABCxAzICCAA6BwgjEOoCECc6BAgjECc6CAgAELEDEIMBUNIGWKcJYLELaABwAHgAgAGPAogByAqSAQUwLjEuNZgBAKABAaoBC2d3cy13aXotaW1nsAEK^&sclient=img^&ved=0ahUKEwiDv62byqvxAhXbREEAHU3rDrkQ4dUDCAc^&uact=5"
                     ) { CreateNoWindow = true });
                 }
             );
@@ -480,7 +474,7 @@ namespace utilities_cs {
 
                     //* checking if lang is english
 
-                    foreach (var englishLangAliases in Translate.english_dict.Keys) {
+                    foreach (var englishLangAliases in Translate.englishDict.Keys) {
                         if (lang == englishLangAliases) {
                             Translate.toEnglish(text);
                             return;
@@ -649,9 +643,9 @@ namespace utilities_cs {
 
                     } else {
                         try {
-                            string[] text_list = text.Split(" ");
+                            string[] textList = text.Split(" ");
 
-                            var chars = from split in text_list
+                            var chars = from split in textList
                                         select ((char)Convert.ToInt32(split, 2)).ToString();
                             Utils.NotifCheck(notif, new string[] { "Success!", $"The message was: {string.Join("", chars)}", "10" });
                             Utils.CopyCheck(copy, string.Join("", chars));
@@ -679,7 +673,7 @@ namespace utilities_cs {
                     }
                     string text = string.Join(" ", args[1..]);
                     List<string> converted = new();
-                    var bubble_char = new Dictionary<string, string>() {
+                    var bubbleChar = new Dictionary<string, string>() {
                         {"a", "ⓐ"},
                         {"b", "ⓑ"},
                         {"c", "ⓒ"},
@@ -745,7 +739,7 @@ namespace utilities_cs {
                     };
 
                     foreach (char b in text) {
-                        var replaced = bubble_char.GetValueOrDefault(b.ToString(), "");
+                        var replaced = bubbleChar.GetValueOrDefault(b.ToString(), "");
                         if (replaced != "") {
                             converted.Add(replaced!);
                         } else {
@@ -767,11 +761,11 @@ namespace utilities_cs {
                     if (Utils.IndexTest(args)) {
                         return null;
                     }
-                    string str_num = string.Join(' ', args[1..]);
+                    string strNum = string.Join(' ', args[1..]);
 
                     try {
                         //* Checking if number is an actual number
-                        System.Numerics.BigInteger.Parse(str_num);
+                        System.Numerics.BigInteger.Parse(strNum);
                     } catch {
                         Utils.NotifCheck(
                             true,
@@ -784,7 +778,7 @@ namespace utilities_cs {
                         return null;
                     }
 
-                    System.Numerics.BigInteger num = System.Numerics.BigInteger.Parse(str_num);
+                    System.Numerics.BigInteger num = System.Numerics.BigInteger.Parse(strNum);
                     string ans = String.Format("{0:n0}", num);
 
                     Utils.CopyCheck(copy, ans);
@@ -801,7 +795,7 @@ namespace utilities_cs {
                         return null;
                     }
                     string text = string.Join(" ", args[1..]);
-                    Dictionary<string, string> cp_dict = new() {
+                    Dictionary<string, string> cpDict = new() {
                         { "aigu e", "é" },
                         { "aigu E", "É" },
                         { "grave a", "à" },
@@ -859,10 +853,10 @@ namespace utilities_cs {
                         { "int64maxvalue", Int64.MaxValue.ToString() }
                     };
 
-                    if (cp_dict.ContainsKey(text)) {
-                        Utils.CopyCheck(copy, cp_dict[text]);
+                    if (cpDict.ContainsKey(text)) {
+                        Utils.CopyCheck(copy, cpDict[text]);
                         Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
-                        return cp_dict[text];
+                        return cpDict[text];
                     } else {
                         Utils.NotifCheck(
                             true,
@@ -886,7 +880,7 @@ namespace utilities_cs {
                     }
                     string text = string.Join(" ", args[1..]);
                     List<string> converted = new();
-                    var creepy_char = new Dictionary<string, string>() {
+                    var creepyChar = new Dictionary<string, string>() {
                     {"a", "á̷͍̖̐̐͘"}, {"b", "ḃ̶̢̹̖"}, {"c", "c̸̢̧̰̙͔̲̿̈́͌̉̀͘"}, {"d", "d̸͉͛̈́̊̍͘"}, {"e", "ḗ̸̫̽"},
                     {"f", "f̸̡̹̱̹̺͋͒͋"}, {"g", "g̴̼̙̜͒̄̈́̚͝"}, {"h", "h̴̜̕"}, {"i", "í̸͓̬͚̘̆"}, {"j", "j̶̯͋̋͋"},
                     {"k", "k̴̛̰̻͈͘͘͜"}, {"l", "l̸͔̠̝̪̯͇͐̓͆"}, {"m", "m̴̲̗͗̽̂͌"}, {"n", "n̸͈͇̳̈̾̿̄ͅ"}, {"o", "o̵̧̜̖͈̲͔͂͋́͝"},
@@ -901,7 +895,7 @@ namespace utilities_cs {
                 };
 
                     foreach (char cr in text) {
-                        var replaced = creepy_char.GetValueOrDefault(cr.ToString(), "");
+                        var replaced = creepyChar.GetValueOrDefault(cr.ToString(), "");
                         if (replaced != "") {
                             converted.Add(replaced!);
                         } else {
@@ -963,7 +957,7 @@ namespace utilities_cs {
 
                     string text = string.Join(" ", args[1..]);
                     List<string> converted = new();
-                    var cursive_char = new Dictionary<string, string>() {
+                    var cursiveChar = new Dictionary<string, string>() {
                     {"a", "𝓪"}, {"b", "𝓫"}, {"c", "𝓬"}, {"d", "𝓭"}, {"e", "𝓮"},
                     {"f", "𝓯"}, {"g", "𝓰"}, {"h", "𝓱"}, {"i", "𝓲"}, {"j", "𝓳"},
                     {"k", "𝓴"}, {"l", "𝓵"}, {"m", "𝓶"}, {"n", "𝓷"}, {"o", "𝓸"},
@@ -978,7 +972,7 @@ namespace utilities_cs {
                 };
 
                     foreach (char c in text) {
-                        var replaced = cursive_char.GetValueOrDefault(c.ToString(), "");
+                        var replaced = cursiveChar.GetValueOrDefault(c.ToString(), "");
                         if (replaced != "") {
                             converted.Add(replaced!);
                         } else {
@@ -1001,7 +995,7 @@ namespace utilities_cs {
                     }
                     string text = string.Join(" ", args[1..]);
                     List<string> converted = new();
-                    var dbs_char = new Dictionary<string, string>() {
+                    var dbsChar = new Dictionary<string, string>() {
                     {"a", "𝕒"}, {"b", "𝕓"}, {"c", "𝕔"}, {"d", "𝕕"}, {"e", "𝕖"},
                     {"f", "𝕗"}, {"g", "𝕘"}, {"h", "𝕙"}, {"i", "𝕚"}, {"j", "𝕛"},
                     {"k", "𝕜"}, {"l", "𝕝"}, {"m", "𝕞"}, {"n", "𝕟"}, {"o", "𝕠"},
@@ -1018,7 +1012,7 @@ namespace utilities_cs {
                 };
 
                     foreach (char d in text) {
-                        var replaced = dbs_char.GetValueOrDefault(d.ToString(), "");
+                        var replaced = dbsChar.GetValueOrDefault(d.ToString(), "");
                         if (replaced != "") {
                             converted.Add(replaced!);
                         } else {
@@ -1044,7 +1038,7 @@ namespace utilities_cs {
                     }
 
                     List<string> converted = new();
-                    Dictionary<string, string> special_char = new Dictionary<string, string> {
+                    Dictionary<string, string> specialChar = new Dictionary<string, string> {
                         {" ", ":black_large_square:"},
                         {"?", ":question:"},
                         {"!", ":exclamation:"},
@@ -1066,8 +1060,8 @@ namespace utilities_cs {
                            i.ToString()
                         )) {
                             converted.Add($":regional_indicator_{i.ToString().ToLower()}:");
-                        } else if (special_char.ContainsKey(i.ToString())) {
-                            converted.Add(special_char[i.ToString()]);
+                        } else if (specialChar.ContainsKey(i.ToString())) {
+                            converted.Add(specialChar[i.ToString()]);
                         } else {
                             converted.Add(i.ToString());
                         }
@@ -1162,7 +1156,7 @@ namespace utilities_cs {
                     }
                     string text = string.Join(" ", args[1..]);
                     List<string> converted = new();
-                    var flipped_char = new Dictionary<string, string>() {
+                    var flippedChar = new Dictionary<string, string>() {
                     {"a", "ɐ"}, {"b", "q"}, {"c", "ɔ"}, {"d", "p"}, {"e", "ǝ"},
                     {"f", "ɟ"}, {"g", "ƃ"}, {"h", "ɥ"}, {"i", "ᴉ"}, {"j", "ɾ"},
                     {"k", "ʞ"}, {"l", "l"}, {"m", "ɯ"}, {"n", "u"}, {"o", "o"},
@@ -1176,7 +1170,7 @@ namespace utilities_cs {
                 };
 
                     foreach (char f in text) {
-                        var replaced = flipped_char.GetValueOrDefault(f.ToString(), "");
+                        var replaced = flippedChar.GetValueOrDefault(f.ToString(), "");
                         if (replaced != "") {
                             converted.Add(replaced!);
                         } else {
@@ -1201,7 +1195,7 @@ namespace utilities_cs {
                     }
                     string text = string.Join(" ", args[1..]);
                     List<string> converted = new();
-                    Dictionary<char, string[]> fraction_dict = new Dictionary<char, string[]> {
+                    Dictionary<char, string[]> fractionDict = new Dictionary<char, string[]> {
                         { '0', new string[]{"⁰", "₀"} },
                         { '1', new string[]{"¹", "₁"} },
                         { '2', new string[]{"²", "₂"} },
@@ -1244,13 +1238,13 @@ namespace utilities_cs {
                         { 'z', new string[]{"ᶻ", "failed"} },
                     };
 
-                    string[] slash_split = text.Split("/");
-                    string numerator = slash_split[0];
-                    string denominator = slash_split[1];
+                    string[] slashSplit = text.Split("/");
+                    string numerator = slashSplit[0];
+                    string denominator = slashSplit[1];
 
                     foreach (char x in numerator) {
-                        if (fraction_dict.ContainsKey(x)) {
-                            string i = fraction_dict[x][0];
+                        if (fractionDict.ContainsKey(x)) {
+                            string i = fractionDict[x][0];
                             converted.Add(i);
                         } else {
                             Utils.NotifCheck(
@@ -1268,8 +1262,8 @@ namespace utilities_cs {
                     converted.Add("⁄");
 
                     foreach (char x in denominator) {
-                        if (fraction_dict.ContainsKey(x)) {
-                            string i = fraction_dict[x][1];
+                        if (fractionDict.ContainsKey(x)) {
+                            string i = fractionDict[x][1];
                             if (i != "failed") {
                                 converted.Add(i);
                             } else {
@@ -1377,18 +1371,18 @@ namespace utilities_cs {
 
                     string text = string.Join(" ", args);
 
-                    List<int> nums_int = Utils.RegexFindAllInts(text);
-                    List<System.Numerics.BigInteger> nums_BigIntegers = new();
+                    List<int> numsInt = Utils.RegexFindAllInts(text);
+                    List<System.Numerics.BigInteger> numsBigIntegers = new();
 
-                    foreach (int num in nums_int) {
-                        nums_BigIntegers.Add(num);
+                    foreach (int num in numsInt) {
+                        numsBigIntegers.Add(num);
                     }
 
                     try {
                         System.Numerics.BigInteger answer =
                             HCF.findGCD(
-                                nums_BigIntegers.ToArray<System.Numerics.BigInteger>(),
-                                nums_BigIntegers.ToArray().Length
+                                numsBigIntegers.ToArray<System.Numerics.BigInteger>(),
+                                numsBigIntegers.ToArray().Length
                             );
                         Utils.CopyCheck(copy, answer.ToString());
                         Utils.NotifCheck(notif, new string[] { "Success!", $"The answer was {answer}.", "5" });
@@ -1417,19 +1411,19 @@ namespace utilities_cs {
                         return null;
                     }
 
-                    string[] text_list = text.Split(" ");
-                    string hex_with_dash = string.Join("-", text_list);
+                    string[] textList = text.Split(" ");
+                    string hexWithDash = string.Join("-", textList);
 
                     if (Hex.IsHex(string.Join("", args[1..]))) {
-                        string text_from_hex = System.Text.Encoding.ASCII.GetString(Hex.toText(hex_with_dash));
-                        Utils.CopyCheck(copy, text_from_hex);
-                        Utils.NotifCheck(notif, new string[] { "Success!", $"The message was: {text_from_hex}", "10" });
-                        return text_from_hex;
+                        string textFromHex = System.Text.Encoding.ASCII.GetString(Hex.toText(hexWithDash));
+                        Utils.CopyCheck(copy, textFromHex);
+                        Utils.NotifCheck(notif, new string[] { "Success!", $"The message was: {textFromHex}", "10" });
+                        return textFromHex;
                     } else {
-                        string hex_from_text = Hex.toHex(text);
-                        Utils.CopyCheck(copy, hex_from_text);
+                        string hexFromText = Hex.toHex(text);
+                        Utils.CopyCheck(copy, hexFromText);
                         Utils.NotifCheck(notif, new string[] { "Success!", $"Message copied to clipboard.", "3" });
-                        return hex_from_text;
+                        return hexFromText;
                     }
                 },
                 aliases: new string[] { "hex" }
@@ -1444,16 +1438,16 @@ namespace utilities_cs {
 
                     string text = string.Join(" ", args[1..]);
 
-                    List<int> nums_int = Utils.RegexFindAllInts(text);
-                    List<BigInteger> nums_BigInteger = new();
+                    List<int> numsInt = Utils.RegexFindAllInts(text);
+                    List<BigInteger> numsBigInteger = new();
 
-                    foreach (int num in nums_int) {
-                        nums_BigInteger.Add(num);
+                    foreach (int num in numsInt) {
+                        numsBigInteger.Add(num);
                     }
 
                     try {
                         BigInteger answer =
-                            lcm_class.lcm_exec(nums_BigInteger.ToArray<BigInteger>());
+                            LCMClass.lcmExec(numsBigInteger.ToArray<BigInteger>());
                         Utils.CopyCheck(copy, answer.ToString());
                         Utils.NotifCheck(notif, new string[] { "Success!", $"The answer was {answer}.", "5" });
                         return answer.ToString();
@@ -1494,10 +1488,10 @@ Word count: {args[1..].Length}";
                         return null;
                     }
                     string text = string.Join(" ", args[1..]);
-                    string lower_text = text.ToLower();
-                    Utils.CopyCheck(copy, lower_text);
+                    string lowerText = text.ToLower();
+                    Utils.CopyCheck(copy, lowerText);
                     Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
-                    return lower_text;
+                    return lowerText;
                 },
                 aliases: new string[] { "lower" }
             );
@@ -1511,7 +1505,7 @@ Word count: {args[1..].Length}";
 
                     string text = string.Join(" ", args[1..]);
                     List<string> converted = new();
-                    Dictionary<string, string> mathitalic_char = new() {
+                    Dictionary<string, string> mathitalicChar = new() {
                         { "a", "𝑎" },
                         { "b", "𝑏" },
                         { "c", "𝑐" },
@@ -1567,7 +1561,7 @@ Word count: {args[1..].Length}";
                     };
 
                     foreach (char d in text) {
-                        var replaced = mathitalic_char.GetValueOrDefault(d.ToString(), "");
+                        var replaced = mathitalicChar.GetValueOrDefault(d.ToString(), "");
                         if (replaced != "") {
                             converted.Add(replaced!);
                         } else {
@@ -1678,7 +1672,7 @@ Word count: {args[1..].Length}";
                         return null;
                     }
 
-                    string[] ascii_characters = {
+                    string[] asciiCharacters = {
                     "a", "b", "c", "d", "e",
                     "f", "g", "h", "i", "j",
                     "k", "l", "m", "n", "o", "p",
@@ -1710,7 +1704,7 @@ Word count: {args[1..].Length}";
                     List<string> randomChar = new();
 
                     foreach (int i in Enumerable.Range(1, int.Parse(text))) {
-                        randomChar.Add(ascii_characters[rand.Next(0, ascii_characters.Length - 1)]);
+                        randomChar.Add(asciiCharacters[rand.Next(0, asciiCharacters.Length - 1)]);
                     }
 
                     string ans = string.Join("", randomChar);
@@ -1760,13 +1754,13 @@ Word count: {args[1..].Length}";
                         return null;
                     }
                     string text = string.Join(" ", args[1..]);
-                    char[] text_array = text.ToCharArray();
-                    List<char> text_list = new();
-                    foreach (char ch in text_array) {
-                        text_list.Add(ch);
+                    char[] textArray = text.ToCharArray();
+                    List<char> textList = new();
+                    foreach (char ch in textArray) {
+                        textList.Add(ch);
                     }
-                    text_list.Reverse();
-                    string answer = string.Join("", text_list);
+                    textList.Reverse();
+                    string answer = string.Join("", textList);
                     Utils.CopyCheck(copy, answer);
                     Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
                     return answer;
@@ -1781,21 +1775,21 @@ Word count: {args[1..].Length}";
                     }
                     string text = string.Join(" ", args[1..]);
                     List<string> converted = new();
-                    char current_case = 'u';
+                    char currentCase = 'u';
                     foreach (char i in text) {
-                        string i_str = i.ToString();
-                        if (current_case == 'u') {
-                            converted.Add(i_str.ToUpper());
-                            current_case = 'l';
-                        } else if (current_case == 'l') {
-                            converted.Add(i_str.ToLower());
-                            current_case = 'u';
+                        string iStr = i.ToString();
+                        if (currentCase == 'u') {
+                            converted.Add(iStr.ToUpper());
+                            currentCase = 'l';
+                        } else if (currentCase == 'l') {
+                            converted.Add(iStr.ToLower());
+                            currentCase = 'u';
                         }
                     }
-                    string sarcasm_text = string.Join("", converted);
-                    Utils.CopyCheck(copy, sarcasm_text);
+                    string sarcasmText = string.Join("", converted);
+                    Utils.CopyCheck(copy, sarcasmText);
                     Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
-                    return sarcasm_text;
+                    return sarcasmText;
                 }
             );
 
@@ -1960,10 +1954,10 @@ Word count: {args[1..].Length}";
                         return null;
                     }
                     string text = string.Join(" ", args[1..]);
-                    string upper_text = text.ToUpper();
-                    Utils.CopyCheck(copy, upper_text);
+                    string upperText = text.ToUpper();
+                    Utils.CopyCheck(copy, upperText);
                     Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
-                    return upper_text;
+                    return upperText;
                 },
                 aliases: new string[] { "upper" }
             );
