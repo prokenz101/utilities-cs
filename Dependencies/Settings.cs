@@ -105,6 +105,8 @@ namespace utilities_cs {
             string jsonString = System.Text.Json.JsonSerializer.Serialize<SettingsJSON>(defaultSettings);
             Directory.CreateDirectory(SettingsModification.utilitiesCsFolder);
             File.WriteAllText(settingsJsonPath, jsonString);
+
+            UtilitiesAppContext.currentSettings = SettingsModification.GetSettings();
         }
 
         static object? ConvertToBoolOrInt(string boolOrInt, string value) {
