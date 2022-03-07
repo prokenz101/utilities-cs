@@ -232,8 +232,34 @@ namespace utilities_cs {
                             break;
 
                         case "open":
+                            Utils.NotifCheck(
+                                true,
+                                new string[] {
+                                    "Opening settings file.",
+                                    "Opening settings.json in your default editor.",
+                                    "3"
+                                }
+                            );
                             SettingsModification.OpenSettingsJSON();
                             break;
+
+                        case "refresh":
+                            if (
+                                SettingsModification.GetSettings().disableClipboardManipulation
+                                && SettingsModification.GetSettings().autoPaste
+                            ) {
+                                Utils.NotifCheck(
+                                    true,
+                                    new string[] {
+                                        "Hey!",
+                                        @"disableClipboardManipulation and autoPaste are mutually exclusive.
+They cannot both be true at the same time."
+                                    }
+                                ); break;
+                            } else {
+                                UtilitiesAppContext.currentSettings = SettingsModification.GetSettings();
+                                break;
+                            }
 
                         default:
                             Utils.NotifCheck(true, new string[] { "Huh.", "It seems that was not a valid mode.", "3" });
