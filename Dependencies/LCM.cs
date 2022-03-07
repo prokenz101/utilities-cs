@@ -1,8 +1,8 @@
 using System.Numerics;
 
 namespace utilities_cs {
-    public class lcm_class {
-        public static BigInteger lcm_exec(BigInteger[] element_array) {
+    public class LCMClass {
+        public static BigInteger lcmExec(BigInteger[] element_array) {
             BigInteger lcm_of_array_elements = 1;
             int divisor = 2;
 
