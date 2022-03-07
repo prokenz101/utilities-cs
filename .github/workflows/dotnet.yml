@@ -19,3 +19,8 @@ jobs:
         dotnet-version: 6.0.x
     - name: Publish project
       run: dotnet publish --self-contained false
+    - uses: actions/upload-artifact@v3.0.0
+      with:
+        name: my-artifact
+        path: bin\Release\net6.0-windows10.0.17763.0\win-x64\publish\
+        if-no-files-found: echo "Build failed / Could not find file"
