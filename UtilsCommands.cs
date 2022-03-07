@@ -1456,6 +1456,69 @@ They cannot both be true at the same time."
                 aliases: new string[] { "hex" }
             );
 
+            FormattableCommand ascii = new(
+                commandName: "ascii",
+                function: (string[] args, bool copy, bool notif) => {
+                    if (Utils.IndexTest(args)) {
+                        return null;
+                    }
+
+                    Func<string, string> toAscii = (string text) => {
+                        List<string> ascii = new();
+                        foreach (char i in text) {
+                            ascii.Add(((int)i).ToString());
+                        }
+
+                        return string.Join(" ", ascii);
+                    };
+
+                    Func<string, List<int>, string> fromAscii = (string ascii, List<int> nums) => {
+                        List<string> chars = new();
+                        foreach (int i in nums) {
+                            chars.Add(((char)i).ToString());
+                        }
+
+                        return string.Join("", chars);
+                    };
+
+                    Action<bool, bool, string> notifAndCopy = (bool copy, bool notif, string fromAsciiText) => {
+                        Utils.CopyCheck(copy, fromAsciiText);
+                        Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
+                    };
+
+                    string text = string.Join(" ", args[1..]);
+                    if (Utils.FormatValid("0123456789 ", text)) {
+                        List<int> values = Utils.RegexFindAllInts(text);
+                        List<bool> valuesAreValid = new();
+                        foreach (int i in values) {
+                            if (i.ToString().Length == 2 | i.ToString().Length == 3) {
+                                valuesAreValid.Add(true);
+                            } else {
+                                valuesAreValid.Add(false);
+                            }
+                        }
+
+                        if (!valuesAreValid.Contains(false)) {
+                            string fromAsciitext = fromAscii(string.Join(" ", values), values);
+
+                            Utils.CopyCheck(copy, fromAsciitext);
+                            Utils.NotifCheck(
+                                notif,
+                                new string[] { "Success!", $"The message was: {fromAsciitext}", "6" }
+                            ); return fromAsciitext;
+                        } else {
+                            string ascii = toAscii(text);
+                            notifAndCopy(copy, notif, ascii);
+                            return ascii;
+                        }
+                    } else {
+                        string ascii = toAscii(text);
+                        notifAndCopy(copy, notif, ascii);
+                        return ascii;
+                    }
+                }
+            );
+
             FormattableCommand lcm = new(
                 commandName: "lcm",
                 function: (string[] args, bool copy, bool notif) => {
