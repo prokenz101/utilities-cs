@@ -32,9 +32,7 @@
             if (output != null) { return output; } else { return null; }
         }
         private NotifyIcon trayIcon;
-
         public static SettingsJSON currentSettings = SettingsModification.GetSettings();
-
         public UtilitiesAppContext() {
 
             Action registerHotkeyFailed = () => {
