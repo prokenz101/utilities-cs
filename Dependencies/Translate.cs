@@ -8,7 +8,7 @@ namespace utilities_cs {
             { new() { "tochinese", "chinese", "c" }, "zh-TW" },
             { new() { "tojapanese", "japanese", "j" }, "ja" }
         };
-        public static Dictionary<string, Action<string>> english_dict = new() {
+        public static Dictionary<string, Action<string>> englishDict = new() {
             { "toenglish", toEnglish },
             { "english", toEnglish },
             { "e", toEnglish }
