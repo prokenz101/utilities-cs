@@ -21,8 +21,6 @@ jobs:
       run: dotnet publish -c Release --self-contained false
     - name: Rename output file (framework-dependent)
       run: mv D:\a\utilities-cs\utilities-cs\bin\Release\net6.0-windows10.0.17763.0\win-x64\publish\utilities-cs.exe D:\a\utilities-cs\utilities-cs\bin\Release\net6.0-windows10.0.17763.0\win-x64\publish\utilities-cs-framework-dependent.exe
-    - name: Remove console using editbin (framework-dependent)
-      run: editbin.exe /subsystem:windows D:\a\utilities-cs\utilities-cs\bin\Release\net6.0-windows10.0.17763.0\win-x64\publish\utilities-cs-framework-dependent.exe
     - uses: actions/upload-artifact@v3.0.0
       with:
         name: framework-dependent
@@ -31,8 +29,6 @@ jobs:
       run: dotnet publish -c Release --self-contained true
     - name: Rename output file
       run: mv D:\a\utilities-cs\utilities-cs\bin\Release\net6.0-windows10.0.17763.0\win-x64\publish\utilities-cs.exe D:\a\utilities-cs\utilities-cs\bin\Release\net6.0-windows10.0.17763.0\win-x64\publish\utilities-cs-self-contained.exe
-    - name: Remove console using editbin (self-contained)
-      run: editbin.exe /subsystem:windows D:\a\utilities-cs\utilities-cs\bin\Release\net6.0-windows10.0.17763.0\win-x64\publish\utilities-cs-self-contained.exe 
     - uses: actions/upload-artifact@v3.0.0
       with:
         name: self-contained
