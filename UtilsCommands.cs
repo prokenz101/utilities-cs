@@ -33,8 +33,7 @@ namespace utilities_cs {
                         "It seems utilities couldn't understand what command you were trying to use.",
                         "6"
                     }
-                );
-                return null;
+                ); return null;
             }
         }
     }
@@ -44,20 +43,27 @@ namespace utilities_cs {
     /// </summary>
     public class FormattableCommand : Command {
         public Func<string[], bool, bool, string?>? Function;
-
+        public bool UseInAllCommand;
+        public string? AllCommandMode;
+        public static List<FormattableCommand> FormattableCommands = new();
         public FormattableCommand(
             string commandName,
             Func<string[], bool, bool, string?> function,
-            string[]? aliases = null
+            string[]? aliases = null,
+            bool useInAllCommand = false,
+            string allCommandMode = "none"
         ) {
             //* setting all attributes for instance
             CommandName = commandName; Function = function; Aliases = aliases;
+            UseInAllCommand = useInAllCommand; AllCommandMode = allCommandMode;
             if (aliases != null) {
                 fCommands.Add(commandName, function);
                 foreach (string alias in aliases) { fCommands.Add(alias, function); }
             } else {
                 fCommands.Add(commandName, function);
             }
+
+            FormattableCommands.Add(this);
         }
 
         /// <summary>
@@ -102,6 +108,25 @@ namespace utilities_cs {
             } else {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Returns every command that supports use in the 'all' command.
+        /// </summary>
+        /// <param name="mode">Mode for the command, fancy/encoding</param>
+        /// <returns></returns>
+        public static List<FormattableCommand> GetMethodsSupportedByAll(string mode) {
+            List<FormattableCommand> methodsSupportedByAll = new();
+
+            if (FormattableCommands != null) {
+                foreach (FormattableCommand i in FormattableCommands) {
+                    if (i.UseInAllCommand && i.AllCommandMode == mode) {
+                        methodsSupportedByAll.Add(i);
+                    }
+                }
+            }
+
+            return methodsSupportedByAll;
         }
 
         /// <summary>
@@ -640,7 +665,9 @@ They cannot both be true at the same time."
                         return null;
                     }
                 },
-                aliases: new string[] { "b32" }
+                aliases: new string[] { "b32" },
+                useInAllCommand: true,
+                allCommandMode: "encodings"
             );
 
             FormattableCommand base64 = new(
@@ -676,7 +703,9 @@ They cannot both be true at the same time."
                         ); return ans;
                     }
                 },
-                aliases: new string[] { "b64" }
+                aliases: new string[] { "b64" },
+                useInAllCommand: true,
+                allCommandMode: "encodings"
             );
 
             FormattableCommand binary = new(
@@ -726,7 +755,9 @@ They cannot both be true at the same time."
                         }
                     }
                 },
-                aliases: new string[] { "bin" }
+                aliases: new string[] { "bin" },
+                useInAllCommand: true,
+                allCommandMode: "encodings"
             );
 
             FormattableCommand bubbletext = new(
@@ -816,7 +847,9 @@ They cannot both be true at the same time."
                     Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
                     return answer;
                 },
-                aliases: new string[] { "bubble" }
+                aliases: new string[] { "bubble" },
+                useInAllCommand: true,
+                allCommandMode: "fancy"
             );
 
             FormattableCommand commaseperator = new(
@@ -971,7 +1004,9 @@ They cannot both be true at the same time."
                     Utils.CopyCheck(copy, answer);
                     Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
                     return answer;
-                }
+                },
+                useInAllCommand: true,
+                allCommandMode: "fancy"
             );
 
             FormattableCommand cuberoot = new(
@@ -1048,7 +1083,9 @@ They cannot both be true at the same time."
                     Utils.CopyCheck(copy, answer);
                     Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
                     return answer;
-                }
+                },
+                useInAllCommand: true,
+                allCommandMode: "fancy"
             );
 
             FormattableCommand doublestruck = new(
@@ -1089,7 +1126,9 @@ They cannot both be true at the same time."
                     Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
                     return answer;
                 },
-                aliases: new string[] { "dbs" }
+                aliases: new string[] { "dbs" },
+                useInAllCommand: true,
+                allCommandMode: "fancy"
             );
 
             FormattableCommand emojify = new(
@@ -1172,7 +1211,9 @@ They cannot both be true at the same time."
                     Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
                     return answer;
                 },
-                aliases: new string[] { "ep" }
+                aliases: new string[] { "ep" },
+                useInAllCommand: true,
+                allCommandMode: "fancy"
             );
 
             FormattableCommand flip = new(
@@ -1211,7 +1252,9 @@ They cannot both be true at the same time."
                     Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
                     return answer;
                 },
-                aliases: new string[] { "flipped", "upside-down" }
+                aliases: new string[] { "flipped", "upside-down" },
+                useInAllCommand: true,
+                allCommandMode: "fancy"
             );
 
             FormattableCommand fraction = new(
@@ -1386,7 +1429,9 @@ They cannot both be true at the same time."
                             }
                         ); return null;
                     }
-                }
+                },
+                useInAllCommand: true,
+                allCommandMode: "encodings"
             );
 
             FormattableCommand hcf = new(
@@ -1453,7 +1498,9 @@ They cannot both be true at the same time."
                         return hexFromText;
                     }
                 },
-                aliases: new string[] { "hex" }
+                aliases: new string[] { "hex" },
+                useInAllCommand: true,
+                allCommandMode: "encodings"
             );
 
             FormattableCommand ascii = new(
@@ -1516,7 +1563,9 @@ They cannot both be true at the same time."
                         notifAndCopy(copy, notif, ascii);
                         return ascii;
                     }
-                }
+                },
+                useInAllCommand: true,
+                allCommandMode: "encodings"
             );
 
             FormattableCommand lcm = new(
@@ -1583,7 +1632,9 @@ Word count: {args[1..].Length}";
                     Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
                     return lowerText;
                 },
-                aliases: new string[] { "lower" }
+                aliases: new string[] { "lower" },
+                useInAllCommand: true,
+                allCommandMode: "fancy"
             );
 
             FormattableCommand mathitalic = new(
@@ -1664,7 +1715,9 @@ Word count: {args[1..].Length}";
                     Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
                     return answer;
                 },
-                aliases: new string[] { "mai" }
+                aliases: new string[] { "mai" },
+                useInAllCommand: true,
+                allCommandMode: "fancy"
             );
 
             FormattableCommand morse = new(
@@ -1681,7 +1734,9 @@ Word count: {args[1..].Length}";
                         return Morse.toMorse(text, copy, notif);
                     }
                 },
-                aliases: new string[] { "morsecode" }
+                aliases: new string[] { "morsecode" },
+                useInAllCommand: true,
+                allCommandMode: "encodings"
             );
 
             FormattableCommand divide = new(
@@ -1854,7 +1909,9 @@ Word count: {args[1..].Length}";
                     Utils.CopyCheck(copy, answer);
                     Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
                     return answer;
-                }
+                },
+                useInAllCommand: true,
+                allCommandMode: "fancy"
             );
 
             FormattableCommand sarcasm = new(
@@ -1997,7 +2054,9 @@ Word count: {args[1..].Length}";
                     Utils.CopyCheck(copy, answer);
                     Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
                     return answer;
-                }
+                },
+                useInAllCommand: true,
+                allCommandMode: "fancy"
             );
 
             FormattableCommand spoilerspam = new(
@@ -2034,7 +2093,9 @@ Word count: {args[1..].Length}";
                     Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
                     return ans;
                 },
-                aliases: new string[] { "title" }
+                aliases: new string[] { "title" },
+                useInAllCommand: true,
+                allCommandMode: "fancy"
             );
 
             FormattableCommand uppercase = new(
@@ -2049,7 +2110,9 @@ Word count: {args[1..].Length}";
                     Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
                     return upperText;
                 },
-                aliases: new string[] { "upper" }
+                aliases: new string[] { "upper" },
+                useInAllCommand: true,
+                allCommandMode: "fancy"
             );
 
             FormattableCommand camelcase = new(

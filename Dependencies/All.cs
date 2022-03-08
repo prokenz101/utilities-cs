@@ -3,25 +3,20 @@ namespace utilities_cs {
         public static string? returnCategory(string[] args, string category, bool copy, bool notif) {
             bool shouldShowNames = UtilitiesAppContext.currentSettings.allCommandHideNames;
 
-            var buildCommandDictionary = (string[] commands) => (
+            var buildCommandDictionary = (List<FormattableCommand> commands) => (
                     from command in commands
                     select new Tuple<string, Func<string[], bool, bool, string>>(
-                        command,
-                        FormattableCommand.GetMethod(command.ToLower())!
+                        command.CommandName!,
+                        command.Function!
                 )
             ).ToDictionary(t => t.Item1, t => t.Item2);
 
             Dictionary<string, Func<string[], bool, bool, string?>> fancy = buildCommandDictionary(
-                new[] {
-                    "Spacer", "UpperCase", "LowerCase", "Cursive", "BubbleText",
-                    "DoubleStruck", "Creepy", "Reversed", "Exponent", "Flipped", "TitleCase", "Morse", "MathItalic"
-                }
+                FormattableCommand.GetMethodsSupportedByAll("fancy")
             );
 
             Dictionary<string, Func<string[], bool, bool, string?>> encodings = buildCommandDictionary(
-                new[] {
-                    "Binary", "Hexadecimal", "Base64", "Base32", "GZip", "SHA1", "SHA256", "SHA384", "SHA512",
-                }
+                FormattableCommand.GetMethodsSupportedByAll("encodings")
             );
 
             List<string> b32AndGZipArgs = args[1..].ToList();
