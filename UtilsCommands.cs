@@ -1818,11 +1818,43 @@ They cannot both be true at the same time."
                         Utils.CopyCheck(copy, textFromHex);
                         Utils.NotifCheck(notif, new string[] { "Success!", $"The message was: {textFromHex}", "10" });
                         return textFromHex;
+                        try {
+                            string textFromHex = System.Text.Encoding.ASCII.GetString(Hex.toText(hexWithDash));
+                            Utils.CopyCheck(copy, textFromHex);
+                            Utils.NotifCheck(notif, new string[] { "Success!", $"The message was: {textFromHex}", "10" });
+                            return textFromHex;
+                        } catch {
+                            Utils.NotifCheck(
+                                true,
+                                new string[] {
+                                    "Something went wrong.",
+                                    "Something went wrong when trying to convert your text from hexadecimal",
+                                    "4"
+                                }
+                            );
+                            return null;
+                        }
                     } else {
                         string hexFromText = Hex.toHex(text);
                         Utils.CopyCheck(copy, hexFromText);
                         Utils.NotifCheck(notif, new string[] { "Success!", $"Message copied to clipboard.", "3" });
                         return hexFromText;
+                        try {
+                            string hexFromText = Hex.toHex(text);
+                            Utils.CopyCheck(copy, hexFromText);
+                            Utils.NotifCheck(notif, new string[] { "Success!", $"Message copied to clipboard.", "3" });
+                            return hexFromText;
+                        } catch {
+                            Utils.NotifCheck(
+                                true,
+                                new string[] {
+                                    "Something went wrong.",
+                                    "Something went wrong when trying to convert your text into hexadecimal.",
+                                    "4"
+                                }
+                            );
+                            return null;
+                        }
                     }
                 },
                 aliases: new string[] { "hex" },
