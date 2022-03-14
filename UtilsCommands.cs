@@ -1469,18 +1469,6 @@ They cannot both be true at the same time."
                     }
                     string text = string.Join(" ", args[1..]);
                     List<string> converted = new();
-                    var exponents = new Dictionary<string, string>() {
-                    {"-", "⁻"}, {"=", "⁼"}, {"+", "⁺"},
-                    {"1", "¹"}, {"2", "²"}, {"3", "³"},
-                    {"4", "⁴"}, {"5", "⁵"}, {"6", "⁶"},
-                    {"7", "⁷"}, {"8", "⁸"}, {"9", "⁹"}, {"0", "⁰"},
-                    {"a", "ᵃ"}, {"b", "ᵇ"}, {"c", "ᶜ"}, {"d", "ᵈ"},{ "e", "ᵉ"},
-                    {"f", "ᶠ"}, {"g", "ᵍ"}, {"h", "ʰ"}, {"i", "ᶦ"},{ "j", "ʲ"},
-                    {"k", "ᵏ"}, {"l", "ˡ"}, {"m", "ᵐ"}, {"n", "ⁿ"},{ "o", "ᵒ"},
-                    {"p", "ᵖ"}, {"r", "ʳ"}, {"s", "ˢ"}, {"t", "ᵗ"}, {"u", "ᵘ"},
-                    {"v", "ᵛ"}, {"w", "ʷ"}, {"x", "ˣ"}, {"y", "ʸ"}, {"z", "ᶻ"},
-                    {"(", "⁽"}, {")", "⁾"}, {" ", " "}
-                };
                     Dictionary<string, string> exponents = new() {
                         { "-", "⁻" },
                         { "=", "⁼" },
@@ -1814,10 +1802,6 @@ They cannot both be true at the same time."
                     string hexWithDash = string.Join("-", textList);
 
                     if (Hex.IsHex(string.Join("", args[1..]))) {
-                        string textFromHex = System.Text.Encoding.ASCII.GetString(Hex.toText(hexWithDash));
-                        Utils.CopyCheck(copy, textFromHex);
-                        Utils.NotifCheck(notif, new string[] { "Success!", $"The message was: {textFromHex}", "10" });
-                        return textFromHex;
                         try {
                             string textFromHex = System.Text.Encoding.ASCII.GetString(Hex.toText(hexWithDash));
                             Utils.CopyCheck(copy, textFromHex);
@@ -1835,10 +1819,6 @@ They cannot both be true at the same time."
                             return null;
                         }
                     } else {
-                        string hexFromText = Hex.toHex(text);
-                        Utils.CopyCheck(copy, hexFromText);
-                        Utils.NotifCheck(notif, new string[] { "Success!", $"Message copied to clipboard.", "3" });
-                        return hexFromText;
                         try {
                             string hexFromText = Hex.toHex(text);
                             Utils.CopyCheck(copy, hexFromText);
