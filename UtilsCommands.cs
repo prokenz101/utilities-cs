@@ -708,6 +708,65 @@ They cannot both be true at the same time."
                 allCommandMode: "encodings"
             );
 
+            FormattableCommand ascii85 = new(
+                commandName: "ascii85",
+                function: (string[] args, bool copy, bool notif) => {
+                    if (Utils.IndexTest(args)) {
+                        return null;
+                    }
+
+                    string mode = args[1];
+                    string text = string.Join(" ", args[2..]);
+                    var ascii85 = new Ascii85();
+                    byte[] byteArray = System.Text.Encoding.ASCII.GetBytes(text);
+
+                    switch (mode) {
+                        case "to":
+                            try {
+                                string encoded = ascii85.Encode(byteArray);
+                                Utils.CopyCheck(copy, encoded);
+                                Utils.NotifCheck(true, new string[] { "Success!", "Message copied to clipboard.", "3" });
+                                return encoded;
+                            } catch {
+                                Utils.NotifCheck(
+                                    true,
+                                    new string[] {
+                                        "Something went wrong.",
+                                        "Looks like something went wrong when trying to convert your text to Base85.",
+                                        "4"
+                                    }
+                                );
+                                return null;
+                            }
+
+                        case "from":
+                            try {
+                                string decoded = System.Text.Encoding.ASCII.GetString(ascii85.Decode(text));
+                                Utils.CopyCheck(copy, decoded);
+                                Utils.NotifCheck(true, new string[] { "Success!", "Message copied to clipboard.", "3" });
+                                return decoded;
+                            } catch {
+                                Utils.NotifCheck(
+                                    true,
+                                    new string[] {
+                                        "Something went wrong.",
+                                        "Looks like something went wrong when trying to convert your text from Base85.",
+                                        "4"
+                                    }
+                                );
+                                return null;
+                            }
+
+                        default:
+                            Utils.NotifCheck(true, new string[] { "Huh.", "Perhaps that was not an actual mode.", "3" });
+                            return null;
+                    }
+                },
+                aliases: new string[] { "base85", "b85" },
+                useInAllCommand: true,
+                allCommandMode: "encodings"
+            );
+
             FormattableCommand binary = new(
                 commandName: "binary",
                 function: (string[] args, bool copy, bool notif) => {
