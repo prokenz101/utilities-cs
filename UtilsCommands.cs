@@ -1068,6 +1068,131 @@ They cannot both be true at the same time."
                 allCommandMode: "fancy"
             );
 
+            FormattableCommand wingdings = new(
+                commandName: "wingdings",
+                function: (string[] args, bool copy, bool notif) => {
+                    if (Utils.IndexTest(args)) {
+                        return null;
+                    }
+
+                    string text = string.Join(" ", args[1..]);
+                    List<string> converted = new();
+                    Dictionary<string, string> wingdingsChar = new() {
+                        { "a", "♋︎" },
+                        { "b", "♌︎" },
+                        { "c", "♍︎" },
+                        { "d", "♎︎" },
+                        { "e", "♏︎" },
+                        { "f", "♐︎" },
+                        { "g", "♑︎" },
+                        { "h", "♒︎" },
+                        { "i", "♓︎" },
+                        { "j", "🙰" },
+                        { "k", "🙵" },
+                        { "l", "●︎" },
+                        { "m", "❍︎" },
+                        { "n", "■︎" },
+                        { "o", "□︎" },
+                        { "p", "◻︎" },
+                        { "q", "❑︎" },
+                        { "r", "❒︎" },
+                        { "s", "⬧︎" },
+                        { "t", "⧫︎" },
+                        { "u", "◆︎" },
+                        { "v", "❖︎" },
+                        { "w", "⬥︎" },
+                        { "x", "⌧︎" },
+                        { "y", "⍓︎" },
+                        { "z", "⌘︎" },
+                        { "A", "✌︎" },
+                        { "B", "👌︎" },
+                        { "C", "👍︎" },
+                        { "D", "👎︎" },
+                        { "E", "☜︎" },
+                        { "F", "☞︎" },
+                        { "G", "☝︎" },
+                        { "H", "☟︎" },
+                        { "I", "✋︎" },
+                        { "J", "☺︎" },
+                        { "K", "😐︎" },
+                        { "L", "☹︎" },
+                        { "M", "💣︎" },
+                        { "N", "☠︎" },
+                        { "O", "⚐︎" },
+                        { "P", "🏱︎" },
+                        { "Q", "✈︎" },
+                        { "R", "☼︎" },
+                        { "S", "💧︎" },
+                        { "T", "❄︎" },
+                        { "U", "🕆︎" },
+                        { "V", "✞︎" },
+                        { "W", "🕈︎" },
+                        { "X", "✠︎" },
+                        { "Y", "✡︎" },
+                        { "Z", "☪︎" },
+                        { "!", "✏︎" },
+                        { "\"", "✂︎" },
+                        { "#", "✁︎" },
+                        { "$", "👓︎" },
+                        { "%", "🕭︎" },
+                        { "&", "🕮︎" },
+                        { "'", "🕯︎" },
+                        { "(", "🕿︎" },
+                        { ")", "✆︎" },
+                        { "*", "🖂︎" },
+                        { "+", "🖃︎" },
+                        { ",", "📪︎" },
+                        { "-", "📫︎" },
+                        { ".", "📬︎" },
+                        { "/", "📭︎" },
+                        { @"\", "ॐ︎" },
+                        { "0", "📁︎" },
+                        { "1", "📂︎" },
+                        { "2", "📄︎" },
+                        { "3", "🗏︎" },
+                        { "4", "🗐︎" },
+                        { "5", "🗄︎" },
+                        { "6", "⌛︎" },
+                        { "7", "🖮︎" },
+                        { "8", "🖰︎" },
+                        { "9", "🖲︎" },
+                        { ":", "🖳︎" },
+                        { ";", "🖴︎" },
+                        { "<", "🖫︎" },
+                        { "=", "🖬︎" },
+                        { ">", "✇︎" },
+                        { "?", "✍︎" },
+                        { "@", "@" },
+                        { "[", "☯︎" },
+                        { "]", "☸︎" },
+                        { "^", "♈︎" },
+                        { "_", "♉︎" },
+                        { "`", "♊︎" },
+                        { "{", "❀︎" },
+                        { "|", "✿︎" },
+                        { "}", "❝︎" },
+                        { "~", "❞︎" },
+                    };
+
+                    foreach (char i in text) {
+                        if (wingdingsChar.ContainsKey(i.ToString())) {
+                            converted.Add(wingdingsChar[i.ToString()]);
+                        } else {
+                            converted.Add(i.ToString());
+                        }
+                    }
+
+                    string result = string.Join("", converted);
+
+                    Utils.CopyCheck(copy, result);
+                    Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
+                    return result;
+                },
+                aliases: new string[] { "wd" },
+                useInAllCommand: true,
+                allCommandMode: "fancy"
+            );
+
             FormattableCommand cuberoot = new(
                 commandName: "cuberoot",
                 function: (string[] args, bool copy, bool notif) => {
