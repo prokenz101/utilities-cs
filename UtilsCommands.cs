@@ -1360,6 +1360,107 @@ They cannot both be true at the same time."
                 }
             );
 
+            FormattableCommand leet = new(
+                commandName: "leet",
+                function: (string[] args, bool copy, bool notif) => {
+                    if (Utils.IndexTest(args)) {
+                        return null;
+                    }
+
+                    string text = string.Join(" ", args[1..]);
+                    text = text.ToUpper();
+                    Dictionary<string, string> leetChar = new() {
+                        { "E", "3" },
+                        { "I", "1" },
+                        { "O", "0" },
+                        { "A", "4" },
+                        { "S", "5" }
+                    };
+                    List<string> converted = new();
+
+                    foreach (char i in text) {
+                        if (leetChar.ContainsKey(i.ToString())) {
+                            converted.Add(leetChar[i.ToString()]);
+                        } else {
+                            converted.Add(i.ToString());
+                        }
+                    }
+
+                    string result = string.Join("", converted);
+
+                    Utils.CopyCheck(copy, result);
+                    Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
+                    return result;
+                },
+                aliases: new string[] { "numberize", "numberise" },
+                useInAllCommand: true,
+                allCommandMode: "fancy"
+            );
+
+            FormattableCommand pi = new(
+                commandName: "pi",
+                function: (string[] args, bool copy, bool notif) => {
+                    if (Utils.IndexTest(args)) {
+                        return null;
+                    }
+
+                    //* check if num given is an actual number
+                    try {
+                        int num = int.Parse(args[1]);
+
+                        //* first 10,000 digits of pi
+                        string pi = PiDigits.piDigits;
+                        Func<string, string> handleOutput = (string result) => {
+                            Utils.CopyCheck(copy, result);
+                            Utils.NotifCheck(
+                                notif,
+                                new string[] { "Success", "The digits have been copied to clipboard.", "1" }
+                            );
+                            return result;
+                        };
+
+                        if (num <= 0) {
+                            throw new ArgumentException();
+                        } else if (num > 10000) {
+                            throw new OverflowException();
+                        } else {
+                            return handleOutput("3." + pi[0..num]);
+                        }
+
+                    } catch (FormatException) {
+                        Utils.NotifCheck(
+                            true,
+                            new string[] {
+                                "Something went wrong.",
+                                "Perhaps the number you inputted was not a real number.",
+                                "5"
+                            }
+                        );
+                        return null;
+                    } catch (ArgumentException) {
+                        Utils.NotifCheck(
+                            true,
+                            new string[] {
+                                "Hey!",
+                                "You can't get a zero or negative amount of pi digits.",
+                                "4"
+                            }
+                        );
+                        return null;
+                    } catch (OverflowException) {
+                        Utils.NotifCheck(
+                            true,
+                            new string[] {
+                                "That's a bit too far.",
+                                "The limit to getting pi values is 10,000.",
+                                "4"
+                            }
+                        );
+                        return null;
+                    }
+                }
+            );
+
             FormattableCommand exponent = new(
                 commandName: "exponent",
                 function: (string[] args, bool copy, bool notif) => {
