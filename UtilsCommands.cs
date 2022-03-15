@@ -723,10 +723,18 @@ They cannot both be true at the same time."
                     switch (mode) {
                         case "to":
                             try {
-                                string encoded = ascii85.Encode(byteArray);
-                                Utils.CopyCheck(copy, encoded);
-                                Utils.NotifCheck(true, new string[] { "Success!", "Message copied to clipboard.", "3" });
-                                return encoded;
+                                string encodedWithArrows = ascii85.Encode(byteArray);
+                                if (encodedWithArrows.StartsWith("<~") && encodedWithArrows.EndsWith("~>")) {
+                                    string encoded = encodedWithArrows.Remove(encodedWithArrows.Length - 2)[2..];
+                                    
+                                    Utils.CopyCheck(copy, encoded);
+                                    Utils.NotifCheck(true, new string[] { "Success!", "Message copied to clipboard.", "3" });
+                                    return encoded;
+                                } else {
+                                    Utils.CopyCheck(copy, encodedWithArrows);
+                                    Utils.NotifCheck(true, new string[] { "Success!", "Message copied to clipboard.", "3" });
+                                    return encodedWithArrows;
+                                }
                             } catch {
                                 Utils.NotifCheck(
                                     true,
@@ -741,6 +749,10 @@ They cannot both be true at the same time."
 
                         case "from":
                             try {
+                                if (!(text.StartsWith("<~") && text.EndsWith("~>"))) {
+                                    text = "<~" + text + "~>";
+                                }
+
                                 string decoded = System.Text.Encoding.ASCII.GetString(ascii85.Decode(text));
                                 Utils.CopyCheck(copy, decoded);
                                 Utils.NotifCheck(true, new string[] { "Success!", "Message copied to clipboard.", "3" });
