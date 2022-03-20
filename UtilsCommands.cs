@@ -185,6 +185,7 @@ namespace utilities_cs {
         }
     }
 
+
     /// <summary>
     /// The class containing all methods that are used for registering commands to the dictionaries.
     /// </summary>
