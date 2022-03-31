@@ -144,7 +144,9 @@ namespace utilities_cs {
         }
     }
 
-    /// <summary>The class that supports regular commands.</summary>
+    /// <summary>
+    /// The class that supports regular commands.
+    /// </summary>
     public class RegularCommand : Command {
         public Action<string[]>? Function;
         public RegularCommand(
@@ -185,7 +187,6 @@ namespace utilities_cs {
         }
     }
 
-
     /// <summary>
     /// The class containing all methods that are used for registering commands to the dictionaries.
     /// </summary>
@@ -195,28 +196,8 @@ namespace utilities_cs {
         /// </summary>
         public static void RegisterAllRCommands() {
             RegularCommand autoclick = new(
-                commandName: "autoclick",
-                function: (string[] args) => {
-                    string text = string.Join(" ", args[1..]);
-                    //* parameters of autoclick, like {interval} {mousebutton} etc
-
-                    MatchCollection matches = Autoclick.re.Matches(text.ToLower());
-                    if (matches.Count > 0) {
-                        var match = matches[0];
-                        GroupCollection groups = match.Groups;
-                        AutoclickData data = new(groups);
-                        Autoclick.PerformAutoclick(data);
-                    } else {
-                        Utils.NotifCheck(
-                            true,
-                            new string[] {
-                        "Huh.",
-                        "The parameters for autoclick were not given properly. Try again.",
-                        "3"
-                            }
-                        );
-                    }
-                }
+                "autoclick",
+                Autoclick.Autoclicker;
             );
 
             RegularCommand settings = new(
@@ -480,7 +461,7 @@ They cannot both be true at the same time."
                             { 'h', new string[] { "3600", "hour" } }
                         };
 
-                        await Task.Run(() => {  //* Task for reminder.
+                        await Task.Run(() => { //* Task for reminder.
                             if (timeOptions.ContainsKey(unit)) {
                                 int multiplier = int.Parse(timeOptions[unit][0]);
                                 string word = timeOptions[unit][1].ToString();
@@ -727,7 +708,7 @@ They cannot both be true at the same time."
                                 string encodedWithArrows = ascii85.Encode(byteArray);
                                 if (encodedWithArrows.StartsWith("<~") && encodedWithArrows.EndsWith("~>")) {
                                     string encoded = encodedWithArrows.Remove(encodedWithArrows.Length - 2)[2..];
-                                    
+
                                     Utils.CopyCheck(copy, encoded);
                                     Utils.NotifCheck(true, new string[] { "Success!", "Message copied to clipboard.", "3" });
                                     return encoded;
