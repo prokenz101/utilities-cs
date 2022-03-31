@@ -26,6 +26,11 @@
     }
 
     public class UtilitiesAppContext : ApplicationContext {
+        /// <summary>
+        /// The main method that is called when a command is executed.
+        /// </summary>
+        /// <param name="args">The arguments for the command being run.</param>
+        /// <returns>Returns null or a string of the output of the command.</returns>
         public static string? Utilities(string[] args) {
             var cmd = args[0].ToLower();
             string? output = Command.ExecuteCommand(cmd, args);
