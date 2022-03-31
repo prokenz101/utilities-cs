@@ -39,19 +39,6 @@
         private NotifyIcon trayIcon;
         public static SettingsJSON currentSettings = SettingsModification.GetSettings();
         public UtilitiesAppContext() {
-
-            Action registerHotkeyFailed = () => {
-                Utils.NotifCheck(
-                    true,
-                    new string[] {
-                        "Something went wrong.",
-                        @"Are you opening multiple instances of utilities-cs?",
-                        "6"
-                    }
-                );
-                Exit();
-            };
-
             //* making keyboard hook for ctrl + f8
             HookManager.AddHook(
                 "utilities",
@@ -69,7 +56,17 @@
                     string[] args = Clipboard.GetText().Split(" ");
                     Utilities(args);
                 },
-                registerHotkeyFailed
+                () => {
+                    Utils.NotifCheck(
+                        true,
+                        new string[] {
+                        "Something went wrong.",
+                        @"Are you opening multiple instances of utilities-cs?",
+                        "6"
+                        }
+                    );
+                    Exit();
+                }
             );
 
             //* creating tray icon
