@@ -77,7 +77,7 @@
 
             menu.Items.Add("Wiki...", null, delegate {
                 System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(
-                "cmd", $"/c start https://github.com/prokenz101/utilities-py/wiki/Utilities-Wiki-(Windows,-C%23-and-Python)"
+                "cmd", $"/c start https://github.com/prokenz101/utilities-cs/wiki/Utilities-Wiki"
             ) { CreateNoWindow = true });
             }
             );

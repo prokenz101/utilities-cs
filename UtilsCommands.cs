@@ -376,7 +376,7 @@ They cannot both be true at the same time."
                     System.Diagnostics.Process.Start(
                         new System.Diagnostics.ProcessStartInfo(
                             "cmd",
-                            $"/c start https://github.com/prokenz101/utilities-py/wiki/Utilities-Wiki-(Windows,-C%23-and-Python)"
+                            $"/c start https://github.com/prokenz101/utilities-cs/wiki/Utilities-Wiki"
                         ) { CreateNoWindow = true }
                     );
                 }
