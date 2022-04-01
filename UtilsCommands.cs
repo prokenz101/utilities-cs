@@ -1784,6 +1784,32 @@ They cannot both be true at the same time."
                 aliases: new string[] { "gcd" }
             );
 
+            FormattableCommand average = new(
+                commandName: "average",
+                function: (string[] args, bool copy, bool notif) => {
+                    if (Utils.IndexTest(args)) {
+                        return null;
+                    }
+
+                    string text = string.Join(" ", args[1..]);
+                    List<int> nums = Utils.RegexFindAllInts(text);
+
+                    // find sum of all nums in "nums"
+                    int sum = 0;
+                    foreach (int num in nums) {
+                        sum += num;
+                    }
+
+                    // find average of sum
+                    int average = sum / nums.Count;
+
+                    Utils.CopyCheck(copy, average.ToString());
+                    Utils.NotifCheck(notif, new string[] { "Success!", $"The average was {average}", "5" });
+                    return average.ToString();
+                },
+                aliases: new string[] { "avg" }
+            );
+
             FormattableCommand hexadecimal = new(
                 commandName: "hexadecimal",
                 function: (string[] args, bool copy, bool notif) => {
