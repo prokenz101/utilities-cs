@@ -2131,38 +2131,50 @@ Word count: {args[1..].Length}";
                         return null;
                     }
                     string text = string.Join(" ", args[1..]);
-
                     //* making regex
-                    Dictionary<Match, GroupCollection>? matchToGroups = Utils.RegexFind(
-                        text,
-                        @"(?<percent>\d+(\.\d+)?)% of (?<number>\d+(\.\d+)?)",
-                        useIsMatch: true,
-                        () => {
-                            Utils.NotifCheck(
-                                true,
-                                new string[] {
-                                    "Huh.",
-                                    "It seems you did not input the parameters correctly. Try '% 50% of 300'.",
-                                    "3"
-                                }
-                            );
-                        }
-                    );
+                    Regex findNumberFromPercentage = new(@"(?<percent>\d+(\.\d+)?)% of (?<number>\d+(\.\d+)?)");
+                    Regex findPercentageFromNumbers = new(@"get (?<num1>\d+|\d+\.\d+) and (?<num2>\d+|\d+\.\d+)");
 
-                    if (matchToGroups != null) {
-                        List<float> nums = new();
+                    if (findNumberFromPercentage.IsMatch(text)) {
+                        MatchCollection matches = findNumberFromPercentage.Matches(text);
+                        float percent = (float.Parse(matches[0].Groups["percent"].Value));
+                        float number = float.Parse(matches[0].Groups["number"].Value);
 
-                        foreach (KeyValuePair<Match, GroupCollection> kvp in matchToGroups) {
-                            nums.Add(float.Parse(kvp.Value["percent"].ToString()) / 100); //* percentage in decimal
-                            nums.Add(float.Parse(kvp.Value["number"].ToString())); //* number
-                        }
+                        float ans = (percent / 100) * number; //* answer
+                        Utils.NotifCheck(
+                            notif,
+                            new string[] {
+                                "Success!",
+                                $"{ans} is {percent}% of {number}",
+                                "5"
+                            }
+                        );
+                        Utils.CopyCheck(copy, ans.ToString());
+                        return ans.ToString();
+                    } else if (findPercentageFromNumbers.IsMatch(text)) {
+                        MatchCollection matches = findPercentageFromNumbers.Matches(text);
+                        float num1 = float.Parse(matches[0].Groups["num1"].Value);
+                        float num2 = float.Parse(matches[0].Groups["num2"].Value);
 
-                        float y = nums[0] * nums[1]; //* answer
-
-                        Utils.NotifCheck(notif, new string[] { "Success!", $"The Answer is {y}.", "5" });
-                        Utils.CopyCheck(copy, y.ToString());
-                        return y.ToString();
+                        float ans = (num1 / num2) * 100; //* answer
+                        Utils.NotifCheck(notif,
+                            new string[] {
+                                "Success!",
+                                $"{num1} is {ans}% of {num2}",
+                                "5"
+                            }
+                        );
+                        Utils.CopyCheck(copy, ans.ToString());
+                        return ans.ToString();
                     } else {
+                        Utils.NotifCheck(
+                            true,
+                            new string[] {
+                                "Huh.",
+                                "It seems you did not input the parameters correctly. Try '% 50% of 300'.",
+                                "3"
+                            }
+                        );
                         return null;
                     }
                 },
