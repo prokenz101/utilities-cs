@@ -134,7 +134,7 @@ namespace utilities_cs {
         /// </summary>
         /// <param name="cmd">The name of the command that is used to find the method and return it.</param>
         /// <returns>The method of that command name.</returns>
-        public static Func<string[], bool, bool, string?>? GetMethod(string cmd) {
+        public static Func<string[], bool, bool, string?>? GetFMethod(string cmd) {
             if (fCommands.ContainsKey(cmd)) {
                 Func<string[], bool, bool, string?> func = fCommands[cmd];
                 return func;
