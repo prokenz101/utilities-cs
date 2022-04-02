@@ -25,6 +25,10 @@ namespace utilities_cs {
             } else if (rCommands.ContainsKey(cmd)) {
                 rCommands[cmd].Invoke(args);
                 return null;
+            } else if (Force.AreAnyForced()) {
+                args = Enumerable.Concat(new string[] { "cmd" }, args).ToArray<string>();
+                string? output = Force.forced!.Function!.Invoke(args, copy, notif);
+                if (output != null) { return output; } else { return null; }
             } else {
                 Utils.NotifCheck(
                     true,
