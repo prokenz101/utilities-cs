@@ -142,6 +142,16 @@ namespace utilities_cs {
                 return null;
             }
         }
+
+        public static FormattableCommand? GetFormattableCommand(string cmd) {
+            foreach (FormattableCommand i in FormattableCommands) {
+                if (i.CommandName == cmd) {
+                    return i;
+                }
+            }
+
+            return null;
+        }
     }
 
     /// <summary>
