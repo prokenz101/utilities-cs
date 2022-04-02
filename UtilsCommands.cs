@@ -1854,21 +1854,31 @@ They cannot both be true at the same time."
                     }
 
                     try {
-                        System.Numerics.BigInteger answer =
+                        if (numsInt.Count > 1) {
+                            System.Numerics.BigInteger answer =
                             HCF.findGCD(
                                 numsBigIntegers.ToArray<System.Numerics.BigInteger>(),
                                 numsBigIntegers.ToArray().Length
                             );
-                        Utils.CopyCheck(copy, answer.ToString());
-                        Utils.NotifCheck(notif, new string[] { "Success!", $"The answer was {answer}.", "5" });
-                        return answer.ToString();
+                            Utils.CopyCheck(copy, answer.ToString());
+                            Utils.NotifCheck(notif, new string[] { "Success!", $"The answer was {answer}.", "5" });
+                            return answer.ToString();
+                        } else {
+                            Utils.NotifCheck(
+                                true,
+                                new string[] {
+                                    "Something went wrong.", "You need to input at least two numbers.", "4"
+                                }
+                            );
+                            return null;
+                        }
                     } catch {
                         Utils.NotifCheck(
                             true,
                             new string[] {
-                        "Huh.",
-                        "It seems you did not input the numbers properly. Try 'hcf 15 70' as an example.",
-                        "8"
+                                "Huh.",
+                                "It seems you did not input the numbers properly. Try 'hcf 15 70' as an example.",
+                                "8"
                             }
                         );
 
@@ -1888,18 +1898,30 @@ They cannot both be true at the same time."
                     string text = string.Join(" ", args[1..]);
                     List<int> nums = Utils.RegexFindAllInts(text);
 
-                    // find sum of all nums in "nums"
-                    int sum = 0;
-                    foreach (int num in nums) {
-                        sum += num;
+                    if (nums.Count > 1) {
+                        //* find sum of all nums in "nums"
+                        int sum = 0;
+                        foreach (int num in nums) {
+                            sum += num;
+                        }
+
+                        // find average of sum
+                        int average = sum / nums.Count;
+
+                        Utils.CopyCheck(copy, average.ToString());
+                        Utils.NotifCheck(notif, new string[] { "Success!", $"The average was {average}", "5" });
+                        return average.ToString();
+                    } else {
+                        Utils.NotifCheck(
+                            true,
+                            new string[] {
+                                "Something went wrong.",
+                                "You need to input at least two numbers.",
+                                "4"
+                            }
+                        );
+                        return null;
                     }
-
-                    // find average of sum
-                    int average = sum / nums.Count;
-
-                    Utils.CopyCheck(copy, average.ToString());
-                    Utils.NotifCheck(notif, new string[] { "Success!", $"The average was {average}", "5" });
-                    return average.ToString();
                 },
                 aliases: new string[] { "avg" }
             );
@@ -2038,11 +2060,23 @@ They cannot both be true at the same time."
                     }
 
                     try {
-                        BigInteger answer =
+                        if (numsInt.Count > 1) {
+                            BigInteger answer =
                             LCMClass.lcmExec(numsBigInteger.ToArray<BigInteger>());
-                        Utils.CopyCheck(copy, answer.ToString());
-                        Utils.NotifCheck(notif, new string[] { "Success!", $"The answer was {answer}.", "5" });
-                        return answer.ToString();
+                            Utils.CopyCheck(copy, answer.ToString());
+                            Utils.NotifCheck(notif, new string[] { "Success!", $"The answer was {answer}.", "5" });
+                            return answer.ToString();
+                        } else {
+                            Utils.NotifCheck(
+                                true,
+                                new string[] {
+                                    "Something went wrong.",
+                                    "You need to input at least two numbers.",
+                                    "4"
+                                }
+                            );
+                            return null;
+                        }
                     } catch {
                         Utils.NotifCheck(
                             true,
@@ -2210,10 +2244,16 @@ Word count: {args[1..].Length}";
                         return ans;
                     };
 
-                    if (remainder != 0) {
+                    if (remainder != 0 && ints.Count > 1) {
                         return returnNum($"Answer: {dividedNum} and Remainder: {remainder}");
-                    } else {
+                    } else if (remainder == 0) {
                         return returnNum($"Answer: {dividedNum}");
+                    } else {
+                        Utils.NotifCheck(
+                            true,
+                            new string[] { "Something went wrong.", "You need to input atleast two numbers.", "3" }
+                        );
+                        return null;
                     }
                 }
             );
@@ -2243,6 +2283,7 @@ Word count: {args[1..].Length}";
                                 "5"
                             }
                         );
+
                         Utils.CopyCheck(copy, ans.ToString());
                         return ans.ToString();
                     } else if (findPercentageFromNumbers.IsMatch(text)) {
@@ -2265,7 +2306,7 @@ Word count: {args[1..].Length}";
                             true,
                             new string[] {
                                 "Huh.",
-                                "It seems you did not input the parameters correctly. Try '% 50% of 300'.",
+                                "It seems you did not input the parameters correctly.",
                                 "3"
                             }
                         );
@@ -2334,25 +2375,37 @@ Word count: {args[1..].Length}";
                     string text = string.Join(" ", args[1..]);
                     List<int> nums = Utils.RegexFindAllInts(text);
 
-                    //* quick check to see if the first num is greater than second
-                    if (nums[0] > nums[1]) {
-                        Utils.NotifCheck(
-                            true,
-                            new string[] {
+                    if (nums.Count > 1) {
+                        //* quick check to see if the first num is greater than second
+                        if (nums[0] > nums[1]) {
+                            Utils.NotifCheck(
+                                true,
+                                new string[] {
                                 "Huh.",
                                 "Unfortunately the minimum value of the random number cannot be higher than the max value.",
                                 "5"
+                                }
+                            );
+                            return null;
+                        }
+
+                        Random rand = new Random();
+                        int randint = rand.Next(nums[0], nums[1] + 1);
+
+                        Utils.CopyCheck(copy, randint.ToString());
+                        Utils.NotifCheck(notif, new string[] { "Success!", $"The number was: {randint}", "5" });
+                        return randint.ToString();
+                    } else {
+                        Utils.NotifCheck(
+                            true,
+                            new string[] {
+                                "Are you sure those were numbers?",
+                                "Something went wrong while getting the numbers from the parameters you inputted.",
+                                "4"
                             }
                         );
                         return null;
                     }
-
-                    Random rand = new Random();
-                    int randint = rand.Next(nums[0], nums[1] + 1);
-
-                    Utils.CopyCheck(copy, randint.ToString());
-                    Utils.NotifCheck(notif, new string[] { "Success!", $"The number was: {randint}", "5" });
-                    return randint.ToString();
                 },
                 aliases: new string[] { "randnum" }
             );
