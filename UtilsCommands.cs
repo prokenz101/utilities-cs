@@ -36,6 +36,35 @@ namespace utilities_cs {
                 ); return null;
             }
         }
+
+        /// <summary>
+        /// A simple method that checks if a certain command exists.
+        /// </summary>
+        /// <param name="cmd">The name of the command</param>
+        /// <returns>True or False based on if the command exists, or not.</returns>
+        public static bool Exists(string cmd) {
+            if (fCommands.ContainsKey(cmd)) {
+                return true;
+            } else if (rCommands.ContainsKey(cmd)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        public static object? GetMethod(string commandName) {
+            if (Command.Exists(commandName)) {
+                if (fCommands.ContainsKey(commandName)) {
+                    return fCommands[commandName];
+                } else if (rCommands.ContainsKey(commandName)) {
+                    return rCommands[commandName];
+                } else {
+                    return null;
+                }
+            } else {
+                return null;
+            }
+        }
     }
 
     /// <summary>
