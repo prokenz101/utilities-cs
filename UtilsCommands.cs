@@ -1660,6 +1660,28 @@ They cannot both be true at the same time."
                 allCommandMode: "fancy"
             );
 
+            FormattableCommand shuffle = new(
+                commandName: "shuffle",
+                function: (string[] args, bool copy, bool notif) => {
+                    string text = string.Join(" ", args[1..]);
+
+                    //* shuffle text
+                    var chars = text.ToCharArray();
+                    var random = new Random();
+                    for (int i = chars.Length - 1; i > 0; i--) {
+                        int r = random.Next(i + 1);
+                        var tmp = chars[i];
+                        chars[i] = chars[r];
+                        chars[r] = tmp;
+                    }
+
+                    var answer = new string(chars);
+                    Utils.CopyCheck(copy, answer);
+                    Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
+                    return answer;
+                }
+            );
+
             FormattableCommand fraction = new(
                 commandName: "fraction",
                 function: (string[] args, bool copy, bool notif) => {
