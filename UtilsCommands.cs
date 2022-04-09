@@ -3,13 +3,13 @@ using System.Text.RegularExpressions;
 
 namespace utilities_cs {
     /// <summary>
-    /// The hierarchy of all command-classes for all commands in utilities-cs
+    /// The hierarchy of all command-classes for all commands in utilities-cs.
     /// </summary>
     public class Command {
         public string? CommandName { get; set; }
         public string[]? Aliases { get; set; }
-        public static Dictionary<string, Func<string[], bool, bool, string?>> fCommands = new();
-        public static Dictionary<string, Action<string[]>> rCommands = new();
+        public static Dictionary<string, Func<string[], bool, bool, string?>> FCommands = new();
+        public static Dictionary<string, Action<string[]>> RCommands = new();
         /// <summary>
         /// Executes a command in either the rCommands dictionary or the fCommands dictionary.
         /// </summary>
@@ -19,11 +19,11 @@ namespace utilities_cs {
         /// <param name="notif">Controls whether the function is willing to send a notification.</param>
         /// <returns>A string of the output of the command. This can also be null.</returns>
         public static string? ExecuteCommand(string cmd, string[] args, bool copy = true, bool notif = true) {
-            if (fCommands.ContainsKey(cmd)) {
-                string? output = fCommands[cmd].Invoke(args, copy, notif);
+            if (FCommands.ContainsKey(cmd)) {
+                string? output = FCommands[cmd].Invoke(args, copy, notif);
                 if (output != null) { return output; } else { return null; }
-            } else if (rCommands.ContainsKey(cmd)) {
-                rCommands[cmd].Invoke(args);
+            } else if (RCommands.ContainsKey(cmd)) {
+                RCommands[cmd].Invoke(args);
                 return null;
             } else if (Force.AreAnyForced()) {
                 args = Enumerable.Concat(new string[] { "cmd" }, args).ToArray<string>();
@@ -47,9 +47,9 @@ namespace utilities_cs {
         /// <param name="cmd">The name of the command</param>
         /// <returns>True or False based on if the command exists, or not.</returns>
         public static bool Exists(string cmd) {
-            if (fCommands.ContainsKey(cmd)) {
+            if (FCommands.ContainsKey(cmd)) {
                 return true;
-            } else if (rCommands.ContainsKey(cmd)) {
+            } else if (RCommands.ContainsKey(cmd)) {
                 return true;
             } else {
                 return false;
@@ -58,10 +58,10 @@ namespace utilities_cs {
 
         public static object? GetMethod(string commandName) {
             if (Command.Exists(commandName)) {
-                if (fCommands.ContainsKey(commandName)) {
-                    return fCommands[commandName];
-                } else if (rCommands.ContainsKey(commandName)) {
-                    return rCommands[commandName];
+                if (FCommands.ContainsKey(commandName)) {
+                    return FCommands[commandName];
+                } else if (RCommands.ContainsKey(commandName)) {
+                    return RCommands[commandName];
                 } else {
                     return null;
                 }
@@ -90,10 +90,10 @@ namespace utilities_cs {
             CommandName = commandName; Function = function; Aliases = aliases;
             UseInAllCommand = useInAllCommand; AllCommandMode = allCommandMode;
             if (aliases != null) {
-                fCommands.Add(commandName, function);
-                foreach (string alias in aliases) { fCommands.Add(alias, function); }
+                FCommands.Add(commandName, function);
+                foreach (string alias in aliases) { FCommands.Add(alias, function); }
             } else {
-                fCommands.Add(commandName, function);
+                FCommands.Add(commandName, function);
             }
 
             FormattableCommands.Add(this);
@@ -119,7 +119,7 @@ namespace utilities_cs {
         /// <returns>A string with all currently registered Commands, seperated by newlines.</returns>
         public static string ListAllFCommands() {
             List<string> fCommandsList = new();
-            foreach (KeyValuePair<string, Func<string[], bool, bool, string?>> i in Command.fCommands) {
+            foreach (KeyValuePair<string, Func<string[], bool, bool, string?>> i in Command.FCommands) {
                 fCommandsList.Add(i.Key);
             }
 
@@ -135,8 +135,8 @@ namespace utilities_cs {
         /// <param name="notif">Controls whether the function is willing to send a notification.</param>
         /// <returns>The output of the method that is ran. Value can be null.</returns>
         public static string? FindAndExecute(string cmd, string[] args, bool copy, bool notif) {
-            if (fCommands.ContainsKey(cmd)) {
-                string? output = fCommands[cmd].Invoke(args, copy, notif);
+            if (FCommands.ContainsKey(cmd)) {
+                string? output = FCommands[cmd].Invoke(args, copy, notif);
                 if (output != null) { return output; } else { return null; }
             } else {
                 return null;
@@ -168,8 +168,8 @@ namespace utilities_cs {
         /// <param name="cmd">The name of the command that is used to find the method and return it.</param>
         /// <returns>The method of that command name.</returns>
         public static Func<string[], bool, bool, string?>? GetFMethod(string cmd) {
-            if (fCommands.ContainsKey(cmd)) {
-                Func<string[], bool, bool, string?> func = fCommands[cmd];
+            if (FCommands.ContainsKey(cmd)) {
+                Func<string[], bool, bool, string?> func = FCommands[cmd];
                 return func;
             } else {
                 return null;
@@ -200,10 +200,10 @@ namespace utilities_cs {
             //* setting all attributes for instance
             CommandName = commandName.ToLower(); Function = function; Aliases = aliases;
             if (aliases != null) {
-                rCommands.Add(commandName, function);
-                foreach (string alias in aliases) { rCommands.Add(alias, function); }
+                RCommands.Add(commandName, function);
+                foreach (string alias in aliases) { RCommands.Add(alias, function); }
             } else {
-                rCommands.Add(commandName, function);
+                RCommands.Add(commandName, function);
             }
         }
 
@@ -213,7 +213,7 @@ namespace utilities_cs {
         /// <returns>A string with every RegularCommand, seperated by newlines.</returns>
         public static string ListAllRCommands() {
             List<string> rCommandsList = new();
-            foreach (KeyValuePair<string, Action<string[]>> i in Command.rCommands) {
+            foreach (KeyValuePair<string, Action<string[]>> i in Command.RCommands) {
                 rCommandsList.Add(i.Key);
             }
 
