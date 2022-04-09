@@ -40,11 +40,11 @@ namespace utilities_cs {
                 );
             };
 
-            switch (setting) {
-                case "disableNotifications":
+            switch (setting.ToLower()) {
+                case "disablenotifications":
                     currentSettings.disableNotifications = Convert.ToBoolean(ConvertToBoolOrInt("bool", value));
                     break;
-                case "disableClipboardManipulation":
+                case "disableclipboardManipulation":
                     if (!currentSettings.autoPaste) {
                         currentSettings.disableClipboardManipulation = Convert.ToBoolean(ConvertToBoolOrInt("bool", value));
                     } else {
@@ -52,10 +52,10 @@ namespace utilities_cs {
                         return;
                     }
                     break;
-                case "copyingHotkeyDelay":
+                case "copyinghotkeyDelay":
                     currentSettings.copyingHotkeyDelay = int.Parse(ConvertToBoolOrInt("int", value)!.ToString()!);
                     break;
-                case "autoPaste":
+                case "autopaste":
                     if (!currentSettings.disableClipboardManipulation) {
                         currentSettings.autoPaste = Convert.ToBoolean(ConvertToBoolOrInt("bool", value));
                     } else {
@@ -63,10 +63,10 @@ namespace utilities_cs {
                         return;
                     }
                     break;
-                case "pressEscape":
+                case "pressescape":
                     currentSettings.pressEscape = Convert.ToBoolean(ConvertToBoolOrInt("bool", value));
                     break;
-                case "allCommandHideNames":
+                case "allcommandhidenames":
                     currentSettings.allCommandHideNames = Convert.ToBoolean(ConvertToBoolOrInt("bool", value));
                     break;
             }
