@@ -5,7 +5,7 @@
     <TargetFramework>net6.0-windows10.0.17763.0</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
     <RootNamespace>utilities_cs</RootNamespace>
-    <ApplicationIcon>csharp.ico</ApplicationIcon>
+    <ApplicationIcon>UtilitiesIcon.ico</ApplicationIcon>
     <ImplicitUsings>enable</ImplicitUsings>
     <SignAssembly>false</SignAssembly>
     <LangVersion>latest</LangVersion>
