@@ -2179,6 +2179,38 @@ Word count: {args[1..].Length}";
                 aliases: new string[] { "len" }
             );
 
+            FormattableCommand characterDistribution = new(
+                commandName: "characterdistribution",
+                function: (string[] args, bool copy, bool notif) => {
+                    if (Utils.IndexTest(args)) {
+                        return null;
+                    }
+
+                    string text = string.Join(" ", args[1..]);
+                    HashSet<char> uniqueChars = new();
+                    foreach (char c in text) { uniqueChars.Add(c); }
+
+                    Dictionary<char, string> charDistrDict = new();
+                    foreach (char i in uniqueChars) { charDistrDict.Add(i, $"{i}: {text.Count(f => (f == i))}\n"); }
+
+                    List<char> firstLetters = charDistrDict.Keys.ToList();
+                    firstLetters.Sort();
+                    List<string> charDistr = new();
+
+                    foreach (var i in firstLetters) { charDistr.Add(charDistrDict[i]); }
+                    string result = string.Join("", charDistr);
+
+                    Utils.CopyCheck(copy, result);
+                    Utils.NotifCheck(
+                        notif,
+                        new string[] {
+                            "Success!", "The character distribution has been copied to your clipboard.", "3"
+                        }
+                    ); return result;
+                },
+                aliases: new string[] { "chardistr", "chardistribution", "characterdistr" }
+            );
+
             FormattableCommand lowercase = new(
                 commandName: "lowercase",
                 function: (string[] args, bool copy, bool notif) => {
