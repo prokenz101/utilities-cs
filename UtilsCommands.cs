@@ -1549,6 +1549,56 @@ They cannot both be true at the same time."
                 }
             );
 
+            FormattableCommand lorem = new(
+                commandName: "lorem",
+                function: (string[] args, bool copy, bool notif) => {
+                    if (Utils.IndexTest(args)) {
+                        return null;
+                    }
+
+                    //* lorem string
+                    string lorem = LoremIpsum.LoremIpsumFull;
+                    if (args[1] == "all") {
+                        Utils.CopyCheck(copy, lorem);
+                        Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
+                        return lorem;
+                    } else {
+                        try {
+                            int numOfWords = int.Parse(args[1]);
+                            //* split lorem into array by space
+                            string[] loremArray = lorem.Split(" ");
+
+                            if (numOfWords >= 1 && !(numOfWords > 10000)) {
+                                string[] result = loremArray[0..(numOfWords)];
+
+                                Utils.CopyCheck(copy, string.Join(" ", result));
+                                Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
+                                return string.Join(" ", result);
+                            } else if (numOfWords > 10000) {
+                                Utils.NotifCheck(
+                                    true,
+                                    new string[] {
+                                        "That's a bit too far.", "The limit to getting lorem values is 10,000.", "4"
+                                    }
+                                );
+                                return null;
+                            } else {
+                                Utils.NotifCheck(
+                                    true,
+                                    new string[] { "Hey!", "You can't get a zero or negative amount of words.", "4" }
+                                ); return null;
+                            }
+                        } catch {
+                            Utils.NotifCheck(
+                                true,
+                                new string[] { "Huh.", "It seems you did not input the parameters correctly.", "4" }
+                            ); return null;
+                        }
+                    }
+
+                }
+            );
+
             FormattableCommand exponent = new(
                 commandName: "exponent",
                 function: (string[] args, bool copy, bool notif) => {
