@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace utilities_cs {
     public class Autoclick {
-        public static void Autoclicker(string[] args) {
+        public async static void Autoclicker(string[] args) {
             Thread.Sleep(100);
             Regex re = new Regex(@"(?<interval>\d+)? ?(?<mb>left|right|middle)(?<count> \d+)?");
             string text = string.Join(" ", args[1..]).ToLower();
@@ -57,7 +57,7 @@ namespace utilities_cs {
                         autoclickTokenSource.Dispose();
                     };
 
-                    Task t = new Task(
+                    Task autoclickTask = new Task(
                         () => {
                             Action performAutoclick = () => {
                                 MouseOperations.MouseEvent((MouseOperations.MouseEventFlags)data[1]!);
@@ -67,10 +67,11 @@ namespace utilities_cs {
                             };
 
                             try {
-                                if ((int)data[2] != int.MaxValue) {
-                                    for (int i = 0; i < (int)data[2]; i++) { performAutoclick(); }
-                                } else {
+                                if ((int)data[2] == int.MaxValue) {
                                     while (true) { performAutoclick(); }
+                                } else {
+                                    for (int i = 0; i < (int)data[2]; i++) { performAutoclick(); }
+                                    stopAutoclicker();
                                 }
 
                             } catch (OperationCanceledException) { return; }
@@ -92,7 +93,7 @@ namespace utilities_cs {
                         }
                     );
 
-                    t.Start();
+                    await Task.Run(() => autoclickTask.Start());
 
                 } catch (OverflowException) {
                     Utils.NotifCheck(
