@@ -1769,20 +1769,15 @@ namespace utilities_cs {
                     }
 
                     string text = string.Join(" ", args);
-
-                    List<int> numsInt = Utils.RegexFindAllInts(text);
-                    List<System.Numerics.BigInteger> numsBigIntegers = new();
-
-                    foreach (int num in numsInt) {
-                        numsBigIntegers.Add(num);
-                    }
+                    List<System.Numerics.BigInteger> nums = new();
+                    Utils.RegexFindAllInts(text).ForEach(x => nums.Add(x));
 
                     try {
-                        if (numsInt.Count > 1) {
+                        if (nums.Count > 1) {
                             System.Numerics.BigInteger answer =
                             HCF.findGCD(
-                                numsBigIntegers.ToArray<System.Numerics.BigInteger>(),
-                                numsBigIntegers.ToArray().Length
+                                nums.ToArray<System.Numerics.BigInteger>(),
+                                nums.ToArray().Length
                             );
                             Utils.CopyCheck(copy, answer.ToString());
                             Utils.NotifCheck(notif, new string[] { "Success!", $"The answer was {answer}.", "5" });
@@ -1976,17 +1971,13 @@ namespace utilities_cs {
 
                     string text = string.Join(" ", args[1..]);
 
-                    List<int> numsInt = Utils.RegexFindAllInts(text);
-                    List<BigInteger> numsBigInteger = new();
-
-                    foreach (int num in numsInt) {
-                        numsBigInteger.Add(num);
-                    }
+                    List<BigInteger> nums = new();
+                    Utils.RegexFindAllInts(text).ForEach(x => nums.Add(x));
 
                     try {
-                        if (numsInt.Count > 1) {
+                        if (nums.Count > 1) {
                             BigInteger answer =
-                            LCMClass.lcmExec(numsBigInteger.ToArray<BigInteger>());
+                            LCMClass.lcmExec(nums.ToArray<BigInteger>());
                             Utils.CopyCheck(copy, answer.ToString());
                             Utils.NotifCheck(notif, new string[] { "Success!", $"The answer was {answer}.", "5" });
                             return answer.ToString();
@@ -2373,11 +2364,8 @@ Word count: {args[1..].Length}";
                         return null;
                     }
                     string text = string.Join(" ", args[1..]);
-                    char[] textArray = text.ToCharArray();
-                    List<char> textList = new();
-                    foreach (char ch in textArray) {
-                        textList.Add(ch);
-                    }
+                    List<char> textList = text.ToCharArray().ToList();
+
                     textList.Reverse();
                     string answer = string.Join("", textList);
                     Utils.CopyCheck(copy, answer);
