@@ -26,7 +26,7 @@ namespace utilities_cs {
             }
         }
 
-        public static void SendMain(string[] args) {
+        public async static void SendMain(string[] args) {
             if (Utils.IndexTest(args)) { return; }
 
             if (keys.ContainsKey(args[1])) {
@@ -35,8 +35,7 @@ namespace utilities_cs {
                 Thread.Sleep(500);
                 string text = string.Join(" ", args[1..]);
 
-                foreach (char i in text) { SendKeys.SendWait(i.ToString()); }
-                Thread.Sleep(UtilitiesAppContext.currentSettings.sendTypingDelay);
+                await Task.Run(() => { foreach (char i in text) { SendKeys.SendWait(i.ToString()); } });
             }
         }
     }
