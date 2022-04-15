@@ -176,6 +176,11 @@ namespace utilities_cs {
             }
         }
 
+        /// <summary>
+        /// Returns a FormattableCommand using the name of that command.
+        /// </summary>
+        /// <param name="cmd">The name of the command.</param>
+        /// <returns>A FormattableCommand based on the "cmd" that is passed.</returns>
         public static FormattableCommand? GetFormattableCommand(string cmd) {
             foreach (FormattableCommand i in FormattableCommands) {
                 if (i.CommandName == cmd) {
