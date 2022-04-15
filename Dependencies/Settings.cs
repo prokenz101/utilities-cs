@@ -3,6 +3,7 @@ namespace utilities_cs {
         public static SettingsJSON defaultSettings = new SettingsJSON {
             disableNotifications = false,
             disableClipboardManipulation = false,
+            sendTypingDelay = 0,
             copyingHotkeyDelay = 25,
             autoPaste = false,
             pressEscape = true,
@@ -125,6 +126,9 @@ They cannot both be true at the same time."
                         return;
                     }
                     break;
+                case "sendtypingdelay":
+                    currentSettings.sendTypingDelay = int.Parse(ConvertToBoolOrInt("int", value)!.ToString()!);
+                    break;
                 case "copyinghotkeydelay":
                     currentSettings.copyingHotkeyDelay = int.Parse(ConvertToBoolOrInt("int", value)!.ToString()!);
                     break;
@@ -201,6 +205,7 @@ They cannot both be true at the same time."
     public class SettingsJSON {
         public bool disableNotifications { get; set; }
         public bool disableClipboardManipulation { get; set; }
+        public int sendTypingDelay { get; set; }
         public int copyingHotkeyDelay { get; set; }
         public bool autoPaste { get; set; }
         public bool pressEscape { get; set; }
