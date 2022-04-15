@@ -6,7 +6,7 @@ namespace utilities_cs {
             string commandName = args[1];
 
             //* check if command exists
-            if (Command.Exists(commandName)) {
+            if (FormattableCommand.FCommandExists(commandName)) {
                 //* check if command is already forced
                 if (Force.AreAnyForced()) {
                     if (Force.IsSpecificCmdForced(commandName)) {

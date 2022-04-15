@@ -190,6 +190,14 @@ namespace utilities_cs {
 
             return null;
         }
+
+        public static bool FCommandExists(string cmd) {
+            if (FCommands.ContainsKey(cmd)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
     }
 
     /// <summary>
