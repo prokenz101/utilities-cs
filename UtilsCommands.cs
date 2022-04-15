@@ -248,6 +248,11 @@ namespace utilities_cs {
                 Autoclick.Autoclicker
             );
 
+            RegularCommand send = new(
+                commandName: "send",
+                Send.SendMain
+            );
+
             RegularCommand settings = new(
                 commandName: "settings",
                 function: SettingsModification.SettingsMain
