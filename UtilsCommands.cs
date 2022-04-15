@@ -245,127 +245,17 @@ namespace utilities_cs {
 
             RegularCommand settings = new(
                 commandName: "settings",
-                function: (string[] args) => {
-                    string mode = args[1];
-                    switch (mode) {
-                        case "modify":
-                            try {
-                                string setting = args[2];
-                                string value = args[3];
-                                SettingsJSON currentSettings = SettingsModification.GetSettings();
-                                SettingsModification.ModifySetting(currentSettings, setting, value);
-                            } catch (IndexOutOfRangeException) {
-                                Utils.NotifCheck(true,
-                                    new string[] {
-                                        "Huh.",
-                                        "It seems you did not input a setting/value.",
-                                        "3"
-                                    }
-                                );
-                            }
-                            break;
-
-                        case "reset":
-                            SettingsModification.CreateDirAndJson();
-                            Utils.NotifCheck(
-                                true,
-                                new string[] { "Reset.", "All settings have been reset to default.", "4" }
-                            ); break;
-
-                        case "list":
-                            string settings = SettingsModification.ListAllSettings();
-                            Utils.CopyCheck(true, settings);
-                            Utils.NotifCheck(
-                                true,
-                                new string[] { "Success!", "The settings have been copied to your clipboard.", "3" }
-                            );
-                            break;
-
-                        case "open":
-                            Utils.NotifCheck(
-                                true,
-                                new string[] {
-                                    "Opening settings file.",
-                                    "Opening settings.json in your default editor.",
-                                    "3"
-                                }
-                            );
-                            SettingsModification.OpenSettingsJSON();
-                            break;
-
-                        case "refresh":
-                            if (
-                                SettingsModification.GetSettings().disableClipboardManipulation
-                                && SettingsModification.GetSettings().autoPaste
-                            ) {
-                                Utils.NotifCheck(
-                                    true,
-                                    new string[] {
-                                        "Hey!",
-                                        @"disableClipboardManipulation and autoPaste are mutually exclusive.
-They cannot both be true at the same time."
-                                    }
-                                ); break;
-                            } else {
-                                UtilitiesAppContext.currentSettings = SettingsModification.GetSettings();
-                                break;
-                            }
-
-                        default:
-                            Utils.NotifCheck(true, new string[] { "Huh.", "It seems that was not a valid mode.", "3" });
-                            break;
-                    }
-                }
+                function: SettingsModification.SettingsMain
             );
 
             RegularCommand force = new(
                 commandName: "force",
-                function: (string[] args) => {
-                    string commandName = args[1];
-
-                    //* check if command exists
-                    if (Command.Exists(commandName)) {
-                        //* check if command is already forced
-                        if (Force.AreAnyForced()) {
-                            if (Force.IsSpecificCmdForced(commandName)) {
-                                Utils.NotifCheck(
-                                    true,
-                                    new string[] { "Huh.", "It seems that command has already been enabled.", "4" }
-                                );
-                                return;
-                            } else {
-                                Utils.NotifCheck(
-                                    true,
-                                    new string[] { "Huh.", "A command has already been enabled.", "3" }
-                                );
-                                return;
-                            }
-                        } else {
-                            //* enable command
-                            Force.ForceCommand(commandName);
-                            Utils.NotifCheck(true, new string[] { "Success!", "That command has been enabled.", "3" });
-                        }
-                    } else {
-                        Utils.NotifCheck(true, new string[] { "Huh.", "That command does not exist.", "3" });
-                    }
-                }
+                function: Force.ForceMain
             );
 
             RegularCommand unforce = new(
                 commandName: "unforce",
-                function: (string[] args) => {
-                    //* check if command is enabled
-                    if (Force.AreAnyForced()) {
-                        //* disable command
-                        Utils.NotifCheck(
-                            true,
-                            new string[] { "Success!", $"The {Force.forced!.CommandName} command has been disabled.", "3" }
-                        );
-                        Force.UnForceCommand();
-                    } else {
-                        Utils.NotifCheck(true, new string[] { "Huh.", "That command was never enabled.", "3" });
-                    }
-                },
+                function: Force.UnforceMain,
                 aliases: new string[] { "un-force" }
             );
 
@@ -418,50 +308,7 @@ They cannot both be true at the same time."
 
             RegularCommand format = new(
                 commandName: "format",
-                function: (string[] args) => {
-                    string text = string.Join(" ", args[1..]);
-                    if (Utils.IndexTest(args)) {
-                        return;
-                    }
-
-                    Dictionary<string, string> formatdict = new();
-                    System.Text.RegularExpressions.Regex re =
-                        new System.Text.RegularExpressions.Regex(@"{(?<command>[^}]+)}");
-
-                    System.Text.RegularExpressions.MatchCollection matches = re.Matches(text);
-
-                    foreach (System.Text.RegularExpressions.Match? i in matches) {
-                        if (i != null) {
-                            System.Text.RegularExpressions.GroupCollection groups = i.Groups;
-                            System.Text.RegularExpressions.Group mainGroup = groups["command"];
-
-                            string cmd = mainGroup.ToString();
-                            string[] splitcommand = cmd.Split(" ");
-
-                            string? output = FormattableCommand.FindAndExecute(
-                                splitcommand[0],
-                                splitcommand, false, false
-                            );
-
-                            if (output == null) {
-                                output = "errored";
-                                Utils.NotifCheck(
-                                    true,
-                                    new string[] {
-                                        "Huh.",
-                                        "Perhaps that was not a real command.",
-                                        "4"
-                                    }
-                                ); formatdict[cmd] = output;
-                            } else {
-                                formatdict[cmd] = output;
-                            }
-                        }
-                    }
-
-                    Utils.CopyCheck(true, formatdict.ReplaceKeyInString(text));
-                    Utils.NotifCheck(true, new string[] { "Success!", "Message copied to clipboard.", "3" });
-                }
+                function: Format.Formatter
             );
 
             RegularCommand help = new(

@@ -16,6 +16,79 @@ namespace utilities_cs {
 
         public static string settingsJsonPath = Path.Combine(utilitiesCsFolder, "settings.json");
 
+        public static void SettingsMain(string[] args) {
+            string mode = args[1];
+            switch (mode) {
+                case "modify":
+                    try {
+                        string setting = args[2];
+                        string value = args[3];
+                        SettingsJSON currentSettings = SettingsModification.GetSettings();
+                        SettingsModification.ModifySetting(currentSettings, setting, value);
+                    } catch (IndexOutOfRangeException) {
+                        Utils.NotifCheck(true,
+                            new string[] {
+                                        "Huh.",
+                                        "It seems you did not input a setting/value.",
+                                        "3"
+                            }
+                        );
+                    }
+                    break;
+
+                case "reset":
+                    SettingsModification.CreateDirAndJson();
+                    Utils.NotifCheck(
+                        true,
+                        new string[] { "Reset.", "All settings have been reset to default.", "4" }
+                    ); break;
+
+                case "list":
+                    string settings = SettingsModification.ListAllSettings();
+                    Utils.CopyCheck(true, settings);
+                    Utils.NotifCheck(
+                        true,
+                        new string[] { "Success!", "The settings have been copied to your clipboard.", "3" }
+                    );
+                    break;
+
+                case "open":
+                    Utils.NotifCheck(
+                        true,
+                        new string[] {
+                                    "Opening settings file.",
+                                    "Opening settings.json in your default editor.",
+                                    "3"
+                        }
+                    );
+                    SettingsModification.OpenSettingsJSON();
+                    break;
+
+                case "refresh":
+                    if (
+                        SettingsModification.GetSettings().disableClipboardManipulation
+                        && SettingsModification.GetSettings().autoPaste
+                    ) {
+                        Utils.NotifCheck(
+                            true,
+                            new string[] {
+                                        "Hey!",
+                                        @"disableClipboardManipulation and autoPaste are mutually exclusive.
+They cannot both be true at the same time."
+                            }
+                        ); break;
+                    } else {
+                        UtilitiesAppContext.currentSettings = SettingsModification.GetSettings();
+                        Utils.NotifCheck(true, new string[] { "Refreshed.", "Settings have been refreshed.", "3" });
+                        break;
+                    }
+
+                default:
+                    Utils.NotifCheck(true, new string[] { "Huh.", "It seems that was not a valid mode.", "3" });
+                    break;
+            }
+        }
+
         public static SettingsJSON GetSettings() {
             try {
                 string jsonString = File.ReadAllText(settingsJsonPath);

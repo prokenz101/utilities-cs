@@ -1,6 +1,51 @@
 namespace utilities_cs {
     public class Force {
         public static FormattableCommand? forced;
+
+        public static void ForceMain(string[] args) {
+            string commandName = args[1];
+
+            //* check if command exists
+            if (Command.Exists(commandName)) {
+                //* check if command is already forced
+                if (Force.AreAnyForced()) {
+                    if (Force.IsSpecificCmdForced(commandName)) {
+                        Utils.NotifCheck(
+                            true,
+                            new string[] { "Huh.", "It seems that command has already been enabled.", "4" }
+                        );
+                        return;
+                    } else {
+                        Utils.NotifCheck(
+                            true,
+                            new string[] { "Huh.", "A command has already been enabled.", "3" }
+                        );
+                        return;
+                    }
+                } else {
+                    //* enable command
+                    Force.ForceCommand(commandName);
+                    Utils.NotifCheck(true, new string[] { "Success!", "That command has been enabled.", "3" });
+                }
+            } else {
+                Utils.NotifCheck(true, new string[] { "Huh.", "That command does not exist.", "3" });
+            }
+        }
+
+        public static void UnforceMain(string[] args) {
+            //* check if command is enabled
+            if (Force.AreAnyForced()) {
+                //* disable command
+                Utils.NotifCheck(
+                    true,
+                    new string[] { "Success!", $"The {Force.forced!.CommandName} command has been disabled.", "3" }
+                );
+                Force.UnForceCommand();
+            } else {
+                Utils.NotifCheck(true, new string[] { "Huh.", "That command was never enabled.", "3" });
+            }
+        }
+
         public static void ForceCommand(string commandName) {
             forced = FormattableCommand.GetFormattableCommand(commandName);
         }
