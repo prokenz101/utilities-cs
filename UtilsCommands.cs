@@ -152,11 +152,11 @@ namespace utilities_cs {
             List<FormattableCommand> methodsSupportedByAll = new();
 
             if (FormattableCommands != null) {
-                foreach (FormattableCommand i in FormattableCommands) {
+                FormattableCommands.ForEach(i => {
                     if (i.UseInAllCommand && i.AllCommandMode == mode) {
                         methodsSupportedByAll.Add(i);
                     }
-                }
+                });
             }
 
             return methodsSupportedByAll;
