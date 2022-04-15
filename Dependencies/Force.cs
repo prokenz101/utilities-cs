@@ -12,20 +12,20 @@ namespace utilities_cs {
                     if (Force.IsSpecificCmdForced(commandName)) {
                         Utils.NotifCheck(
                             true,
-                            new string[] { "Huh.", "It seems that command has already been enabled.", "4" }
+                            new string[] { "Huh.", "It seems that command has already been forced.", "4" }
                         );
                         return;
                     } else {
                         Utils.NotifCheck(
                             true,
-                            new string[] { "Huh.", "A command has already been enabled.", "3" }
+                            new string[] { "Huh.", "A command has already been forced.", "3" }
                         );
                         return;
                     }
                 } else {
                     //* enable command
                     Force.ForceCommand(commandName);
-                    Utils.NotifCheck(true, new string[] { "Success!", "That command has been enabled.", "3" });
+                    Utils.NotifCheck(true, new string[] { "Success!", "That command has been forced.", "3" });
                 }
             } else {
                 Utils.NotifCheck(true, new string[] { "Huh.", "That command does not exist.", "3" });
@@ -38,11 +38,11 @@ namespace utilities_cs {
                 //* disable command
                 Utils.NotifCheck(
                     true,
-                    new string[] { "Success!", $"The {Force.forced!.CommandName} command has been disabled.", "3" }
+                    new string[] { "Success!", $"The {Force.forced!.CommandName} command has been un-forced.", "3" }
                 );
                 Force.UnForceCommand();
             } else {
-                Utils.NotifCheck(true, new string[] { "Huh.", "That command was never enabled.", "3" });
+                Utils.NotifCheck(true, new string[] { "Huh.", "That command was never forced.", "3" });
             }
         }
 
