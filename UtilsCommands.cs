@@ -451,14 +451,13 @@ namespace utilities_cs {
             );
 
             RegularCommand googleSearch = new(
-                commandName: "-",
+                commandName: "gs",
                 function: (string[] args) => {
                     string searchQuery = string.Join("+", args[1..]);
                     System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(
                         "cmd", $"/c start https://google.com/search?q={searchQuery}"
                     ) { CreateNoWindow = true });
-                },
-                aliases: new string[] { "gs" }
+                }
             );
 
             RegularCommand youtubeSearch = new(
