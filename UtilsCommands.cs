@@ -1454,8 +1454,8 @@ namespace utilities_cs {
                             ); return null;
                         }
                     }
-
-                }
+                },
+                aliases: new string[] { "loremipsum" }
             );
 
             FormattableCommand exponent = new(
