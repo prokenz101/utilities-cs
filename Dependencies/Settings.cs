@@ -117,7 +117,7 @@ They cannot both be true at the same time."
                 case "disablenotifications":
                     currentSettings.disableNotifications = Convert.ToBoolean(ConvertToBoolOrInt("bool", value));
                     break;
-                case "disableclipboardManipulation":
+                case "disableclipboardmanipulation":
                     if (!currentSettings.autoPaste) {
                         currentSettings.disableClipboardManipulation = Convert.ToBoolean(ConvertToBoolOrInt("bool", value));
                     } else {
@@ -125,7 +125,7 @@ They cannot both be true at the same time."
                         return;
                     }
                     break;
-                case "copyinghotkeyDelay":
+                case "copyinghotkeydelay":
                     currentSettings.copyingHotkeyDelay = int.Parse(ConvertToBoolOrInt("int", value)!.ToString()!);
                     break;
                 case "autopaste":
