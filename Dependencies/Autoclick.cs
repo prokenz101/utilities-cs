@@ -1,121 +1,22 @@
-using System.Text.RegularExpressions;
+using CommandLine;
 using System.Runtime.InteropServices;
 
 namespace utilities_cs {
     public class Autoclick {
-        public async static void Autoclicker(string[] args) {
+        public static void Autoclicker(string[] args) {
             Thread.Sleep(100);
-            Regex re = new Regex(@"(?<interval>\d+)? ?(?<mb>left|right|middle)(?<count> \d+)?");
-            string text = string.Join(" ", args[1..]).ToLower();
 
-            if (re.IsMatch(text)) {
-                MatchCollection matches = re.Matches(text);
-
-                try {
-                    List<object> data = new();
-
-                    try {
-                        int interval = int.Parse(matches[0].Groups["interval"].Value.ToString());
-                        data.Add(interval);
-                    } catch (FormatException) {
-                        data.Add("null");
-                    }
-
-                    data.Add(stringToMouseEventFlags(matches[0].Groups["mb"].Value)!);
-
-                    try {
-                        int count = int.Parse(matches[0].Groups["count"].Value.ToString());
-                        data.Add(count);
-                    } catch (FormatException) {
-                        data.Add("null");
-                    }
-
-                    //* DICTIONARY OF DATA LIST
-                    //* data[0] => interval (int)
-                    //* data[1] => mouse button (MouseEventFlags)
-                    //* data[2] => count (int)
-
-                    if (data[0].ToString() == "null") { data[0] = 0; } //* default interval
-                    if (data[2].ToString() == "null") { data[2] = int.MaxValue; } //* default count
-
-                    //* tokens
-                    var autoclickTokenSource = new CancellationTokenSource();
-                    var autoclickToken = autoclickTokenSource.Token;
-
-                    Action stopAutoclicker = () => {
-                        Utils.NotifCheck(
-                            true,
-                            new string[] {
-                                "Stopped the autoclicker.",
-                                "The autoclicker has been stopped successfully.",
-                                "4"
-                            }
-                        );
-
-                        HookManager.UnregisterHook("autoclickStop");
-                        autoclickTokenSource.Cancel();
-                        autoclickTokenSource.Dispose();
-                    };
-
-                    Task autoclickTask = new Task(
-                        () => {
-                            Action performAutoclick = () => {
-                                MouseOperations.MouseEvent((MouseOperations.MouseEventFlags)data[1]!);
-                                Thread.Sleep((int)data[0]);
-
-                                autoclickToken.ThrowIfCancellationRequested();
-                            };
-
-                            try {
-                                if ((int)data[2] == int.MaxValue) {
-                                    while (true) { performAutoclick(); }
-                                } else {
-                                    for (int i = 0; i < (int)data[2]; i++) { performAutoclick(); }
-                                    stopAutoclicker();
-                                }
-
-                            } catch (OperationCanceledException) { return; }
-                        },
-                        autoclickToken
-                    );
-
-                    //* Stop hotkey (Ctrl + F7)
-                    HookManager.AddHook(
-                        "autoclickStop",
-                        new ModifierKeys[] { ModifierKeys.Control },
-                        Keys.F7,
-                        stopAutoclicker,
-                        () => {
-                            Utils.NotifCheck(
-                                true,
-                                new string[] { "Huh.", "Perhaps you already have an autoclicker running", "4" }
-                            );
-                        }
-                    );
-
-                    await Task.Run(() => autoclickTask.Start());
-
-                } catch (OverflowException) {
-                    Utils.NotifCheck(
-                        true,
-                        new string[] {
-                            "Huh.",
-                            "Perhaps the count was too large.",
-                            "3"
-                        }
-                    );
-                }
-            } else {
-                Utils.NotifCheck(
+            CommandLine.Parser.Default.ParseArguments<AutoclickOptions>(args[1..])
+                .WithParsed(opts => AutoclickOptions.handleSuccessfulParse(opts))
+                .WithNotParsed(errs => Utils.NotifCheck(
                     true,
                     new string[] {
                         "Huh.",
                         "Perhaps the parameters were not inputted correctly.",
                         "4"
                     }
-                );
-                return;
-            }
+                )
+            );
         }
 
         public static MouseOperations.MouseEventFlags? stringToMouseEventFlags(string mouseButton) {
@@ -128,6 +29,95 @@ namespace utilities_cs {
                     return MouseOperations.MouseEventFlags.MiddleDown | MouseOperations.MouseEventFlags.MiddleUp;
                 default:
                     return null;
+            }
+        }
+
+        public async static void performAutoclick(int interval, MouseOperations.MouseEventFlags mouseButton, int count) {
+            //* tokens
+            var autoclickTokenSource = new CancellationTokenSource();
+            var autoclickToken = autoclickTokenSource.Token;
+
+            Action stopAutoclicker = () => {
+                Utils.NotifCheck(
+                    true,
+                    new string[] {
+                        "Stopped the autoclicker.",
+                        "The autoclicker has been stopped successfully.",
+                        "4"
+                    }
+                );
+
+                HookManager.UnregisterHook("autoclickStop");
+                autoclickTokenSource.Cancel();
+                autoclickTokenSource.Dispose();
+            };
+
+            Task autoclickTask = new Task(
+                () => {
+                    Action performAutoclick = () => {
+                        MouseOperations.MouseEvent(mouseButton);
+                        Thread.Sleep(interval);
+
+                        autoclickToken.ThrowIfCancellationRequested();
+                    };
+
+                    try {
+                        if (count == int.MaxValue) {
+                            while (true) { performAutoclick(); }
+                        } else {
+                            for (int i = 0; i < count; i++) { performAutoclick(); }
+                            stopAutoclicker();
+                        }
+
+                    } catch (OperationCanceledException) { return; }
+                },
+                autoclickToken
+            );
+
+            //* Stop hotkey (Ctrl + F7)
+            HookManager.AddHook(
+                "autoclickStop",
+                new ModifierKeys[] { ModifierKeys.Control },
+                Keys.F7,
+                stopAutoclicker,
+                () => {
+                    Utils.NotifCheck(
+                        true,
+                        new string[] { "Huh.", "Perhaps you already have an autoclicker running", "4" }
+                    );
+                }
+            );
+
+            await Task.Run(() => autoclickTask.Start());
+        }
+    }
+
+    public class AutoclickOptions {
+        [Value(0, Required = true)]
+        public string? mouseButton { get; set; }
+
+        [Option('i', "interval", Default = 0)]
+        public int interval { get; set; }
+
+        [Option('c', "count", Default = int.MaxValue)]
+        public int count { get; set; }
+
+        public static void handleSuccessfulParse(AutoclickOptions opts) {
+            if (opts.mouseButton == "left" | opts.mouseButton == "right" | opts.mouseButton == "middle") {
+                Autoclick.performAutoclick(
+                    opts.interval,
+                    (MouseOperations.MouseEventFlags)Autoclick.stringToMouseEventFlags(opts.mouseButton!)!,
+                    opts.count
+                );
+            } else {
+                Utils.NotifCheck(
+                    true,
+                    new string[] {
+                        "Hey!",
+                        "The mousebutton can only be \"left\", \"right\" or \"middle\".",
+                        "4"
+                    }
+                );
             }
         }
     }
