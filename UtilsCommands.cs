@@ -35,7 +35,7 @@ namespace utilities_cs {
                     new string[] {
                         "Welp.",
                         "It seems utilities couldn't understand what command you were trying to use.",
-                        "6"
+                        "4"
                     }
                 ); return null;
             }
