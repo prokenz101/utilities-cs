@@ -70,22 +70,31 @@
             );
 
             //* creating tray icon
-            trayIcon = new NotifyIcon() {
-                Text = "utilities-cs"
-            };
+            trayIcon = new NotifyIcon() { Text = "utilities-cs" };
             var menu = new ContextMenuStrip();
 
-            menu.Items.Add("Wiki...", null, delegate {
-                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(
-                "cmd", $"/c start https://github.com/prokenz101/utilities-cs/wiki/Utilities-Wiki"
-            ) { CreateNoWindow = true });
-            }
+            menu.Items.Add(
+                "Wiki...", null, delegate {
+                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(
+                        "cmd", $"/c start https://github.com/prokenz101/utilities-cs/wiki/Utilities-Wiki"
+                    ) { CreateNoWindow = true });
+                }
             );
+
+            menu.Items.Add(
+                "Settings...", null, delegate {
+                    Utils.NotifCheck(
+                        true, new string[] { "Opening settings.json...", "Opening settings.json on your default editor.", "3" }
+                    ); SettingsModification.OpenSettingsJSON();
+                }
+            );
+
             menu.Items.Add("Exit", null, delegate { Exit(); });
 
             trayIcon.Icon = Icon.ExtractAssociatedIcon(
                 (System.Diagnostics.Process.GetCurrentProcess().MainModule!.FileName!)
             );
+
             trayIcon.ContextMenuStrip = menu;
             trayIcon.Visible = true;
         }
