@@ -254,6 +254,7 @@ namespace utilities_cs {
     /// </summary>
     public class RegularCommand : Command {
         public Action<string[]>? Function;
+        public static List<RegularCommand> RegularCommands = new();
         public RegularCommand(
             string commandName,
             Action<string[]> function,
@@ -267,6 +268,8 @@ namespace utilities_cs {
             } else {
                 RCommands.Add(commandName, function);
             }
+
+            RegularCommands.Add(this);
         }
 
         /// <summary>
@@ -280,6 +283,21 @@ namespace utilities_cs {
             }
 
             return string.Join("\n", rCommandsList);
+        }
+
+        /// <summary>
+        /// Gets a RegularCommand using the name of that command.
+        /// </summary>
+        /// <param name="commandName">The name of the command.</param>
+        /// <returns>An instance of the RegularCommand class, or null.</returns>
+        public static RegularCommand? GetRegularCommand(string commandName) {
+            foreach (RegularCommand i in RegularCommands!) {
+                if (i.CommandName == commandName) {
+                    return i;
+                }
+            }
+
+            return null;
         }
 
         /// <summary>A non-static method that executes a command immediately.</summary>
