@@ -276,6 +276,11 @@ namespace utilities_cs {
                 function: Force.UnforceMain,
                 aliases: new string[] { "un-force" }
             );
+            
+            RegularCommand format = new(
+                commandName: "format",
+                function: Format.Formatter
+            );
 
             RegularCommand factorial = new(
                 commandName: "factorial",
