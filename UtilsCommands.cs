@@ -399,12 +399,46 @@ namespace utilities_cs {
             RegularCommand help = new(
                 commandName: "help",
                 function: (string[] args) => {
-                    System.Diagnostics.Process.Start(
-                        new System.Diagnostics.ProcessStartInfo(
-                            "cmd",
-                            $"/c start https://github.com/prokenz101/utilities-cs/wiki/Utilities-Wiki"
-                        ) { CreateNoWindow = true }
-                    );
+                    const string wikiLink = "https://github.com/prokenz101/utilities-cs/wiki/Utilities-Wiki";
+                    var process = new System.Diagnostics.ProcessStartInfo("cmd", $"/c start {wikiLink}");
+                    process.CreateNoWindow = true;
+
+                    if (args.Length > 0) {
+                        string searchQuery = args[1].ToLower();
+                        if (Command.Exists(searchQuery)) {
+                            string commandName;
+                            if (RegularCommand.GetRegularCommand(searchQuery) != null) {
+                                commandName =
+                                    RegularCommand.GetRegularCommand(searchQuery)!.CommandName!;
+                            } else if (FormattableCommand.GetFormattableCommand(searchQuery) != null) {
+                                commandName =
+                                    FormattableCommand.GetFormattableCommand(searchQuery)!.CommandName!;
+                            } else {
+                                //* Cannot possibly run.
+                                commandName = "Impossible.";
+                            }
+
+                            process.Arguments = process.Arguments += $"#{commandName}";
+                            Utils.NotifCheck(
+                                true,
+                                new string[] { "Opening wiki...", $"Opening wiki for \"{commandName}\"", "3" }
+                            );
+
+                            System.Diagnostics.Process.Start(process);
+                        } else {
+                            Utils.NotifCheck(
+                                true,
+                                new string[] { "Huh.", "It seems that command does not exist.", "3" }
+                            );
+                        }
+                    } else {
+                        Utils.NotifCheck(
+                            true,
+                            new string[] { "Opening wiki...", "Opening wiki in your default browser.", "3" }
+                        );
+
+                        System.Diagnostics.Process.Start(process);
+                    }
                 }
             );
 
