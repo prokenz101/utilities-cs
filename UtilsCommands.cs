@@ -6,9 +6,24 @@ namespace utilities_cs {
     /// The hierarchy of all command-classes for all commands in utilities-cs.
     /// </summary>
     public class Command {
+        /// <summary>
+        /// The primary name of the command.
+        /// </summary>
         public string? CommandName { get; set; }
+
+        /// <summary>
+        /// A command's aliases.
+        /// </summary>
         public string[]? Aliases { get; set; }
+
+        /// <summary>
+        /// A dictionary of command names to methods (For FormattableCommands).
+        /// </summary>
         public static Dictionary<string, Func<string[], bool, bool, string?>> FCommands = new();
+
+        /// <summary>
+        /// A dictionary of command names to methods (For RegularCommands).
+        /// </summary>
         public static Dictionary<string, Action<string[]>> RCommands = new();
         /// <summary>
         /// Executes a command in either the rCommands dictionary or the fCommands dictionary.
@@ -56,6 +71,11 @@ namespace utilities_cs {
             }
         }
 
+        /// <summary>
+        /// Gets the Method of a Formattable OR Regular Command.
+        /// </summary>
+        /// <param name="commandName">The name of the command.</param>
+        /// <returns>Returns the method of the formattable/regular command.</returns>
         public static object? GetMethod(string commandName) {
             if (Command.Exists(commandName)) {
                 if (FCommands.ContainsKey(commandName)) {
@@ -75,10 +95,34 @@ namespace utilities_cs {
     /// The class that supports formattable commands.
     /// </summary>
     public class FormattableCommand : Command {
+        /// <summary>
+        /// The function that will be executed when the command is called.
+        /// </summary>
         public Func<string[], bool, bool, string?>? Function;
+
+        /// <summary>
+        /// Denotes whether this specific command will be used in the all command.
+        /// </summary>
         public bool UseInAllCommand;
+
+        /// <summary>
+        /// If UseInAllCommand is true, then this denotes what all-command-mode the command will be used in.
+        /// </summary>
         public string? AllCommandMode;
+
+        /// <summary>
+        /// List of all registered FormattableCommands.
+        /// </summary>
         public static List<FormattableCommand> FormattableCommands = new();
+
+        /// <summary>
+        /// Constructor for FormattableCommands.
+        /// </summary>
+        /// <param name="commandName">The commandName for the FormattableCommand</param>
+        /// <param name="function">The function for the FormattableCommand</param>
+        /// <param name="aliases">The aliases for the FormattableCommand</param>
+        /// <param name="useInAllCommand">The useInAllCommand for the FormattableCommand</param>
+        /// <param name="allCommandMode">The allCommandMode for the FormattableCommand</param>
         public FormattableCommand(
             string commandName,
             Func<string[], bool, bool, string?> function,
@@ -191,6 +235,11 @@ namespace utilities_cs {
             return null;
         }
 
+        /// <summary>
+        /// Checks if a FormattableCommand exists using the name of its name.
+        /// </summary>
+        /// <param name="cmd">The name of the command.</param>
+        /// <returns>True if the command exists, else false.</returns>
         public static bool FCommandExists(string cmd) {
             if (FCommands.ContainsKey(cmd)) {
                 return true;
