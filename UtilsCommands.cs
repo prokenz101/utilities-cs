@@ -391,11 +391,6 @@ namespace utilities_cs {
                 aliases: new string[] { "quit" }
             );
 
-            RegularCommand format = new(
-                commandName: "format",
-                function: Format.Formatter
-            );
-
             RegularCommand help = new(
                 commandName: "help",
                 function: (string[] args) => {
