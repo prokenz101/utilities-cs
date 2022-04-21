@@ -30,50 +30,38 @@ namespace utilities_cs {
                 )
             ).ToDictionary(t => t.Item1, t => t.Item2);
 
-            Dictionary<string, Func<string[], bool, bool, string?>> fancy = buildCommandDictionary(
-                FormattableCommand.GetMethodsSupportedByAll("fancy")
-            );
+            Dictionary<string, Func<string[], bool, bool, string?>> fancy =
+                buildCommandDictionary(FormattableCommand.GetMethodsSupportedByAll("fancy"));
 
-            Dictionary<string, Func<string[], bool, bool, string?>> encodings = buildCommandDictionary(
-                FormattableCommand.GetMethodsSupportedByAll("encodings")
-            );
-
-            List<string> b32AndGZipArgs = args[1..].ToList();
-            b32AndGZipArgs.Insert(0, "x");
-            b32AndGZipArgs.Insert(1, "to");
+            Dictionary<string, Func<string[], bool, bool, string?>> encodings =
+                buildCommandDictionary(FormattableCommand.GetMethodsSupportedByAll("encodings"));
 
             List<string> converted = new();
-            Action<Dictionary<string, Func<string[], bool, bool, string?>>> base32AndGZIPCheck =
+            Action<Dictionary<string, Func<string[], bool, bool, string?>>> allCommandRun =
                 (Dictionary<string, Func<string[], bool, bool, string?>> dict) => {
                     foreach (KeyValuePair<string, Func<string[], bool, bool, string?>> kvp in dict) {
-                        if (kvp.Key == "GZip" | kvp.Key == "Base32") {
-                            try {
-                                string? output = kvp.Value.Invoke(b32AndGZipArgs.ToArray(), false, false);
-                                if (output != null) {
-                                    if (!shouldShowNames) {
-                                        converted.Add($"{kvp.Key}: {output}");
-                                    } else { converted.Add(output); }
-                                }
-                            } catch { }
-                        } else {
-                            try {
-                                string? output = kvp.Value.Invoke(args, false, false);
-                                if (output != null) {
-                                    if (!shouldShowNames) {
-                                        converted.Add($"{kvp.Key}: {output}");
-                                    } else { converted.Add(output!); }
-                                }
-                            } catch { }
-                        }
+                        try {
+                            string? output = kvp.Value.Invoke(args, false, false);
+                            if (output != null) {
+                                if (!shouldShowNames) {
+                                    converted.Add($"{kvp.Key}: {output}");
+                                } else { converted.Add(output!); }
+                            }
+                        } catch { }
                     }
                 };
 
             switch (category) {
                 case "everything":
-                    base32AndGZIPCheck(
+                    allCommandRun(
                         fancy.Concat(encodings).ToDictionary(kvp => kvp.Key, kvp => kvp.Value)
-                    ); break;
-                case "encodings": base32AndGZIPCheck(encodings); break;
+                    );
+                    break;
+
+                case "encodings":
+                    allCommandRun(encodings);
+                    break;
+
                 case "fancy":
                     foreach (KeyValuePair<string, Func<string[], bool, bool, string?>> kvp in fancy) {
                         try {
@@ -86,9 +74,13 @@ namespace utilities_cs {
                         } catch { }
                     }
                     break;
+
                 default:
                     return null;
+
             }
+
+
             return string.Join("\n", converted);
         }
     }

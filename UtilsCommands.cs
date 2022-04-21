@@ -677,9 +677,7 @@ namespace utilities_cs {
                         return null;
                     }
                 },
-                aliases: new string[] { "b32" },
-                useInAllCommand: true,
-                allCommandMode: "encodings"
+                aliases: new string[] { "b32" }
             );
 
             FormattableCommand base64 = new(
@@ -786,9 +784,7 @@ namespace utilities_cs {
                             return null;
                     }
                 },
-                aliases: new string[] { "base85", "b85" },
-                useInAllCommand: true,
-                allCommandMode: "encodings"
+                aliases: new string[] { "base85", "b85" }
             );
 
             FormattableCommand binary = new(
