@@ -1,5 +1,24 @@
 namespace utilities_cs {
     public class All {
+        public static string? AllCommand(string[] args, bool copy, bool notif) {
+            if (Utils.IndexTest(args)) {
+                return null;
+            }
+
+            string category = args[1];
+            string? all = All.returnCategory(args[1..], category, copy, notif);
+            if (all != null) {
+                Utils.CopyCheck(copy, all);
+                Utils.NotifCheck(notif, new string[] { "Success!", "Text copied to clipboard.", "2" });
+                return all;
+            } else {
+                Utils.NotifCheck(
+                    true,
+                    new string[] { "Huh.", "It seems you did not input a valid category.", "4" }
+                );
+                return null;
+            }
+        }
         public static string? returnCategory(string[] args, string category, bool copy, bool notif) {
             bool shouldShowNames = UtilitiesAppContext.currentSettings.allCommandHideNames;
 
