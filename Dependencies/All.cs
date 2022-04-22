@@ -6,7 +6,7 @@ namespace utilities_cs {
             }
 
             string category = args[1];
-            string? all = All.returnCategory(args[1..], category, copy, notif);
+            string? all = returnCategory(args[1..], category, copy, notif);
             if (all != null) {
                 Utils.CopyCheck(copy, all);
                 Utils.NotifCheck(notif, new string[] { "Success!", "Text copied to clipboard.", "2" });
@@ -19,7 +19,7 @@ namespace utilities_cs {
                 return null;
             }
         }
-        public static string? returnCategory(string[] args, string category, bool copy, bool notif) {
+        static string? returnCategory(string[] args, string category, bool copy, bool notif) {
             bool shouldShowNames = UtilitiesAppContext.currentSettings.allCommandHideNames;
 
             var buildCommandDictionary = (List<FormattableCommand> commands) => (
