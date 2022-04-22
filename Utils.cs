@@ -143,9 +143,9 @@ namespace utilities_cs {
         /// Returns all integers from a string using Regex.
         /// </summary>
         /// <param name="input">The string which is to be searched for integers.</param>
-        /// <returns>A list of all integers that were captured by the Regex.</returns>
-        public static List<int> RegexFindAllInts(string input) {
-            List<int> ints = new();
+        /// <returns>A list of all BigIntegers that were captured by the Regex.</returns>
+        public static List<System.Numerics.BigInteger> RegexFindAllInts(string input) {
+            List<System.Numerics.BigInteger> BigInts = new();
             Regex re = new Regex(@"(?<num>\d+)+");
 
             if (re.Matches(input).Count >= 1) {
@@ -153,12 +153,12 @@ namespace utilities_cs {
                 foreach (Match? match in matches) {
                     if (match != null) {
                         GroupCollection groups = match.Groups;
-                        ints.Add(int.Parse(groups["num"].ToString()));
+                        BigInts.Add(System.Numerics.BigInteger.Parse(groups["num"].Value));
                     }
                 }
             }
 
-            return ints;
+            return BigInts;
         }
 
         /// <summary>

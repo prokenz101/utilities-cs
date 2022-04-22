@@ -360,7 +360,7 @@ namespace utilities_cs {
                         await Task.Run(() => {
                             int n = int.Parse(args[1]);
                             int i = 1;
-                            System.Numerics.BigInteger v = 1;
+                            BigInteger v = 1;
 
                             while (i <= n) {
                                 v *= i;
@@ -877,7 +877,7 @@ namespace utilities_cs {
 
                     try {
                         //* Checking if number is an actual number
-                        System.Numerics.BigInteger.Parse(strNum);
+                        BigInteger.Parse(strNum);
                     } catch {
                         Utils.NotifCheck(
                             true,
@@ -890,7 +890,7 @@ namespace utilities_cs {
                         return null;
                     }
 
-                    System.Numerics.BigInteger num = System.Numerics.BigInteger.Parse(strNum);
+                    BigInteger num = BigInteger.Parse(strNum);
                     string ans = String.Format("{0:n0}", num);
 
                     Utils.CopyCheck(copy, ans);
@@ -1474,14 +1474,14 @@ namespace utilities_cs {
                     }
 
                     string text = string.Join(" ", args);
-                    List<System.Numerics.BigInteger> nums = new();
+                    List<BigInteger> nums = new();
                     Utils.RegexFindAllInts(text).ForEach(x => nums.Add(x));
 
                     try {
                         if (nums.Count > 1) {
-                            System.Numerics.BigInteger answer =
+                            BigInteger answer =
                             HCF.findGCD(
-                                nums.ToArray<System.Numerics.BigInteger>(),
+                                nums.ToArray<BigInteger>(),
                                 nums.ToArray().Length
                             );
                             Utils.CopyCheck(copy, answer.ToString());
@@ -1520,17 +1520,17 @@ namespace utilities_cs {
                     }
 
                     string text = string.Join(" ", args[1..]);
-                    List<int> nums = Utils.RegexFindAllInts(text);
+                    List<BigInteger> nums = Utils.RegexFindAllInts(text);
 
                     if (nums.Count > 1) {
                         //* find sum of all nums in "nums"
-                        int sum = 0;
+                        BigInteger sum = 0;
                         foreach (int num in nums) {
                             sum += num;
                         }
 
                         // find average of sum
-                        int average = sum / nums.Count;
+                        BigInteger average = sum / nums.Count;
 
                         Utils.CopyCheck(copy, average.ToString());
                         Utils.NotifCheck(notif, new string[] { "Success!", $"The average was {average}", "5" });
@@ -1634,7 +1634,16 @@ namespace utilities_cs {
 
                     string text = string.Join(" ", args[1..]);
                     if (Utils.FormatValid("0123456789 ", text)) {
-                        List<int> values = Utils.RegexFindAllInts(text);
+                        List<int> values = new();
+                        try {
+                            Utils.RegexFindAllInts(text).ForEach(x => values.Add((int)x));
+                        } catch (OverflowException) {
+                            Utils.NotifCheck(
+                                true,
+                                new string[] { "Something went wrong.", "Perhaps the number was too large.", "3" }
+                            ); return null;
+                        }
+
                         List<bool> valuesAreValid = new();
                         foreach (int i in values) {
                             if (i.ToString().Length == 2 | i.ToString().Length == 3) {
@@ -1832,9 +1841,9 @@ Word count: {args[1..].Length}";
                     }
 
                     string text = string.Join(" ", args[1..]);
-                    List<int> ints = Utils.RegexFindAllInts(text);
+                    List<BigInteger> ints = Utils.RegexFindAllInts(text);
 
-                    int dividedNum = ints[0] / ints[1]; int remainder = ints[0] % ints[1];
+                    BigInteger dividedNum = ints[0] / ints[1]; BigInteger remainder = ints[0] % ints[1];
 
                     Func<string, string> returnNum = (string ans) => {
                         Utils.CopyCheck(copy, ans);
@@ -1971,7 +1980,15 @@ Word count: {args[1..].Length}";
                     }
 
                     string text = string.Join(" ", args[1..]);
-                    List<int> nums = Utils.RegexFindAllInts(text);
+                    List<int> nums = new();
+                    try {
+                        Utils.RegexFindAllInts(text).ForEach(num => nums.Add((int)num));
+                    } catch (OverflowException) {
+                        Utils.NotifCheck(
+                            true,
+                            new string[] { "Something went wrong.", "The number you entered was too large.", "3" }
+                        ); return null;
+                    }
 
                     if (nums.Count > 1) {
                         //* quick check to see if the first num is greater than second
