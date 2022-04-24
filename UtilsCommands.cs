@@ -118,11 +118,11 @@ namespace utilities_cs {
         /// <summary>
         /// Constructor for FormattableCommands.
         /// </summary>
-        /// <param name="commandName">The commandName for the FormattableCommand</param>
-        /// <param name="function">The function for the FormattableCommand</param>
-        /// <param name="aliases">The aliases for the FormattableCommand</param>
-        /// <param name="useInAllCommand">The useInAllCommand for the FormattableCommand</param>
-        /// <param name="allCommandMode">The allCommandMode for the FormattableCommand</param>
+        /// <param name="commandName">The commandName for the FormattableCommand.</param>
+        /// <param name="function">The function for the FormattableCommand.</param>
+        /// <param name="aliases">The aliases for the FormattableCommand.</param>
+        /// <param name="useInAllCommand">The useInAllCommand for the FormattableCommand.</param>
+        /// <param name="allCommandMode">The allCommandMode for the FormattableCommand.</param>
         public FormattableCommand(
             string commandName,
             Func<string[], bool, bool, string?> function,
