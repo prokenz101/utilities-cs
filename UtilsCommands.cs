@@ -1510,6 +1510,35 @@ namespace utilities_cs {
                 aliases: new string[] { "gcd" }
             );
 
+            FormattableCommand factors = new(
+                commandName: "factors",
+                function: (string[] args, bool copy, bool notif) => {
+                    Func<BigInteger, List<BigInteger>> findFactors = (BigInteger num) => {
+                        List<BigInteger> factors = new();
+
+                        for (BigInteger i = 0; i < num; i++) {
+                            if (num % i == 0) {
+                                factors.Add(i);
+                            }
+                        }
+
+                        return factors;
+                    };
+
+                    if (Utils.IndexTest(args)) {
+                        return null;
+                    }
+
+                    BigInteger num = BigInteger.Parse(args[1]);
+                    List<BigInteger> factors = findFactors(num);
+                    
+                    string ans = string.Join(", ", factors);
+                    Utils.CopyCheck(copy, ans);
+                    Utils.NotifCheck(notif, new string[] { "Success!", $"The factors are: {ans}.", "5" });
+                    return ans;
+                }
+            );
+
             FormattableCommand average = new(
                 commandName: "average",
                 function: (string[] args, bool copy, bool notif) => {
