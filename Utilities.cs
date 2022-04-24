@@ -37,6 +37,10 @@
             if (output != null) { return output; } else { return null; }
         }
         private NotifyIcon trayIcon;
+
+        /// <summary>
+        /// Current settings of the program.
+        /// </summary>
         public static SettingsJSON currentSettings = SettingsModification.GetSettings();
         public UtilitiesAppContext() {
             //* making keyboard hook for ctrl + f8
@@ -60,9 +64,9 @@
                     Utils.NotifCheck(
                         true,
                         new string[] {
-                        "Something went wrong.",
-                        @"Are you opening multiple instances of utilities-cs?",
-                        "6"
+                            "Something went wrong.",
+                            @"Are you opening multiple instances of utilities-cs?",
+                            "6"
                         }
                     );
                     Exit();
@@ -84,21 +88,22 @@
             menu.Items.Add(
                 "Settings...", null, delegate {
                     Utils.NotifCheck(
-                        true, new string[] { "Opening settings.json...", "Opening settings.json on your default editor.", "3" }
+                        true,
+                        new string[] { "Opening settings.json...", "Opening settings.json on your default editor.", "3" }
                     ); SettingsModification.OpenSettingsJSON();
                 }
             );
 
             menu.Items.Add("Exit", null, delegate { Exit(); });
 
-            trayIcon.Icon = Icon.ExtractAssociatedIcon(
-                (System.Diagnostics.Process.GetCurrentProcess().MainModule!.FileName!)
-            );
-
+            trayIcon.Icon = Icon.ExtractAssociatedIcon(System.Diagnostics.Process.GetCurrentProcess().MainModule!.FileName!);
             trayIcon.ContextMenuStrip = menu;
             trayIcon.Visible = true;
         }
 
+        /// <summary>
+        /// Exits the application.
+        /// </summary>
         public void Exit() {
             trayIcon.Visible = false;
             HookManager.UnregisterAllHooks();
