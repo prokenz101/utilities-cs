@@ -716,6 +716,25 @@ namespace utilities_cs {
                 allCommandMode: "encodings"
             );
 
+            FormattableCommand isBase64 = new(
+                commandName: "isbase64",
+                function: (string[] args, bool copy, bool notif) => {
+                    if (Utils.IndexTest(args)) {
+                        return null;
+                    }
+
+                    string text = string.Join(" ", args[1..]);
+
+                    if (IsBase64.IsBase64String(text)) {
+                        Utils.NotifCheck(notif, new string[] { "Yes.", "The string is Base64.", "3" });
+                        return "Yes";
+                    } else {
+                        Utils.NotifCheck(notif, new string[] { "No.", "The string is not Base64.", "3" });
+                        return "No";
+                    }
+                }
+            );
+
             FormattableCommand ascii85 = new(
                 commandName: "ascii85",
                 function: (string[] args, bool copy, bool notif) => {
