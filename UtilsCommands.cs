@@ -48,9 +48,7 @@ namespace utilities_cs {
                 Utils.NotifCheck(
                     true,
                     new string[] {
-                        "Welp.",
-                        "It seems utilities couldn't understand what command you were trying to use.",
-                        "4"
+                        "Welp.", "It seems utilities couldn't understand what command you were trying to use.", "4"
                     }
                 ); return null;
             }
@@ -1951,9 +1949,9 @@ Word count: {args[1..].Length}";
                         Utils.NotifCheck(
                             true,
                             new string[] {
-                        "Something went wrong.",
-                        "Either the number you entered was not a number, or it was too large.",
-                        "5"
+                                "Something went wrong.",
+                                "Either the number you entered was not a number, or it was too large.",
+                                "5"
                             }
                         );
                     }
