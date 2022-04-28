@@ -9,12 +9,13 @@ namespace utilities_cs {
             string? all = returnCategory(args[1..], category, copy, notif);
             if (all != null) {
                 Utils.CopyCheck(copy, all);
-                Utils.NotifCheck(notif, new string[] { "Success!", "Text copied to clipboard.", "2" });
+                Utils.NotifCheck(notif, new string[] { "Success!", "Text copied to clipboard.", "2" }, "allSuccess");
                 return all;
             } else {
                 Utils.NotifCheck(
                     true,
-                    new string[] { "Huh.", "It seems you did not input a valid category.", "4" }
+                    new string[] { "Huh.", "It seems you did not input a valid category.", "4" },
+                    "allError"
                 );
                 return null;
             }

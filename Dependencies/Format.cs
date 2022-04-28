@@ -29,11 +29,8 @@ namespace utilities_cs {
                         output = "errored";
                         Utils.NotifCheck(
                             true,
-                            new string[] {
-                                "Huh.",
-                                "Perhaps that was not a real command.",
-                                "4"
-                            }
+                            new string[] { "Huh.", "Perhaps that was not a real command.", "4" },
+                            "formatError"
                         ); formatDict[cmd] = output;
                     } else {
                         formatDict[cmd] = output;
@@ -42,7 +39,7 @@ namespace utilities_cs {
             }
 
             Utils.CopyCheck(true, ReplaceKeyInString(formatDict, text));
-            Utils.NotifCheck(true, new string[] { "Success!", "Message copied to clipboard.", "3" });
+            Utils.NotifCheck(true, new string[] { "Success!", "Message copied to clipboard.", "3" }, "formatSuccess");
         }
         public static string ReplaceKeyInString(Dictionary<string, string> dictionary, string inputString) {
             var regex = new System.Text.RegularExpressions.Regex("{(.*?)}");

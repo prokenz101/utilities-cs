@@ -42,6 +42,10 @@
         /// Current settings of the program.
         /// </summary>
         public static SettingsJSON currentSettings = SettingsModification.GetSettings();
+
+        /// <summary>
+        /// Constructor for the application context.
+        /// </summary>
         public UtilitiesAppContext() {
             //* making keyboard hook for ctrl + f8
             HookManager.AddHook(
@@ -67,7 +71,8 @@
                             "Something went wrong.",
                             @"Are you opening multiple instances of utilities-cs?",
                             "6"
-                        }
+                        },
+                        "utilitiesHotkeyError"
                     );
                     Exit();
                 }
@@ -89,7 +94,8 @@
                 "Settings...", null, delegate {
                     Utils.NotifCheck(
                         true,
-                        new string[] { "Opening settings.json...", "Opening settings.json on your default editor.", "3" }
+                        new string[] { "Opening settings.json...", "Opening settings.json on your default editor.", "3" },
+                        "utiliitesOpeningSettings"
                     ); SettingsModification.OpenSettingsJSON();
                 }
             );

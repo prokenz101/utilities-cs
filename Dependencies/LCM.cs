@@ -2,6 +2,46 @@ using System.Numerics;
 
 namespace utilities_cs {
     public class LCMClass {
+        public static string? LCMMain(string[] args, bool copy, bool notif) {
+            if (Utils.IndexTest(args)) {
+                return null;
+            }
+
+            string text = string.Join(" ", args[1..]);
+
+            List<BigInteger> nums = new();
+            Utils.RegexFindAllInts(text).ForEach(x => nums.Add(x));
+
+            try {
+                if (nums.Count > 1) {
+                    BigInteger answer =
+                    LCMClass.lcmExec(nums.ToArray<BigInteger>());
+                    Utils.CopyCheck(copy, answer.ToString());
+                    Utils.NotifCheck(
+                        notif, new string[] { "Success!", $"The answer was {answer}.", "5" }, "lcmSuccess"
+                    ); return answer.ToString();
+                } else {
+                    Utils.NotifCheck(
+                        true,
+                        new string[] { "Something went wrong.", "You need to input at least two numbers.", "4" },
+                        "lcmError"
+                    );
+                    return null;
+                }
+            } catch {
+                Utils.NotifCheck(
+                    true,
+                    new string[] {
+                        "Huh.",
+                        "It seems you did not input a number. Try 'lcm 15 70' as an example.",
+                        "8"
+                    },
+                    "lcmError"
+                );
+                return null;
+            }
+        }
+
         public static BigInteger lcmExec(BigInteger[] element_array) {
             BigInteger lcm_of_array_elements = 1;
             int divisor = 2;

@@ -22,7 +22,9 @@ namespace utilities_cs {
             try {
                 keybd_event((byte)key, 0, KEYEVENTF_EXTENTEDKEY, IntPtr.Zero);
             } catch (FormatException) {
-                Utils.NotifCheck(true, new string[] { "Something went wrong.", "Type-casting to byte failed.", "3" });
+                Utils.NotifCheck(
+                    true, new string[] { "Something went wrong.", "Type-casting to byte failed.", "3" }, "sendError"
+                );
             }
         }
 
@@ -46,7 +48,8 @@ namespace utilities_cs {
                                     "Something went wrong.",
                                     "Failed to send keys. Try removing any special characters like ().",
                                     "3"
-                                }
+                                },
+                                "sendError"
                             ); break;
                         }
                     }

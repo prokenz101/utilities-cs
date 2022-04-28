@@ -49,7 +49,8 @@ namespace utilities_cs {
                     true,
                     new string[] {
                         "Welp.", "It seems utilities couldn't understand what command you were trying to use.", "4"
-                    }
+                    },
+                    "executeCommandError"
                 ); return null;
             }
         }
@@ -368,13 +369,15 @@ namespace utilities_cs {
                             Utils.CopyCheck(true, v.ToString());
                             Utils.NotifCheck(
                                 true,
-                                new string[] { v.ToString(), $"The factorial is: {v.ToString()}", "5" }
+                                new string[] { v.ToString(), $"The factorial is: {v.ToString()}", "5" },
+                                "factorialSuccess"
                             ); return v.ToString();
                         });
                     } catch {
                         Utils.NotifCheck(
                             true,
-                            new string[] { "Huh.", "It seems that the number you inputted was not a number.", "4" }
+                            new string[] { "Huh.", "It seems that the number you inputted was not a number.", "4" },
+                            "factorialError"
                         ); return;
                     }
                 }
@@ -414,20 +417,23 @@ namespace utilities_cs {
                             process.Arguments = process.Arguments += $"#{commandName}";
                             Utils.NotifCheck(
                                 true,
-                                new string[] { "Opening wiki...", $"Opening wiki for \"{commandName}\"", "3" }
+                                new string[] { "Opening wiki...", $"Opening wiki for \"{commandName}\"", "3" },
+                                "wikiOpen"
                             );
 
                             System.Diagnostics.Process.Start(process);
                         } else {
                             Utils.NotifCheck(
                                 true,
-                                new string[] { "Huh.", "It seems that command does not exist.", "3" }
+                                new string[] { "Huh.", "It seems that command does not exist.", "3" },
+                                "wikiError"
                             );
                         }
                     } else {
                         Utils.NotifCheck(
                             true,
-                            new string[] { "Opening wiki...", "Opening wiki in your default browser.", "3" }
+                            new string[] { "Opening wiki...", "Opening wiki in your default browser.", "3" },
+                            "wikiOpen"
                         );
 
                         System.Diagnostics.Process.Start(process);
@@ -447,11 +453,8 @@ namespace utilities_cs {
                         () => {
                             Utils.NotifCheck(
                                 true,
-                                new string[] {
-                            "Huh.",
-                            "The parameters were not inputted properly.",
-                            "3"
-                                }
+                                new string[] { "Huh.", "The parameters were not inputted properly.", "3" },
+                                "notificationCommandError"
                             );
                         }
                     );
@@ -464,8 +467,11 @@ namespace utilities_cs {
                             string subtitle = groups["subtitle"].ToString();
                             int duration = int.Parse(groups["duration"].ToString());
 
-                            Utils.NotifCheck(true, new string[] { title, subtitle, duration.ToString() });
-                            return;
+                            Utils.NotifCheck(
+                                true,
+                                new string[] { title, subtitle, duration.ToString() },
+                                "notificationCommandSuccess"
+                            ); return;
                         }
                     }
                 },
@@ -484,11 +490,8 @@ namespace utilities_cs {
                         () => {
                             Utils.NotifCheck(
                                 true,
-                                new string[] {
-                                    "Huh.",
-                                    "It seems the parameters were not given properly.",
-                                    "3"
-                                }
+                                new string[] { "Huh.", "It seems the parameters were not given properly.", "3" },
+                                "remindCommandError"
                             );
                         }
                     );
@@ -520,36 +523,45 @@ namespace utilities_cs {
                                 string word = timeOptions[unit][1].ToString();
                                 int timeSeconds = (time * 1000) * multiplier;
 
-                                Task.Delay(timeSeconds).Wait();
+                                Microsoft.Toolkit.Uwp.Notifications.ToastContentBuilder customReminderToast =
+                                    new Microsoft.Toolkit.Uwp.Notifications.ToastContentBuilder();
+
+                                customReminderToast.AddText("Reminder!");
+
+                                string timeEquals1 = $"Hey! You set a reminder for 1 {word} and it's time!";
+                                string timeNotEqualTo1 = $"Hey! You set a reminder for {time} {word}s and it's time!";
+                                string timeWithMessage = $"Hey! Your reminder was: {reminderText}";
 
                                 if (time == 1 && reminderText == string.Empty) {
-                                    Utils.NotifCheck(
-                                        true,
-                                        new string[] {
-                                            "Reminder!",
-                                            $"Hey! You set a reminder for 1 {word} and it's time!",
-                                            "6"
-                                        }
-                                    );
+                                    customReminderToast.AddText(timeEquals1);
                                 } else if (reminderText == string.Empty) {
-                                    Utils.NotifCheck(
-                                        true,
-                                        new string[] {
-                                            "Reminder!",
-                                            $"Hey! You set a reminder for {time} {word}s and it's time!",
-                                            "6"
-                                        }
-                                    );
+                                    customReminderToast.AddText(timeNotEqualTo1);
                                 } else {
-                                    Utils.NotifCheck(
-                                        true,
-                                        new string[] {
-                                            "Reminder!",
-                                            $"Hey! Your reminder was: {reminderText}",
-                                            "6"
-                                        }
-                                    );
+                                    customReminderToast.AddText(timeWithMessage);
                                 }
+
+                                customReminderToast.AddButton(
+                                    new Microsoft.Toolkit.Uwp.Notifications.ToastButton()
+                                        .SetContent("Dismiss")
+                                        .AddArgument("dismiss", "dismiss")
+                                        .SetBackgroundActivation()
+                                );
+
+                                customReminderToast.SetToastScenario(
+                                    Microsoft.Toolkit.Uwp.Notifications.ToastScenario.Alarm
+                                ); Task.Delay(timeSeconds).Wait();
+
+                                Utils.NotifCheck(customReminderToast, "reminder", clearToast: false);
+
+                                Microsoft.Toolkit.Uwp.Notifications.ToastNotificationManagerCompat.OnActivated +=
+                                    toastArgs => {
+                                        string[] toastArgsArraySplitByEqualsSigns = toastArgs.Argument.Split("=");
+
+                                        if (toastArgsArraySplitByEqualsSigns[0] == "dismiss") {
+                                            Microsoft.Toolkit.Uwp.Notifications.
+                                                ToastNotificationManagerCompat.History.Remove("reminder");
+                                        }
+                                    };
                             }
                         });
                     }
@@ -627,90 +639,13 @@ namespace utilities_cs {
 
             FormattableCommand base32 = new(
                 commandName: "base32",
-                function: (string[] args, bool copy, bool notif) => {
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
-
-                    string text = string.Join(" ", args[2..]);
-                    string mode = args[1];
-
-                    if (text.Contains("=")) {
-                        text = text.Replace("=", string.Empty);
-                    }
-
-                    if (mode == "to") {
-                        //* convert text to base32
-                        byte[] bytes = System.Text.Encoding.ASCII.GetBytes(text);
-                        string strToBase32 = Base32.ToBase32String(bytes)!;
-
-                        Utils.CopyCheck(copy, strToBase32);
-                        Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
-                        return strToBase32;
-                    } else if (mode == "from") {
-                        try {
-                            string base32ToString = System.Text.Encoding.Default.GetString(
-                                Base32.FromBase32String(text)!
-                        );
-                            Utils.CopyCheck(copy, base32ToString);
-                            Utils.NotifCheck(notif, new string[] {
-                                "Success!", $"The message was: {base32ToString}", "8"
-                            });
-                            return base32ToString;
-                        } catch (ArgumentException) {
-                            Utils.NotifCheck(true, new string[] {
-                                "Huh.", "Are you sure that text was actual Base32?", "3"
-                            });
-                            return null;
-                        }
-                    } else {
-                        Utils.NotifCheck(
-                            true,
-                            new string[] {
-                                "Huh.",
-                                "It seems you did not input a proper mode for Base32 to convert to.",
-                                "4"
-                            }
-                        );
-                        return null;
-                    }
-                },
+                function: Base32Convert.Base32ConvertMain,
                 aliases: new string[] { "b32" }
             );
 
             FormattableCommand base64 = new(
                 commandName: "base64",
-                function: (string[] args, bool copy, bool notif) => {
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
-
-                    string text = string.Join(" ", args[1..]);
-                    if (IsBase64.IsBase64String(text)) {
-                        try {
-                            string ans = Base64Convert.Base64Decode(text);
-                            Utils.CopyCheck(copy, ans);
-                            Utils.NotifCheck(notif, new string[] { "Success!", $"The message was: {ans}", "6" });
-                            return ans;
-                        } catch {
-                            Utils.NotifCheck(
-                                true,
-                                new string[] {
-                            "Huh.",
-                            "An exception occured when converting this text to Base64.",
-                            "4"
-                                }
-                            );
-                            return null;
-                        }
-                    } else {
-                        string ans = Base64Convert.Base64Encode(text);
-                        Utils.CopyCheck(copy, ans);
-                        Utils.NotifCheck(
-                            notif, new string[] { "Success!", "The message was copied to your clipboard.", "3" }
-                        ); return ans;
-                    }
-                },
+                function: Base64Convert.Base64ConvertMain,
                 aliases: new string[] { "b64" },
                 useInAllCommand: true,
                 allCommandMode: "encodings"
@@ -718,89 +653,12 @@ namespace utilities_cs {
 
             FormattableCommand isBase64 = new(
                 commandName: "isbase64",
-                function: (string[] args, bool copy, bool notif) => {
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
-
-                    string text = string.Join(" ", args[1..]);
-
-                    if (IsBase64.IsBase64String(text)) {
-                        Utils.NotifCheck(notif, new string[] { "Yes.", "The string is Base64.", "3" });
-                        return "Yes";
-                    } else {
-                        Utils.NotifCheck(notif, new string[] { "No.", "The string is not Base64.", "3" });
-                        return "No";
-                    }
-                }
+                function: IsBase64.IsBase64Main
             );
 
             FormattableCommand ascii85 = new(
                 commandName: "ascii85",
-                function: (string[] args, bool copy, bool notif) => {
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
-
-                    string mode = args[1];
-                    string text = string.Join(" ", args[2..]);
-                    var ascii85 = new Ascii85();
-                    byte[] byteArray = System.Text.Encoding.ASCII.GetBytes(text);
-
-                    switch (mode) {
-                        case "to":
-                            try {
-                                string encodedWithArrows = ascii85.Encode(byteArray);
-                                if (encodedWithArrows.StartsWith("<~") && encodedWithArrows.EndsWith("~>")) {
-                                    string encoded = encodedWithArrows.Remove(encodedWithArrows.Length - 2)[2..];
-
-                                    Utils.CopyCheck(copy, encoded);
-                                    Utils.NotifCheck(true, new string[] { "Success!", "Message copied to clipboard.", "3" });
-                                    return encoded;
-                                } else {
-                                    Utils.CopyCheck(copy, encodedWithArrows);
-                                    Utils.NotifCheck(true, new string[] { "Success!", "Message copied to clipboard.", "3" });
-                                    return encodedWithArrows;
-                                }
-                            } catch {
-                                Utils.NotifCheck(
-                                    true,
-                                    new string[] {
-                                        "Something went wrong.",
-                                        "Looks like something went wrong when trying to convert your text to Base85.",
-                                        "4"
-                                    }
-                                );
-                                return null;
-                            }
-
-                        case "from":
-                            try {
-                                if (!(text.StartsWith("<~") && text.EndsWith("~>"))) {
-                                    text = "<~" + text + "~>";
-                                }
-
-                                string decoded = System.Text.Encoding.ASCII.GetString(ascii85.Decode(text));
-                                Utils.CopyCheck(copy, decoded);
-                                Utils.NotifCheck(true, new string[] { "Success!", "Message copied to clipboard.", "3" });
-                                return decoded;
-                            } catch {
-                                Utils.NotifCheck(
-                                    true,
-                                    new string[] {
-                                        "Something went wrong.",
-                                        "Looks like something went wrong when trying to convert your text from Base85.",
-                                        "4"
-                                    }
-                                );
-                                return null;
-                            }
-
-                        default:
-                            Utils.NotifCheck(true, new string[] { "Huh.", "Perhaps that was not an actual mode.", "3" });
-                            return null;
-                    }
-                },
+                function: Ascii85.Ascii85Main,
                 aliases: new string[] { "base85", "b85" }
             );
 
@@ -811,6 +669,7 @@ namespace utilities_cs {
                     if (Utils.IndexTest(args)) {
                         return null;
                     }
+
                     if (!Utils.FormatValid("01 ", text)) {
                         byte[] ConvertToByteArray(string str, System.Text.Encoding encoding) {
                             return encoding.GetBytes(str);
@@ -826,9 +685,12 @@ namespace utilities_cs {
                         }
 
                         string ans = ToBinary(ConvertToByteArray(text, System.Text.Encoding.ASCII));
-                        Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
                         Utils.CopyCheck(copy, ans);
-                        return ans;
+                        Utils.NotifCheck(
+                            notif,
+                            new string[] { "Success!", "Message copied to clipboard.", "3" },
+                            "binarySuccess"
+                        ); return ans;
 
                     } else {
                         try {
@@ -836,17 +698,18 @@ namespace utilities_cs {
 
                             var chars = from split in textList
                                         select ((char)Convert.ToInt32(split, 2)).ToString();
-                            Utils.NotifCheck(notif, new string[] { "Success!", $"The message was: {string.Join("", chars)}", "10" });
+                            Utils.NotifCheck(
+                                notif,
+                                new string[] { "Success!", $"The message was: {string.Join("", chars)}", "10" },
+                                "binarySuccess"
+                            );
                             Utils.CopyCheck(copy, string.Join("", chars));
                             return string.Join("", chars);
                         } catch {
                             Utils.NotifCheck(
                                 true,
-                                new string[] {
-                                    "Huh.",
-                                    @"Something went wrong with converting this binary.",
-                                    "3"
-                                }
+                                new string[] { "Huh.", @"Something went wrong with converting this binary.", "3" },
+                                "binaryError"
                             ); return null;
                         }
                     }
@@ -876,8 +739,11 @@ namespace utilities_cs {
 
                     var answer = string.Join("", converted);
                     Utils.CopyCheck(copy, answer);
-                    Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
-                    return answer;
+                    Utils.NotifCheck(
+                        notif,
+                        new string[] { "Success!", "Message copied to clipboard.", "3" },
+                        "bubbletextSuccess"
+                    ); return answer;
                 },
                 aliases: new string[] { "bubble" },
                 useInAllCommand: true,
@@ -898,11 +764,8 @@ namespace utilities_cs {
                     } catch {
                         Utils.NotifCheck(
                             true,
-                            new string[] {
-                        "Huh.",
-                        "It seems you did not input anything to seperate with commas.",
-                        "2"
-                            }
+                            new string[] { "Huh.", "It seems you did not input anything to seperate with commas.", "2" },
+                            "commaseperatorError"
                         );
                         return null;
                     }
@@ -911,8 +774,11 @@ namespace utilities_cs {
                     string ans = String.Format("{0:n0}", num);
 
                     Utils.CopyCheck(copy, ans);
-                    Utils.NotifCheck(notif, new string[] { "Success!", "Number copied to clipboard.", "3" });
-                    return ans;
+                    Utils.NotifCheck(
+                        notif,
+                        new string[] { "Success!", "Number copied to clipboard.", "3" },
+                        "commaseperatorSuccess"
+                    ); return ans;
                 },
                 aliases: new string[] { "cms" }
             );
@@ -927,8 +793,11 @@ namespace utilities_cs {
 
                     if (Dictionaries.CopypasteDict.ContainsKey(text)) {
                         Utils.CopyCheck(copy, Dictionaries.CopypasteDict[text]);
-                        Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
-                        return Dictionaries.CopypasteDict[text];
+                        Utils.NotifCheck(
+                            notif,
+                            new string[] { "Success!", "Message copied to clipboard.", "3" },
+                            "copypasteSuccess"
+                        ); return Dictionaries.CopypasteDict[text];
                     } else {
                         Utils.NotifCheck(
                             true,
@@ -936,9 +805,9 @@ namespace utilities_cs {
                                 "Welp.",
                                 "It seems that utilities could not understand what word you were trying to copypaste.",
                                 "3"
-                            }
-                        );
-                        return null;
+                            },
+                            "copypasteError"
+                        ); return null;
                     }
                 },
                 aliases: new string[] { "cp" }
@@ -964,8 +833,11 @@ namespace utilities_cs {
 
                     var answer = string.Join("", converted);
                     Utils.CopyCheck(copy, answer);
-                    Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
-                    return answer;
+                    Utils.NotifCheck(
+                        notif,
+                        new string[] { "Success!", "Message copied to clipboard.", "3" },
+                        "creepySuccess"
+                    ); return answer;
                 },
                 useInAllCommand: true,
                 allCommandMode: "fancy"
@@ -992,8 +864,11 @@ namespace utilities_cs {
                     string result = string.Join("", converted);
 
                     Utils.CopyCheck(copy, result);
-                    Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
-                    return result;
+                    Utils.NotifCheck(
+                        notif,
+                        new string[] { "Success!", "Message copied to clipboard.", "3" },
+                        "wingdingsSuccess"
+                    ); return result;
                 },
                 aliases: new string[] { "wd" },
                 useInAllCommand: true,
@@ -1012,8 +887,11 @@ namespace utilities_cs {
                     try {
                         Convert.ToDouble(text);
                     } catch (FormatException) {
-                        Utils.NotifCheck(true, new string[] { "Huh.", "It seems you did not input a number." });
-                        return null;
+                        Utils.NotifCheck(
+                            true,
+                            new string[] { "Huh.", "It seems you did not input a number." },
+                            "cuberootError"
+                        ); return null;
                     }
 
                     //* checking if there are commas in the number
@@ -1032,8 +910,11 @@ namespace utilities_cs {
                     }
 
                     Utils.CopyCheck(copy, result);
-                    Utils.NotifCheck(notif, new string[] { "Success!", $"The answer is: {result}", "4" });
-                    return result;
+                    Utils.NotifCheck(
+                        notif,
+                        new string[] { "Success!", $"The answer is: {result}", "4" },
+                        "cuberootSuccess"
+                    ); return result;
                 },
                 aliases: new string[] { "cbrt" }
             );
@@ -1059,8 +940,9 @@ namespace utilities_cs {
 
                     var answer = string.Join("", converted);
                     Utils.CopyCheck(copy, answer);
-                    Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
-                    return answer;
+                    Utils.NotifCheck(
+                        notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "cursiveSuccess"
+                    ); return answer;
                 },
                 useInAllCommand: true,
                 allCommandMode: "fancy"
@@ -1086,8 +968,9 @@ namespace utilities_cs {
 
                     var answer = string.Join("", converted);
                     Utils.CopyCheck(copy, answer);
-                    Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
-                    return answer;
+                    Utils.NotifCheck(
+                        notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "doublestruckSuccess"
+                    ); return answer;
                 },
                 aliases: new string[] { "dbs" },
                 useInAllCommand: true,
@@ -1119,8 +1002,9 @@ namespace utilities_cs {
                     }
 
                     Utils.CopyCheck(copy, string.Join(" ", converted));
-                    Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
-                    return string.Join(" ", converted);
+                    Utils.NotifCheck(
+                        notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "emojifySuccess"
+                    ); return string.Join(" ", converted);
                 }
             );
 
@@ -1149,7 +1033,7 @@ namespace utilities_cs {
                     string result = string.Join("", converted);
 
                     Utils.CopyCheck(copy, result);
-                    Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
+                    Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "leetSuccess");
                     return result;
                 },
                 aliases: new string[] { "numberize", "numberise" },
@@ -1159,115 +1043,12 @@ namespace utilities_cs {
 
             FormattableCommand pi = new(
                 commandName: "pi",
-                function: (string[] args, bool copy, bool notif) => {
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
-
-                    //* check if num given is an actual number
-                    try {
-                        int num = int.Parse(args[1]);
-
-                        //* first 10,000 digits of pi
-                        string pi = PiDigits.piDigits;
-                        Func<string, string> handleOutput = (string result) => {
-                            Utils.CopyCheck(copy, result);
-                            Utils.NotifCheck(
-                                notif,
-                                new string[] { "Success", "The digits have been copied to clipboard.", "1" }
-                            );
-                            return result;
-                        };
-
-                        if (num <= 0) {
-                            throw new ArgumentException();
-                        } else if (num > 10000) {
-                            throw new OverflowException();
-                        } else {
-                            return handleOutput("3." + pi[0..num]);
-                        }
-
-                    } catch (FormatException) {
-                        Utils.NotifCheck(
-                            true,
-                            new string[] {
-                                "Something went wrong.",
-                                "Perhaps the number you inputted was not a real number.",
-                                "5"
-                            }
-                        );
-                        return null;
-                    } catch (ArgumentException) {
-                        Utils.NotifCheck(
-                            true,
-                            new string[] {
-                                "Hey!",
-                                "You can't get a zero or negative amount of pi digits.",
-                                "4"
-                            }
-                        );
-                        return null;
-                    } catch (OverflowException) {
-                        Utils.NotifCheck(
-                            true,
-                            new string[] {
-                                "That's a bit too far.",
-                                "The limit to getting pi values is 10,000.",
-                                "4"
-                            }
-                        );
-                        return null;
-                    }
-                }
+                function: PiDigits.PiMain
             );
 
             FormattableCommand lorem = new(
                 commandName: "lorem",
-                function: (string[] args, bool copy, bool notif) => {
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
-
-                    //* lorem string
-                    string lorem = LoremIpsum.LoremIpsumFull;
-                    if (args[1] == "all") {
-                        Utils.CopyCheck(copy, lorem);
-                        Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
-                        return lorem;
-                    } else {
-                        try {
-                            int numOfWords = int.Parse(args[1]);
-                            //* split lorem into array by space
-                            string[] loremArray = lorem.Split(" ");
-
-                            if (numOfWords >= 1 && !(numOfWords > 10000)) {
-                                string[] result = loremArray[0..(numOfWords)];
-
-                                Utils.CopyCheck(copy, string.Join(" ", result));
-                                Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
-                                return string.Join(" ", result);
-                            } else if (numOfWords > 10000) {
-                                Utils.NotifCheck(
-                                    true,
-                                    new string[] {
-                                        "That's a bit too far.", "The limit to getting lorem values is 10,000.", "4"
-                                    }
-                                );
-                                return null;
-                            } else {
-                                Utils.NotifCheck(
-                                    true,
-                                    new string[] { "Hey!", "You can't get a zero or negative amount of words.", "4" }
-                                ); return null;
-                            }
-                        } catch {
-                            Utils.NotifCheck(
-                                true,
-                                new string[] { "Huh.", "It seems you did not input the parameters correctly.", "4" }
-                            ); return null;
-                        }
-                    }
-                },
+                function: LoremIpsum.LoremMain,
                 aliases: new string[] { "loremipsum" }
             );
 
@@ -1291,7 +1072,7 @@ namespace utilities_cs {
 
                     var answer = string.Join("", converted);
                     Utils.CopyCheck(copy, answer);
-                    Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
+                    Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "epSuccess");
                     return answer;
                 },
                 aliases: new string[] { "ep" },
@@ -1320,7 +1101,7 @@ namespace utilities_cs {
                     converted.Reverse();
                     var answer = string.Join("", converted);
                     Utils.CopyCheck(copy, answer);
-                    Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
+                    Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "flipSuccess");
                     return answer;
                 },
                 aliases: new string[] { "flipped", "upside-down" },
@@ -1345,8 +1126,9 @@ namespace utilities_cs {
 
                     var answer = new string(chars);
                     Utils.CopyCheck(copy, answer);
-                    Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
-                    return answer;
+                    Utils.NotifCheck(
+                        notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "shuffleSuccess"
+                    ); return answer;
                 }
             );
 
@@ -1371,12 +1153,12 @@ namespace utilities_cs {
                             Utils.NotifCheck(
                                 true,
                                 new string[] {
-                            "Something went wrong.",
-                            "Either the code is broken, or you did not input the parameters correctly.",
-                            "4"
-                                }
-                            );
-                            return null;
+                                    "Something went wrong.",
+                                    "Either the code is broken, or you did not input the parameters correctly.",
+                                    "4"
+                                },
+                                "fractionError"
+                            ); return null;
                         }
                     }
 
@@ -1391,10 +1173,11 @@ namespace utilities_cs {
                                 Utils.NotifCheck(
                                     true,
                                     new string[] {
-                                "Hey!",
-                                @"It seems you tried to input a character that's not supported.",
-                                "4"
-                                    }
+                                        "Hey!",
+                                        @"It seems you tried to input a character that's not supported.",
+                                        "4"
+                                    },
+                                    "fractionError"
                                 );
                                 return null;
                             }
@@ -1402,10 +1185,11 @@ namespace utilities_cs {
                             Utils.NotifCheck(
                                 true,
                                 new string[] {
-                            "Something went wrong.",
-                            "Either the code is broken, or you did not input the parameters correctly.",
-                            "4"
-                                }
+                                    "Something went wrong.",
+                                    "Either the code is broken, or you did not input the parameters correctly.",
+                                    "4"
+                                },
+                                "fractionError"
                             );
                             return null;
                         }
@@ -1414,118 +1198,20 @@ namespace utilities_cs {
                     string fraction = string.Join("", converted);
                     Utils.CopyCheck(copy, fraction);
                     Utils.NotifCheck(
-                        notif, new string[] { "Success!", "Message copied to clipboard.", "3" }
-                    );
-                    return fraction;
+                        notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "fractionSuccess"
+                    ); return fraction;
                 },
                 aliases: new string[] { "fc" }
             );
 
             FormattableCommand gzip = new(
                 commandName: "gzip",
-                function: (string[] args, bool copy, bool notif) => {
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
-
-                    string mode = args[1];
-                    string text = string.Join(" ", args[2..]);
-                    if (mode == "to") {
-                        try {
-                            string compressed = GZip.Compress(text);
-
-                            Utils.CopyCheck(copy, compressed);
-                            Utils.NotifCheck(
-                                notif, new string[] { "Success!", "Message copied to clipboard.", "2" }
-                            );
-                            return compressed;
-                        } catch {
-                            Utils.NotifCheck(
-                                true,
-                                new string[] {
-                                    "Something went wrong.",
-                                    "An error occured when trying to convert your text to GZip.",
-                                    "4"
-                                }
-                            );
-                            return null;
-                        }
-                    } else if (mode == "from") {
-                        try {
-                            string decompressed = GZip.Decompress(text);
-
-                            Utils.CopyCheck(copy, decompressed);
-                            Utils.NotifCheck(
-                                notif, new string[] { "Success!", $"The text was: {decompressed}", "2" }
-                            );
-                            return decompressed;
-                        } catch {
-                            Utils.NotifCheck(
-                                true,
-                                new string[] {
-                                    "Something went wrong.",
-                                    "An error occured when trying to decompress your text from GZip to ASCII.",
-                                    "4"
-                                }
-                            );
-                            return null;
-                        }
-                    } else {
-                        Utils.NotifCheck(
-                            true,
-                            new string[] {
-                                "Huh.",
-                                "It seems you did not input a valid mode.",
-                                "4"
-                            }
-                        ); return null;
-                    }
-                }
+                function: GZip.GZipMain
             );
 
             FormattableCommand hcf = new(
                 commandName: "hcf",
-                function: (string[] args, bool copy, bool notif) => {
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
-
-                    string text = string.Join(" ", args);
-                    List<BigInteger> nums = new();
-                    Utils.RegexFindAllInts(text).ForEach(x => nums.Add(x));
-
-                    try {
-                        if (nums.Count > 1) {
-                            BigInteger answer =
-                            HCF.findGCD(
-                                nums.ToArray<BigInteger>(),
-                                nums.ToArray().Length
-                            );
-                            Utils.CopyCheck(copy, answer.ToString());
-                            Utils.NotifCheck(notif, new string[] { "Success!", $"The answer was {answer}.", "5" });
-                            return answer.ToString();
-                        } else {
-                            Utils.NotifCheck(
-                                true,
-                                new string[] {
-                                    "Something went wrong.", "You need to input at least two numbers.", "4"
-                                }
-                            );
-                            return null;
-                        }
-                    } catch {
-                        Utils.NotifCheck(
-                            true,
-                            new string[] {
-                                "Huh.",
-                                "It seems you did not input the numbers properly. Try 'hcf 15 70' as an example.",
-                                "8"
-                            }
-                        );
-
-                        return null;
-                    }
-                },
+                function: HCF.HCFMain,
                 aliases: new string[] { "gcd" }
             );
 
@@ -1550,11 +1236,12 @@ namespace utilities_cs {
 
                     BigInteger num = BigInteger.Parse(args[1]);
                     List<BigInteger> factors = findFactors(num);
-                    
+
                     string ans = string.Join(", ", factors);
                     Utils.CopyCheck(copy, ans);
-                    Utils.NotifCheck(notif, new string[] { "Success!", $"The factors are: {ans}.", "5" });
-                    return ans;
+                    Utils.NotifCheck(
+                        notif, new string[] { "Success!", $"The factors are: {ans}.", "5" }, "factorsSuccess"
+                    ); return ans;
                 }
             );
 
@@ -1579,16 +1266,14 @@ namespace utilities_cs {
                         BigInteger average = sum / nums.Count;
 
                         Utils.CopyCheck(copy, average.ToString());
-                        Utils.NotifCheck(notif, new string[] { "Success!", $"The average was {average}", "5" });
-                        return average.ToString();
+                        Utils.NotifCheck(
+                            notif, new string[] { "Success!", $"The average was {average}", "5" }, "averageSuccess"
+                        ); return average.ToString();
                     } else {
                         Utils.NotifCheck(
                             true,
-                            new string[] {
-                                "Something went wrong.",
-                                "You need to input at least two numbers.",
-                                "4"
-                            }
+                            new string[] { "Something went wrong.", "You need to input at least two numbers.", "4" },
+                            "averageError"
                         );
                         return null;
                     }
@@ -1598,51 +1283,7 @@ namespace utilities_cs {
 
             FormattableCommand hexadecimal = new(
                 commandName: "hexadecimal",
-                function: (string[] args, bool copy, bool notif) => {
-                    string text = string.Join(" ", args[1..]);
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
-
-                    string[] textList = text.Split(" ");
-                    string hexWithDash = string.Join("-", textList);
-
-                    if (Hex.IsHex(string.Join("", args[1..]))) {
-                        try {
-                            string textFromHex = System.Text.Encoding.ASCII.GetString(Hex.toText(hexWithDash));
-                            Utils.CopyCheck(copy, textFromHex);
-                            Utils.NotifCheck(notif, new string[] { "Success!", $"The message was: {textFromHex}", "10" });
-                            return textFromHex;
-                        } catch {
-                            Utils.NotifCheck(
-                                true,
-                                new string[] {
-                                    "Something went wrong.",
-                                    "Something went wrong when trying to convert your text from hexadecimal",
-                                    "4"
-                                }
-                            );
-                            return null;
-                        }
-                    } else {
-                        try {
-                            string hexFromText = Hex.toHex(text);
-                            Utils.CopyCheck(copy, hexFromText);
-                            Utils.NotifCheck(notif, new string[] { "Success!", $"Message copied to clipboard.", "3" });
-                            return hexFromText;
-                        } catch {
-                            Utils.NotifCheck(
-                                true,
-                                new string[] {
-                                    "Something went wrong.",
-                                    "Something went wrong when trying to convert your text into hexadecimal.",
-                                    "4"
-                                }
-                            );
-                            return null;
-                        }
-                    }
-                },
+                function: Hex.HexadecimalMain,
                 aliases: new string[] { "hex" },
                 useInAllCommand: true,
                 allCommandMode: "encodings"
@@ -1675,7 +1316,9 @@ namespace utilities_cs {
 
                     Action<bool, bool, string> notifAndCopy = (bool copy, bool notif, string fromAsciiText) => {
                         Utils.CopyCheck(copy, fromAsciiText);
-                        Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
+                        Utils.NotifCheck(
+                            notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "asciiSuccess"
+                        );
                     };
 
                     string text = string.Join(" ", args[1..]);
@@ -1686,7 +1329,8 @@ namespace utilities_cs {
                         } catch (OverflowException) {
                             Utils.NotifCheck(
                                 true,
-                                new string[] { "Something went wrong.", "Perhaps the number was too large.", "3" }
+                                new string[] { "Something went wrong.", "Perhaps the number was too large.", "3" },
+                                "asciiError"
                             ); return null;
                         }
 
@@ -1705,7 +1349,8 @@ namespace utilities_cs {
                             Utils.CopyCheck(copy, fromAsciitext);
                             Utils.NotifCheck(
                                 notif,
-                                new string[] { "Success!", $"The message was: {fromAsciitext}", "6" }
+                                new string[] { "Success!", $"The message was: {fromAsciitext}", "6" },
+                                "asciiSuccess"
                             ); return fromAsciitext;
                         } else {
                             string ascii = toAscii(text);
@@ -1724,46 +1369,7 @@ namespace utilities_cs {
 
             FormattableCommand lcm = new(
                 commandName: "lcm",
-                function: (string[] args, bool copy, bool notif) => {
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
-
-                    string text = string.Join(" ", args[1..]);
-
-                    List<BigInteger> nums = new();
-                    Utils.RegexFindAllInts(text).ForEach(x => nums.Add(x));
-
-                    try {
-                        if (nums.Count > 1) {
-                            BigInteger answer =
-                            LCMClass.lcmExec(nums.ToArray<BigInteger>());
-                            Utils.CopyCheck(copy, answer.ToString());
-                            Utils.NotifCheck(notif, new string[] { "Success!", $"The answer was {answer}.", "5" });
-                            return answer.ToString();
-                        } else {
-                            Utils.NotifCheck(
-                                true,
-                                new string[] {
-                                    "Something went wrong.",
-                                    "You need to input at least two numbers.",
-                                    "4"
-                                }
-                            );
-                            return null;
-                        }
-                    } catch {
-                        Utils.NotifCheck(
-                            true,
-                            new string[] {
-                                "Huh.",
-                                "It seems you did not input a number. Try 'lcm 15 70' as an example.",
-                                "8"
-                            }
-                        );
-                        return null;
-                    }
-                }
+                function: LCMClass.LCMMain
             );
 
             FormattableCommand length = new(
@@ -1776,7 +1382,9 @@ namespace utilities_cs {
                     string text = string.Join(" ", args[1..]);
                     string len = $@"Character count: {text.Length.ToString()}
 Word count: {args[1..].Length}";
-                    Utils.NotifCheck(notif, new string[] { "Success!", len, "5" });
+
+                    Utils.CopyCheck(copy, len);
+                    Utils.NotifCheck(notif, new string[] { "Success!", len, "5" }, "lengthSuccess");
                     return len;
                 },
                 aliases: new string[] { "len" }
@@ -1808,7 +1416,8 @@ Word count: {args[1..].Length}";
                         notif,
                         new string[] {
                             "Success!", "The character distribution has been copied to your clipboard.", "3"
-                        }
+                        },
+                        "characterDistributionSuccess"
                     ); return result;
                 },
                 aliases: new string[] { "chardistr", "chardistribution", "characterdistr" }
@@ -1823,8 +1432,9 @@ Word count: {args[1..].Length}";
                     string text = string.Join(" ", args[1..]);
                     string lowerText = text.ToLower();
                     Utils.CopyCheck(copy, lowerText);
-                    Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
-                    return lowerText;
+                    Utils.NotifCheck(
+                        notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "lowercaseSuccess"
+                    ); return lowerText;
                 },
                 aliases: new string[] { "lower" },
                 useInAllCommand: true,
@@ -1852,8 +1462,11 @@ Word count: {args[1..].Length}";
 
                     var answer = string.Join("", converted);
                     Utils.CopyCheck(copy, answer);
-                    Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
-                    return answer;
+                    Utils.NotifCheck(
+                        notif,
+                        new string[] { "Success!", "Message copied to clipboard.", "3" },
+                        "mathitalicSuccess"
+                    ); return answer;
                 },
                 aliases: new string[] { "mai" },
                 useInAllCommand: true,
@@ -1893,8 +1506,9 @@ Word count: {args[1..].Length}";
 
                     Func<string, string> returnNum = (string ans) => {
                         Utils.CopyCheck(copy, ans);
-                        Utils.NotifCheck(notif, new string[] { "Success!", ans, "5" });
-                        return ans;
+                        Utils.NotifCheck(
+                            notif, new string[] { "Success!", ans, "5" }, "divideSuccess"
+                        ); return ans;
                     };
 
                     if (remainder != 0 && ints.Count > 1) {
@@ -1904,7 +1518,8 @@ Word count: {args[1..].Length}";
                     } else {
                         Utils.NotifCheck(
                             true,
-                            new string[] { "Something went wrong.", "You need to input atleast two numbers.", "3" }
+                            new string[] { "Something went wrong.", "You need to input atleast two numbers.", "3" },
+                            "divideError"
                         );
                         return null;
                     }
@@ -1930,11 +1545,8 @@ Word count: {args[1..].Length}";
                         float ans = (percent / 100) * number; //* answer
                         Utils.NotifCheck(
                             notif,
-                            new string[] {
-                                "Success!",
-                                $"{ans} is {percent}% of {number}",
-                                "5"
-                            }
+                            new string[] { "Success!", $"{ans} is {percent}% of {number}", "5" },
+                            "percentageSuccess"
                         );
 
                         Utils.CopyCheck(copy, ans.ToString());
@@ -1945,25 +1557,19 @@ Word count: {args[1..].Length}";
                         float num2 = float.Parse(matches[0].Groups["num2"].Value);
 
                         float ans = (num1 / num2) * 100; //* answer
-                        Utils.NotifCheck(notif,
-                            new string[] {
-                                "Success!",
-                                $"{num1} is {ans}% of {num2}",
-                                "5"
-                            }
+                        Utils.NotifCheck(
+                            notif,
+                            new string[] { "Success!", $"{num1} is {ans}% of {num2}", "5" },
+                            "percentageSuccess"
                         );
                         Utils.CopyCheck(copy, ans.ToString());
                         return ans.ToString();
                     } else {
                         Utils.NotifCheck(
                             true,
-                            new string[] {
-                                "Huh.",
-                                "It seems you did not input the parameters correctly.",
-                                "3"
-                            }
-                        );
-                        return null;
+                            new string[] { "Huh.", "It seems you did not input the parameters correctly.", "3" },
+                            "percentageError"
+                        ); return null;
                     }
                 },
                 aliases: new string[] { "percent", "%" }
@@ -2000,7 +1606,8 @@ Word count: {args[1..].Length}";
                                 "Something went wrong.",
                                 "Either the number you entered was not a number, or it was too large.",
                                 "5"
-                            }
+                            },
+                            "randcharError"
                         );
                     }
 
@@ -2013,7 +1620,7 @@ Word count: {args[1..].Length}";
 
                     string ans = string.Join("", randomChar);
                     Utils.CopyCheck(copy, ans);
-                    Utils.NotifCheck(notif, new string[] { "Success!", "Text copied to clipboard.", "3" });
+                    Utils.NotifCheck(notif, new string[] { "Success!", "Text copied to clipboard.", "3" }, "randcharSuccess");
                     return ans;
                 }
             );
@@ -2032,7 +1639,8 @@ Word count: {args[1..].Length}";
                     } catch (OverflowException) {
                         Utils.NotifCheck(
                             true,
-                            new string[] { "Something went wrong.", "The number you entered was too large.", "3" }
+                            new string[] { "Something went wrong.", "The number you entered was too large.", "3" },
+                            "randintError"
                         ); return null;
                     }
 
@@ -2045,7 +1653,8 @@ Word count: {args[1..].Length}";
                                     "Huh.",
                                     "Unfortunately the minimum value cannot be higher than the max value.",
                                     "5"
-                                }
+                                },
+                                "randintError"
                             );
                             return null;
                         }
@@ -2054,8 +1663,9 @@ Word count: {args[1..].Length}";
                         int randint = rand.Next(nums[0], nums[1] + 1);
 
                         Utils.CopyCheck(copy, randint.ToString());
-                        Utils.NotifCheck(notif, new string[] { "Success!", $"The number was: {randint}", "5" });
-                        return randint.ToString();
+                        Utils.NotifCheck(
+                            notif, new string[] { "Success!", $"The number was: {randint}", "5" }, "randintSuccess"
+                        ); return randint.ToString();
                     } else {
                         Utils.NotifCheck(
                             true,
@@ -2063,7 +1673,8 @@ Word count: {args[1..].Length}";
                                 "Are you sure those were numbers?",
                                 "Something went wrong while getting the numbers from the parameters you inputted.",
                                 "4"
-                            }
+                            },
+                            "randintError"
                         );
                         return null;
                     }
@@ -2083,8 +1694,9 @@ Word count: {args[1..].Length}";
                     textList.Reverse();
                     string answer = string.Join("", textList);
                     Utils.CopyCheck(copy, answer);
-                    Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
-                    return answer;
+                    Utils.NotifCheck(
+                        notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "reverseSuccess"
+                    ); return answer;
                 },
                 useInAllCommand: true,
                 allCommandMode: "fancy"
@@ -2111,8 +1723,9 @@ Word count: {args[1..].Length}";
                     }
                     string sarcasmText = string.Join("", converted);
                     Utils.CopyCheck(copy, sarcasmText);
-                    Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
-                    return sarcasmText;
+                    Utils.NotifCheck(
+                        notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "sarcasmSuccess"
+                    ); return sarcasmText;
                 }
             );
 
@@ -2135,8 +1748,9 @@ Word count: {args[1..].Length}";
                     }
 
                     Utils.CopyCheck(copy, Sb.ToString());
-                    Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
-                    return Sb.ToString();
+                    Utils.NotifCheck(
+                        notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "sha1Success"
+                    ); return Sb.ToString();
                 }
             );
 
@@ -2159,8 +1773,9 @@ Word count: {args[1..].Length}";
                     }
 
                     Utils.CopyCheck(copy, Sb.ToString());
-                    Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
-                    return Sb.ToString();
+                    Utils.NotifCheck(
+                        notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "sha256Success"
+                    ); return Sb.ToString();
                 }
             );
 
@@ -2185,8 +1800,9 @@ Word count: {args[1..].Length}";
                     }
 
                     Utils.CopyCheck(copy, Sb.ToString());
-                    Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
-                    return Sb.ToString();
+                    Utils.NotifCheck(
+                        notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "sha384Success"
+                    ); return Sb.ToString();
                 }
             );
 
@@ -2209,8 +1825,9 @@ Word count: {args[1..].Length}";
                     }
 
                     Utils.CopyCheck(copy, Sb.ToString());
-                    Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
-                    return Sb.ToString();
+                    Utils.NotifCheck(
+                        notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "sha512Success"
+                    ); return Sb.ToString();
                 }
             );
 
@@ -2228,8 +1845,9 @@ Word count: {args[1..].Length}";
                     }
                     string answer = string.Join("", converted);
                     Utils.CopyCheck(copy, answer);
-                    Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
-                    return answer;
+                    Utils.NotifCheck(
+                        notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "spacerSuccess"
+                    ); return answer;
                 },
                 useInAllCommand: true,
                 allCommandMode: "fancy"
@@ -2248,8 +1866,9 @@ Word count: {args[1..].Length}";
                     }
                     string answer = $"{string.Join("||", converted)}||";
                     Utils.CopyCheck(copy, answer);
-                    Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
-                    return answer;
+                    Utils.NotifCheck(
+                        notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "spoilerspamSuccess"
+                    ); return answer;
                 }
             );
 
@@ -2266,8 +1885,9 @@ Word count: {args[1..].Length}";
                     string ans = textInfo.ToTitleCase(string.Join(" ", text));
 
                     Utils.CopyCheck(copy, ans);
-                    Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
-                    return ans;
+                    Utils.NotifCheck(
+                        notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "titlecaseSuccess"
+                    ); return ans;
                 },
                 aliases: new string[] { "title" },
                 useInAllCommand: true,
@@ -2283,8 +1903,9 @@ Word count: {args[1..].Length}";
                     string text = string.Join(" ", args[1..]);
                     string upperText = text.ToUpper();
                     Utils.CopyCheck(copy, upperText);
-                    Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
-                    return upperText;
+                    Utils.NotifCheck(
+                        notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "uppercaseSuccess"
+                    ); return upperText;
                 },
                 aliases: new string[] { "upper" },
                 useInAllCommand: true,
@@ -2300,8 +1921,9 @@ Word count: {args[1..].Length}";
 
                     Func<string, string> output = (string result) => {
                         Utils.CopyCheck(copy, result);
-                        Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
-                        return result;
+                        Utils.NotifCheck(
+                            notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "camelcaseSuccess"
+                        ); return result;
                     };
 
                     List<string> ans = new();
@@ -2329,8 +1951,9 @@ Word count: {args[1..].Length}";
 
                     string text = string.Join("_", args[1..]).ToLower();
                     Utils.CopyCheck(copy, text);
-                    Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
-                    return text;
+                    Utils.NotifCheck(
+                        notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "snakecaseSuccess"
+                    ); return text;
                 }
             );
 
@@ -2366,7 +1989,9 @@ Word count: {args[1..].Length}";
                     string result = string.Join(" ", pigLatin);
 
                     Utils.CopyCheck(copy, result);
-                    Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
+                    Utils.NotifCheck(
+                        notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "piglatinSuccess"
+                    );
                     return result;
                 }
             );

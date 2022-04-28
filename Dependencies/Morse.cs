@@ -71,7 +71,7 @@ namespace utilities_cs {
                 }
             }
 
-            Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" });
+            Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "morseSuccess");
             Utils.CopyCheck(copy, string.Join("", morse_converted));
             return string.Join("", morse_converted);
         }
@@ -88,16 +88,12 @@ namespace utilities_cs {
                 }
             }
 
+            Utils.CopyCheck(copy, string.Join("", text_converted));
             Utils.NotifCheck(
                 notif,
-                new string[] {
-                    "Success!",
-                    $"The message was: {string.Join("", text_converted)}",
-                    "10"
-                }
-            );
-            Utils.CopyCheck(copy, string.Join("", text_converted));
-            return string.Join("", text_converted);
+                new string[] { "Success!", $"The message was: {string.Join("", text_converted)}", "7" },
+                "morseSuccess"
+            ); return string.Join("", text_converted);
         }
     }
 }

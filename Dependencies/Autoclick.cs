@@ -14,7 +14,8 @@ namespace utilities_cs {
                         "Huh.",
                         "Perhaps the parameters were not inputted correctly.",
                         "4"
-                    }
+                    },
+                    "autoclickError"
                 )
             );
         }
@@ -44,7 +45,8 @@ namespace utilities_cs {
                         "Stopped the autoclicker.",
                         "The autoclicker has been stopped successfully.",
                         "4"
-                    }
+                    },
+                    "autoclickStop"
                 );
 
                 HookManager.UnregisterHook("autoclickStop");
@@ -83,7 +85,8 @@ namespace utilities_cs {
                 () => {
                     Utils.NotifCheck(
                         true,
-                        new string[] { "Huh.", "Perhaps you already have an autoclicker running", "4" }
+                        new string[] { "Huh.", "Perhaps you already have an autoclicker running", "4" },
+                        "autoclickHotkeyError"
                     );
                 }
             );
@@ -116,7 +119,8 @@ namespace utilities_cs {
                         "Hey!",
                         "The mousebutton can only be \"left\", \"right\" or \"middle\".",
                         "4"
-                    }
+                    },
+                    "autoclickError"
                 );
             }
         }

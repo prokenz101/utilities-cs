@@ -9,11 +9,12 @@ namespace utilities_cs {
         /// </summary>
         /// <param name="title">The title of the notificaton.</param>
         /// <param name="subtitle">The subtitle of the notification.</param>
-        /// <param name="toastexpirationtime">The amount of time that the toast will stay on screen.</param>
+        /// <param name="toastDuration">The amount of time that the toast will stay on screen.</param>
         public async static void Notification(
                 string title,
                 string subtitle,
-                int toastexpirationtime = 1,
+                string tag,
+                int toastDuration = 1,
                 bool bypassLengthLimit = false
             ) {
             if (notificationTask != null) {
@@ -29,19 +30,22 @@ namespace utilities_cs {
             if (title.Length > 54 && !bypassLengthLimit) {
                 title = notifTooLong[0];
                 subtitle = notifTooLong[1];
-                toastexpirationtime = 5;
+                toastDuration = 5;
             } else if (subtitle.Length > 108 && !bypassLengthLimit) {
                 title = notifTooLong[0];
                 subtitle = notifTooLong[1];
-                toastexpirationtime = 5;
+                toastDuration = 5;
             }
 
             notificationTask = Task.Run(() => {
                 new Microsoft.Toolkit.Uwp.Notifications.ToastContentBuilder()
                     .AddText(title)
-                    .AddText(subtitle).Show();
-                Task.Delay((toastexpirationtime + 1) * 1000).Wait();
-                Microsoft.Toolkit.Uwp.Notifications.ToastNotificationManagerCompat.History.Clear();
+                    .AddText(subtitle)
+                    .Show(toast => { toast.Tag = tag; });
+
+                Task.Delay((toastDuration + 1) * 1000).Wait();
+                Microsoft.Toolkit.Uwp.Notifications.
+                    ToastNotificationManagerCompat.History.Remove(tag);
             });
         }
 
@@ -63,9 +67,11 @@ namespace utilities_cs {
                 string test = args[argscount];
                 return false;
             } catch (IndexOutOfRangeException) {
-                Notification("Huh.", "It seems you did not specify the parametes correctly.", 3);
-                ifOutOfRange?.Invoke();
-                return true;
+                NotifCheck(
+                    true,
+                    new string[] { "Huh.", "It seems you did not specify the parameters correctly.", "3" },
+                    "indexTestError"
+                ); ifOutOfRange?.Invoke(); return true;
             }
         }
 
@@ -126,16 +132,46 @@ namespace utilities_cs {
         /// </summary>
         /// <param name="notif">Boolean that is usually true and checks if notification is gonna be sent.</param>
         /// <param name="notifContent">The content for the notification, if it notif is true.</param>
-        public static void NotifCheck(bool notif, string[] notifContent, bool bypassLengthLimit = false) {
+        public static void NotifCheck(
+            bool notif,
+            string[] notifContent,
+            string tag,
+            bool bypassLengthLimit = false
+        ) {
             bool settingsDisallowed = UtilitiesAppContext.currentSettings.disableNotifications;
 
             if (notif && !settingsDisallowed) {
                 Notification(
                     notifContent[0],
                     notifContent[1],
+                    tag,
                     int.Parse(notifContent[2]),
                     bypassLengthLimit: bypassLengthLimit
                 );
+            }
+        }
+
+        /// <summary>
+        /// Overload of original NotifCheck method that allows you to send a custom ToastContentBuilder.
+        /// </summary>
+        /// <param name="customToast">The ToastContentBuilder that is to be shown to the user.</param>
+        /// <param name="toastDuration">The duration of the toast.</param>
+        public async static void NotifCheck(
+            Microsoft.Toolkit.Uwp.Notifications.ToastContentBuilder customToast,
+            string toastTag,
+            bool clearToast = true,
+            int toastDuration = 1
+        ) {
+            bool settingsDisallowed = UtilitiesAppContext.currentSettings.disableNotifications;
+
+            if (customToast != null && !settingsDisallowed) {
+                await Task.Run(() => customToast.Show());
+
+                if (clearToast) {
+                    Task.Delay((toastDuration + 1) * 1000).Wait();
+                    Microsoft.Toolkit.Uwp.Notifications.
+                        ToastNotificationManagerCompat.History.Remove(toastTag);
+                }
             }
         }
 

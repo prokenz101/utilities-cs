@@ -28,10 +28,11 @@ namespace utilities_cs {
                     } catch (IndexOutOfRangeException) {
                         Utils.NotifCheck(true,
                             new string[] {
-                                        "Huh.",
-                                        "It seems you did not input a setting/value.",
-                                        "3"
-                            }
+                                "Huh.",
+                                "It seems you did not input a setting/value.",
+                                "3"
+                            },
+                            "settingsError"
                         );
                     }
                     break;
@@ -40,7 +41,8 @@ namespace utilities_cs {
                     SettingsModification.CreateDirAndJson();
                     Utils.NotifCheck(
                         true,
-                        new string[] { "Reset.", "All settings have been reset to default.", "4" }
+                        new string[] { "Reset.", "All settings have been reset to default.", "4" },
+                        "settingsReset"
                     ); break;
 
                 case "list":
@@ -48,21 +50,17 @@ namespace utilities_cs {
                     Utils.CopyCheck(true, settings);
                     Utils.NotifCheck(
                         true,
-                        new string[] { "Success!", "The settings have been copied to your clipboard.", "3" }
+                        new string[] { "Success!", "The settings have been copied to your clipboard.", "3" },
+                        "settingsCopy"
                     );
                     break;
 
                 case "open":
                     Utils.NotifCheck(
                         true,
-                        new string[] {
-                                    "Opening settings file.",
-                                    "Opening settings.json in your default editor.",
-                                    "3"
-                        }
-                    );
-                    SettingsModification.OpenSettingsJSON();
-                    break;
+                        new string[] { "Opening settings file.", "Opening in your default editor.", "3" },
+                        "settingsOpen"
+                    ); SettingsModification.OpenSettingsJSON(); break;
 
                 case "refresh":
                     if (
@@ -72,20 +70,27 @@ namespace utilities_cs {
                         Utils.NotifCheck(
                             true,
                             new string[] {
-                                        "Hey!",
-                                        @"disableClipboardManipulation and autoPaste are mutually exclusive.
+                                "Hey!",
+                                @"disableClipboardManipulation and autoPaste are mutually exclusive.
 They cannot both be true at the same time."
-                            }
+                            },
+                            "settingsError"
                         ); break;
                     } else {
                         UtilitiesAppContext.currentSettings = SettingsModification.GetSettings();
-                        Utils.NotifCheck(true, new string[] { "Refreshed.", "Settings have been refreshed.", "3" });
-                        break;
+                        Utils.NotifCheck(
+                            true,
+                            new string[] { "Refreshed.", "Settings have been refreshed.", "3" },
+                            "settingsRefresh"
+                        ); break;
                     }
 
                 default:
-                    Utils.NotifCheck(true, new string[] { "Huh.", "It seems that was not a valid mode.", "3" });
-                    break;
+                    Utils.NotifCheck(
+                        true,
+                        new string[] { "Huh.", "It seems that was not a valid mode.", "3" },
+                        "settingsError"
+                    ); break;
             }
         }
 
@@ -109,7 +114,8 @@ They cannot both be true at the same time."
                         "You can't do that unfortunately.",
                         @"'disableClipboardManipulation' and 'autoPaste' are mutually exclusive.",
                         "7"
-                    }
+                    },
+                    "settingsError"
                 );
             };
 
@@ -152,7 +158,11 @@ They cannot both be true at the same time."
             }
 
             UtilitiesAppContext.currentSettings = SettingsModification.GetSettings();
-            Utils.NotifCheck(true, new string[] { "Modified.", $"'{setting}' has been changed to {value}.", "4" });
+            Utils.NotifCheck(
+                true,
+                new string[] { "Modified.", $"'{setting}' has been changed to {value}.", "4" },
+                "settingsModifiedSuccess"
+            );
         }
 
         public static void OpenSettingsJSON() {
@@ -192,8 +202,11 @@ They cannot both be true at the same time."
                     return null;
                 }
             } catch {
-                Utils.NotifCheck(true, new string[] { "Huh", "It seems you did not input the parameters correctly.", "3" });
-                return null;
+                Utils.NotifCheck(
+                    true,
+                    new string[] { "Huh", "It seems you did not input the parameters correctly.", "3" },
+                    "settingsError"
+                ); return null;
             }
         }
     }

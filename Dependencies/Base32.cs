@@ -1,4 +1,60 @@
 namespace utilities_cs {
+    public class Base32Convert {
+        public static string? Base32ConvertMain(string[] args, bool copy, bool notif) {
+            if (Utils.IndexTest(args)) {
+                return null;
+            }
+
+            string text = string.Join(" ", args[2..]);
+            string mode = args[1];
+
+            if (text.Contains("=")) {
+                text = text.Replace("=", string.Empty);
+            }
+
+            if (mode == "to") {
+                //* convert text to base32
+                byte[] bytes = System.Text.Encoding.ASCII.GetBytes(text);
+                string strToBase32 = Base32.ToBase32String(bytes)!;
+
+                Utils.CopyCheck(copy, strToBase32);
+                Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "base32Success");
+                return strToBase32;
+            } else if (mode == "from") {
+                try {
+                    string base32ToString = System.Text.Encoding.Default.GetString(
+                        Base32.FromBase32String(text)!
+                );
+                    Utils.CopyCheck(copy, base32ToString);
+                    Utils.NotifCheck(
+                        notif,
+                        new string[] { "Success!", $"The message was: {base32ToString}", "8" },
+                        "base32Success"
+                    );
+                    return base32ToString;
+                } catch (ArgumentException) {
+                    Utils.NotifCheck(
+                        true,
+                        new string[] { "Huh.", "Are you sure that text was actual Base32?", "3" },
+                        "base32Error"
+                    );
+                    return null;
+                }
+            } else {
+                Utils.NotifCheck(
+                    true,
+                    new string[] {
+                                "Huh.",
+                                "It seems you did not input a proper mode for Base32 to convert to.",
+                                "4"
+                    },
+                    "base32Error"
+                );
+                return null;
+            }
+        }
+    }
+
     /// <summary>
     /// Class used for conversion between byte array and Base32 notation
     /// </summary>
