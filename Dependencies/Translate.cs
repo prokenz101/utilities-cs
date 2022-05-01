@@ -13,6 +13,30 @@ namespace utilities_cs {
             { "english", toEnglish },
             { "e", toEnglish }
         };
+
+        public static void TranslateMain(string[] args) {
+            string lang = args[1];
+            string text = string.Join('+', args[2..]);
+
+            //* checking if lang is english
+
+            foreach (var englishLangAliases in Translate.englishDict.Keys) {
+                if (lang == englishLangAliases) {
+                    Translate.toEnglish(text);
+                    return;
+                }
+            }
+
+            //* if lang is not english, then use toOtherLang()
+
+            foreach (var langAliases in Translate.languages.Keys) {
+                if (langAliases.Contains(lang)) {
+                    Translate.toOtherLang(Translate.languages[langAliases], text);
+                    break;
+                }
+            }
+        }
+
         public static void toEnglish(string text) {
             System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(
                 "cmd", $"/c start https://translate.google.com/?sl=auto^&tl=en^&text={text}^&op=translate"

@@ -603,28 +603,7 @@ namespace utilities_cs {
 
             RegularCommand translate = new(
                 commandName: "translate",
-                function: (string[] args) => {
-                    string lang = args[1];
-                    string text = string.Join('+', args[2..]);
-
-                    //* checking if lang is english
-
-                    foreach (var englishLangAliases in Translate.englishDict.Keys) {
-                        if (lang == englishLangAliases) {
-                            Translate.toEnglish(text);
-                            return;
-                        }
-                    }
-
-                    //* if lang is not english, then use toOtherLang()
-
-                    foreach (var langAliases in Translate.languages.Keys) {
-                        if (langAliases.Contains(lang)) {
-                            Translate.toOtherLang(Translate.languages[langAliases], text);
-                            break;
-                        }
-                    }
-                }
+                function: Translate.TranslateMain
             );
         }
 
