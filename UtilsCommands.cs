@@ -608,20 +608,25 @@ namespace utilities_cs {
             RegularCommand googleSearch = new(
                 commandName: "gs",
                 function: (string[] args) => {
-                    string searchQuery = string.Join("+", args[1..]);
-                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(
-                        "cmd", $"/c start https://google.com/search?q={searchQuery}"
-                    ) { CreateNoWindow = true });
+                    string url = System.Web.HttpUtility.UrlEncode(string.Join(" ", args[1..]));
+
+                    System.Diagnostics.Process.Start(
+                        new System.Diagnostics.ProcessStartInfo(
+                            "cmd", $"/c start https://google.com/search?q={url}"
+                        ) { CreateNoWindow = true }
+                    );
                 }
             );
 
             RegularCommand youtubeSearch = new(
                 commandName: "youtube",
                 function: (string[] args) => {
-                    string searchQuery = string.Join("+", args[1..]);
-                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(
-                        "cmd", $"/c start https://youtube.com/results?search_query={searchQuery}"
-                    ) { CreateNoWindow = true });
+                    string url = System.Web.HttpUtility.UrlEncode(string.Join("+", args[1..]));
+                    System.Diagnostics.Process.Start(
+                        new System.Diagnostics.ProcessStartInfo(
+                            "cmd", $"/c start https://youtube.com/results?search_query={url}"
+                        ) { CreateNoWindow = true }
+                    );
                 },
                 aliases: new string[] { "yt" }
             );
@@ -629,11 +634,12 @@ namespace utilities_cs {
             RegularCommand imageSearch = new(
                 commandName: "images",
                 function: (string[] args) => {
-                    string searchQuery = string.Join("+", args[1..]);
-                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(
-                        "cmd",
-                        $"/c start https://www.google.com/search?q={searchQuery}^&safe=strict^&tbm=isch^&sxsrf=ALeKk029ouHDkHfq3RFVc8WpFzOvZZ8s4g%3A1624376552976^&source=hp^&biw=1536^&bih=763^&ei=6ATSYIOrOduJhbIPzda7yAs^&oq=hello^&gs_lcp=CgNpbWcQAzIFCAAQsQMyBQgAELEDMgIIADICCAAyAggAMgIIADICCAAyBQgAELEDMgUIABCxAzICCAA6BwgjEOoCECc6BAgjECc6CAgAELEDEIMBUNIGWKcJYLELaABwAHgAgAGPAogByAqSAQUwLjEuNZgBAKABAaoBC2d3cy13aXotaW1nsAEK^&sclient=img^&ved=0ahUKEwiDv62byqvxAhXbREEAHU3rDrkQ4dUDCAc^&uact=5"
-                    ) { CreateNoWindow = true });
+                    string url = System.Web.HttpUtility.UrlEncode(string.Join("+", args[1..]));
+                    System.Diagnostics.Process.Start(
+                        new System.Diagnostics.ProcessStartInfo(
+                            "cmd", $"/c start https://www.google.com/search?tbm=isch&q={url}"
+                        ) { CreateNoWindow = true }
+                    );
                 }
             );
 
