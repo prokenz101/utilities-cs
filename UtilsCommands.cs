@@ -711,6 +711,40 @@ namespace utilities_cs {
                 aliases: new string[] { "base85", "b85" }
             );
 
+            FormattableCommand urlencode = new(
+                commandName: "urlencode",
+                function: (string[] args, bool copy, bool notif) => {
+                    if (Utils.IndexTest(args)) { return null; }
+
+                    string text = string.Join(" ", args[1..]);
+                    string url = System.Web.HttpUtility.UrlEncode(text);
+
+                    Utils.CopyCheck(copy, url);
+                    Utils.NotifCheck(
+                        notif,
+                        new string[] { "Success!", "The URL was copied to your clipboard.", "2" },
+                        "urlEncodeSuccess"
+                    ); return url;
+                }
+            );
+
+            FormattableCommand urldecode = new(
+                commandName: "urldecode",
+                function: (string[] args, bool copy, bool notif) => {
+                    if (Utils.IndexTest(args)) { return null; }
+
+                    string text = string.Join(" ", args[1..]);
+                    string url = System.Web.HttpUtility.UrlDecode(text);
+
+                    Utils.CopyCheck(copy, url);
+                    Utils.NotifCheck(
+                        notif,
+                        new string[] { "Success!", "The URL was copied to your clipboard.", "2" },
+                        "urlDecodeSuccess"
+                    ); return url;
+                }
+            );
+
             FormattableCommand binary = new(
                 commandName: "binary",
                 function: (string[] args, bool copy, bool notif) => {
