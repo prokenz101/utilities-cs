@@ -1157,6 +1157,7 @@ namespace utilities_cs {
 
                     converted.Reverse();
                     var answer = string.Join("", converted);
+
                     Utils.CopyCheck(copy, answer);
                     Utils.NotifCheck(
                         notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "flipSuccess"
@@ -1298,7 +1299,47 @@ namespace utilities_cs {
                     Utils.NotifCheck(
                         notif, new string[] { "Success!", $"The factors are: {ans}.", "5" }, "factorsSuccess"
                     ); return ans;
-                }
+                },
+                aliases: new string[] { "factorise" }
+            );
+
+            FormattableCommand primefactors = new(
+                commandName: "primefactors",
+                function: (string[] args, bool copy, bool notif) => {
+                    if (Utils.IndexTest(args)) { return null; }
+
+                    try {
+                        System.Numerics.BigInteger number = System.Numerics.BigInteger.Parse(args[1]);
+
+                        List<int> factors = new List<int>();
+                        int divisor = 2;
+
+                        while (number > 1) {
+                            if (number % divisor == 0 && factors.Find(x => x % divisor == 0 && x != divisor) == 0) {
+                                number /= divisor;
+                                factors.Add(divisor);
+                            } else {
+                                divisor++;
+                            }
+                        }
+
+                        string ans = string.Join("×", factors);
+
+                        Utils.CopyCheck(copy, ans);
+                        Utils.NotifCheck(
+                            true, new string[] { "Prime Factorization: ", ans, "5" }, "primeFactorsSuccess"
+                        ); return ans;
+                    } catch (FormatException) {
+                        Utils.NotifCheck(
+                            true,
+                            new string[] {
+                                "Something went wrong.", "Perhaps the number you entered was not a number.", "3"
+                            },
+                            "primeFactorsError"
+                        ); return null;
+                    }
+                },
+                aliases: new string[] { "primefactorise" }
             );
 
             FormattableCommand average = new(
