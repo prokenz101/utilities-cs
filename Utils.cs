@@ -1,5 +1,3 @@
-using System.Text.RegularExpressions;
-
 namespace utilities_cs {
     public class Utils {
         /// <summary>
@@ -172,13 +170,14 @@ namespace utilities_cs {
         /// <returns>A list of all BigIntegers that were captured by the Regex.</returns>
         public static List<System.Numerics.BigInteger> RegexFindAllInts(string input) {
             List<System.Numerics.BigInteger> BigInts = new();
-            Regex re = new Regex(@"(?<num>\d+)+");
+            System.Text.RegularExpressions.Regex re =
+                new System.Text.RegularExpressions.Regex(@"(?<num>\d+)+");
 
             if (re.Matches(input).Count >= 1) {
-                MatchCollection matches = re.Matches(input);
-                foreach (Match? match in matches) {
+                System.Text.RegularExpressions.MatchCollection matches = re.Matches(input);
+                foreach (System.Text.RegularExpressions.Match? match in matches) {
                     if (match != null) {
-                        GroupCollection groups = match.Groups;
+                        System.Text.RegularExpressions.GroupCollection groups = match.Groups;
                         BigInts.Add(System.Numerics.BigInteger.Parse(groups["num"].Value));
                     }
                 }
@@ -198,21 +197,35 @@ namespace utilities_cs {
         /// this should only be used for expressions which are designed to have only one match.
         /// </param>
         /// <returns>A dictionary of all the matches which point to their groups.</returns>
-        public static Dictionary<Match, GroupCollection>? RegexFind(
+        public static Dictionary<
+            System.Text.RegularExpressions.Match,
+            System.Text.RegularExpressions.GroupCollection
+        >? RegexFind(
                 string input,
                 string expression,
                 bool useIsMatch = false,
                 Action? ifNotMatch = null
             ) {
 
-            List<Dictionary<Match, GroupCollection>> matchesAndGroups = new();
+            List<
+                Dictionary<
+                    System.Text.RegularExpressions.Match,
+                    System.Text.RegularExpressions.GroupCollection
+                >
+            > matchesAndGroups = new();
 
-            Regex re = new Regex(expression);
+            System.Text.RegularExpressions.Regex re =
+                new System.Text.RegularExpressions.Regex(expression);
 
             Action matched = () => {
-                foreach (Match? match in re.Matches(input)) {
+                foreach (
+                    System.Text.RegularExpressions.Match? match in re.Matches(input)
+                ) {
                     if (match != null) {
-                        Dictionary<Match, GroupCollection> matchToGroups = new() { { match, match.Groups } };
+                        Dictionary<
+                            System.Text.RegularExpressions.Match,
+                            System.Text.RegularExpressions.GroupCollection
+                        > matchToGroups = new() { { match, match.Groups } };
                         matchesAndGroups.Add(matchToGroups);
                     }
                 }
