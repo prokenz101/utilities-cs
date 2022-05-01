@@ -85,6 +85,29 @@ namespace utilities_cs {
                 return null;
             }
         }
+
+        /// <summary>
+        /// Gets all the aliases for a command.
+        /// </summary>
+        /// <param name="commandName">The name of the command.</param>
+        /// <returns>A list of all the aliases, or null if the command does not exist.</returns>
+        public static List<string>? GetAliases(string commandName) {
+            if (FCommands.ContainsKey(commandName)) {
+                var aliases = FCommands.Where(kvp => kvp.Value == FCommands[commandName])
+                    .Select(kvp => kvp.Key)
+                    .ToList();
+
+                return aliases;
+            } else if (RCommands.ContainsKey(commandName)) {
+                var aliases = RCommands.Where(kvp => kvp.Value == RCommands[commandName])
+                    .Select(kvp => kvp.Key)
+                    .ToList();
+
+                return aliases;
+            }
+
+            return null;
+        }
     }
 
     /// <summary>
@@ -627,6 +650,34 @@ namespace utilities_cs {
             FormattableCommand all = new(
                 commandName: "all",
                 All.AllCommand
+            );
+
+            FormattableCommand getAliases = new(
+                commandName: "aliases",
+                function: (string[] args, bool copy, bool notif) => {
+                    if (Utils.IndexTest(args)) { return null; }
+
+                    string cmd = args[1];
+                    List<string>? aliases = Command.GetAliases(cmd);
+
+                    if (aliases != null) {
+                        string aliasesString = string.Join(", ", aliases);
+
+                        Utils.CopyCheck(copy, aliasesString);
+                        Utils.NotifCheck(
+                            notif,
+                            new string[] { "Success!", "The aliases were copied to your clipboard.", "3" },
+                            "getAliasesSuccess"
+                        ); return aliasesString;
+                    } else {
+                        Utils.NotifCheck(
+                            false,
+                            new string[] { "No aliases found for command: " + cmd },
+                            "getAliasesError"
+                        ); return null;
+                    }
+                },
+                aliases: new string[] { "getaliases", "getalias", "get-alias", "get-aliases" }
             );
 
             FormattableCommand base32 = new(
