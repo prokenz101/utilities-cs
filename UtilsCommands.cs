@@ -1284,7 +1284,6 @@ namespace utilities_cs {
                                     factors.Add(i);
                                 }
                             }
-                        }
 
                             return factors;
                         };
