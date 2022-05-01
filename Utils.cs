@@ -2,8 +2,6 @@ using System.Text.RegularExpressions;
 
 namespace utilities_cs {
     public class Utils {
-        private static Task? notificationTask;
-
         /// <summary>
         /// The primary notification method, used to send a Windows Toast Notification.
         /// </summary>
@@ -17,9 +15,6 @@ namespace utilities_cs {
                 int toastDuration = 1,
                 bool bypassLengthLimit = false
             ) {
-            if (notificationTask != null) {
-                await notificationTask;
-            }
 
             string[] notifTooLong = new string[] {
                 "This notification was too long.",
@@ -37,7 +32,7 @@ namespace utilities_cs {
                 toastDuration = 5;
             }
 
-            notificationTask = Task.Run(() => {
+            await Task.Run(() => {
                 new Microsoft.Toolkit.Uwp.Notifications.ToastContentBuilder()
                     .AddText(title)
                     .AddText(subtitle)
