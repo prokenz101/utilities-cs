@@ -52,12 +52,7 @@ namespace utilities_cs {
         /// <param name="argscount">The index that indextest will check to see if it exists.</param>
         /// <param name="ifOutOfRange">Method that is called incase indextest is false.</param>
         /// <returns>A bool that will be false if IndexTest failed, and true if it didn't.</returns>
-        public static bool IndexTest(
-                string[] args,
-                int argscount = 1,
-                Action? ifOutOfRange = null
-            ) {
-
+        public static bool IndexTest(string[] args, int argscount = 1, Action? ifOutOfRange = null) {
             try {
                 string test = args[argscount];
                 return false;
