@@ -1279,7 +1279,7 @@ namespace utilities_cs {
                         (System.Numerics.BigInteger num) => {
                             List<System.Numerics.BigInteger> factors = new();
 
-                            for (System.Numerics.BigInteger i = 0; i < num; i++) {
+                            for (System.Numerics.BigInteger i = 1; i < num; i++) {
                                 if (num % i == 0) {
                                     factors.Add(i);
                                 }
