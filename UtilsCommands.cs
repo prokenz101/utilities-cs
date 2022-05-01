@@ -1,6 +1,3 @@
-using System.Numerics;
-using System.Text.RegularExpressions;
-
 namespace utilities_cs {
     /// <summary>
     /// The hierarchy of all command-classes for all commands in utilities-cs.
@@ -359,7 +356,7 @@ namespace utilities_cs {
                         await Task.Run(() => {
                             int n = int.Parse(args[1]);
                             int i = 1;
-                            BigInteger v = 1;
+                            System.Numerics.BigInteger v = 1;
 
                             while (i <= n) {
                                 v *= i;
@@ -446,7 +443,10 @@ namespace utilities_cs {
                 function: (string[] args) => {
                     string text = string.Join(" ", args[1..]);
 
-                    Dictionary<Match, GroupCollection>? matchToGroups = Utils.RegexFind(
+                    Dictionary<
+                        System.Text.RegularExpressions.Match,
+                        System.Text.RegularExpressions.GroupCollection
+                    >? matchToGroups = Utils.RegexFind(
                         text,
                         @"[""'](?<title>.*?)[""'],? [""'](?<subtitle>.*?)[""'],? (?<duration>\d+)",
                         useIsMatch: true,
@@ -460,8 +460,13 @@ namespace utilities_cs {
                     );
 
                     if (matchToGroups != null) {
-                        foreach (KeyValuePair<Match, GroupCollection> kvp in matchToGroups) {
-                            GroupCollection groups = kvp.Value;
+                        foreach (
+                            KeyValuePair<
+                                System.Text.RegularExpressions.Match,
+                                System.Text.RegularExpressions.GroupCollection
+                            > kvp in matchToGroups
+                        ) {
+                            System.Text.RegularExpressions.GroupCollection groups = kvp.Value;
 
                             string title = groups["title"].ToString();
                             string subtitle = groups["subtitle"].ToString();
@@ -483,7 +488,10 @@ namespace utilities_cs {
                 function: async (string[] args) => {
                     string text = string.Join(" ", args[1..]);
 
-                    Dictionary<Match, GroupCollection>? matchToGroups = Utils.RegexFind(
+                    Dictionary<
+                        System.Text.RegularExpressions.Match,
+                        System.Text.RegularExpressions.GroupCollection
+                    >? matchToGroups = Utils.RegexFind(
                         text,
                         @"(?<time>\d+)(?<unit>h|m|s)(?<text> .*)?",
                         useIsMatch: true,
@@ -501,7 +509,12 @@ namespace utilities_cs {
                         List<char> unitEnumerable = new();
                         List<string> textEnumerable = new();
 
-                        foreach (KeyValuePair<Match, GroupCollection> kvp in matchToGroups) {
+                        foreach (
+                            KeyValuePair<
+                                System.Text.RegularExpressions.Match,
+                                System.Text.RegularExpressions.GroupCollection
+                            > kvp in matchToGroups
+                        ) {
                             timeEnumerable.Add(int.Parse(kvp.Value["time"].ToString())); //* float
                             unitEnumerable.Add(kvp.Value["unit"].ToString().ToCharArray()[0]); //* char
                             textEnumerable.Add(kvp.Value["text"].ToString()); //* string
@@ -749,7 +762,7 @@ namespace utilities_cs {
                         return null;
                     }
 
-                    BigInteger num = BigInteger.Parse(strNum);
+                    System.Numerics.BigInteger num = System.Numerics.BigInteger.Parse(strNum);
                     string ans = String.Format("{0:n0}", num);
 
                     Utils.CopyCheck(copy, ans);
@@ -1197,24 +1210,26 @@ namespace utilities_cs {
             FormattableCommand factors = new(
                 commandName: "factors",
                 function: (string[] args, bool copy, bool notif) => {
-                    Func<BigInteger, List<BigInteger>> findFactors = (BigInteger num) => {
-                        List<BigInteger> factors = new();
+                    Func<System.Numerics.BigInteger, List<System.Numerics.BigInteger>> findFactors =
+                        (System.Numerics.BigInteger num) => {
+                            List<System.Numerics.BigInteger> factors = new();
 
-                        for (BigInteger i = 0; i < num; i++) {
-                            if (num % i == 0) {
-                                factors.Add(i);
+                            for (System.Numerics.BigInteger i = 0; i < num; i++) {
+                                if (num % i == 0) {
+                                    factors.Add(i);
+                                }
                             }
                         }
 
-                        return factors;
-                    };
+                            return factors;
+                        };
 
                     if (Utils.IndexTest(args)) {
                         return null;
                     }
 
-                    BigInteger num = BigInteger.Parse(args[1]);
-                    List<BigInteger> factors = findFactors(num);
+                    System.Numerics.BigInteger num = System.Numerics.BigInteger.Parse(args[1]);
+                    List<System.Numerics.BigInteger> factors = findFactors(num);
 
                     string ans = string.Join(", ", factors);
                     Utils.CopyCheck(copy, ans);
@@ -1232,17 +1247,17 @@ namespace utilities_cs {
                     }
 
                     string text = string.Join(" ", args[1..]);
-                    List<BigInteger> nums = Utils.RegexFindAllInts(text);
+                    List<System.Numerics.BigInteger> nums = Utils.RegexFindAllInts(text);
 
                     if (nums.Count > 1) {
                         //* find sum of all nums in "nums"
-                        BigInteger sum = 0;
+                        System.Numerics.BigInteger sum = 0;
                         foreach (int num in nums) {
                             sum += num;
                         }
 
                         // find average of sum
-                        BigInteger average = sum / nums.Count;
+                        System.Numerics.BigInteger average = sum / nums.Count;
 
                         Utils.CopyCheck(copy, average.ToString());
                         Utils.NotifCheck(
@@ -1558,9 +1573,10 @@ Word count: {args[1..].Length}";
                     }
 
                     string text = string.Join(" ", args[1..]);
-                    List<BigInteger> ints = Utils.RegexFindAllInts(text);
+                    List<System.Numerics.BigInteger> ints = Utils.RegexFindAllInts(text);
 
-                    BigInteger dividedNum = ints[0] / ints[1]; BigInteger remainder = ints[0] % ints[1];
+                    System.Numerics.BigInteger dividedNum =
+                        ints[0] / ints[1]; System.Numerics.BigInteger remainder = ints[0] % ints[1];
 
                     Func<string, string> returnNum = (string ans) => {
                         Utils.CopyCheck(copy, ans);
@@ -1592,11 +1608,14 @@ Word count: {args[1..].Length}";
                     }
                     string text = string.Join(" ", args[1..]);
                     //* making regex
-                    Regex findNumberFromPercentage = new(@"(?<percent>\d+(\.\d+)?)% of (?<number>\d+(\.\d+)?)");
-                    Regex findPercentageFromNumbers = new(@"get (?<num1>\d+|\d+\.\d+) and (?<num2>\d+|\d+\.\d+)");
+                    System.Text.RegularExpressions.Regex findNumberFromPercentage =
+                        new(@"(?<percent>\d+(\.\d+)?)% of (?<number>\d+(\.\d+)?)");
+                    System.Text.RegularExpressions.Regex findPercentageFromNumbers =
+                        new(@"get (?<num1>\d+|\d+\.\d+) and (?<num2>\d+|\d+\.\d+)");
 
                     if (findNumberFromPercentage.IsMatch(text)) {
-                        MatchCollection matches = findNumberFromPercentage.Matches(text);
+                        System.Text.RegularExpressions.MatchCollection matches =
+                            findNumberFromPercentage.Matches(text);
                         float percent = (float.Parse(matches[0].Groups["percent"].Value));
                         float number = float.Parse(matches[0].Groups["number"].Value);
 
@@ -1610,7 +1629,8 @@ Word count: {args[1..].Length}";
                         Utils.CopyCheck(copy, ans.ToString());
                         return ans.ToString();
                     } else if (findPercentageFromNumbers.IsMatch(text)) {
-                        MatchCollection matches = findPercentageFromNumbers.Matches(text);
+                        System.Text.RegularExpressions.MatchCollection matches =
+                            findPercentageFromNumbers.Matches(text);
                         float num1 = float.Parse(matches[0].Groups["num1"].Value);
                         float num2 = float.Parse(matches[0].Groups["num2"].Value);
 
