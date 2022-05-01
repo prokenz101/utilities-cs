@@ -749,9 +749,7 @@ namespace utilities_cs {
                 commandName: "binary",
                 function: (string[] args, bool copy, bool notif) => {
                     string text = string.Join(" ", args[1..]);
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
+                    if (Utils.IndexTest(args)) { return null; }
 
                     if (!Utils.FormatValid("01 ", text)) {
                         byte[] ConvertToByteArray(string str, System.Text.Encoding encoding) {
@@ -805,9 +803,7 @@ namespace utilities_cs {
             FormattableCommand bubbletext = new(
                 commandName: "bubbletext",
                 function: (string[] args, bool copy, bool notif) => {
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
+                    if (Utils.IndexTest(args)) { return null; }
                     string text = string.Join(" ", args[1..]);
                     List<string> converted = new();
 
@@ -836,14 +832,12 @@ namespace utilities_cs {
             FormattableCommand commaseperator = new(
                 commandName: "commaseperator",
                 function: (string[] args, bool copy, bool notif) => {
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
+                    if (Utils.IndexTest(args)) { return null; }
                     string strNum = string.Join(' ', args[1..]);
 
                     try {
                         //* Checking if number is an actual number
-                        BigInteger.Parse(strNum);
+                        System.Numerics.BigInteger.Parse(strNum);
                     } catch {
                         Utils.NotifCheck(
                             true,
@@ -869,9 +863,7 @@ namespace utilities_cs {
             FormattableCommand copypaste = new(
                 commandName: "copypaste",
                 function: (string[] args, bool copy, bool notif) => {
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
+                    if (Utils.IndexTest(args)) { return null; }
                     string text = string.Join(" ", args[1..]);
 
                     if (Dictionaries.CopypasteDict.ContainsKey(text)) {
@@ -899,9 +891,7 @@ namespace utilities_cs {
             FormattableCommand creepy = new(
                 commandName: "creepy",
                 function: (string[] args, bool copy, bool notif) => {
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
+                    if (Utils.IndexTest(args)) { return null; }
                     string text = string.Join(" ", args[1..]);
                     List<string> converted = new();
 
@@ -929,9 +919,7 @@ namespace utilities_cs {
             FormattableCommand wingdings = new(
                 commandName: "wingdings",
                 function: (string[] args, bool copy, bool notif) => {
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
+                    if (Utils.IndexTest(args)) { return null; }
 
                     string text = string.Join(" ", args[1..]);
                     List<string> converted = new();
@@ -961,9 +949,7 @@ namespace utilities_cs {
             FormattableCommand cuberoot = new(
                 commandName: "cuberoot",
                 function: (string[] args, bool copy, bool notif) => {
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
+                    if (Utils.IndexTest(args)) { return null; }
 
                     string text = string.Join(" ", args[1..]);
                     //* testing if string is a double
@@ -1005,9 +991,7 @@ namespace utilities_cs {
             FormattableCommand cursive = new(
                 commandName: "cursive",
                 function: (string[] args, bool copy, bool notif) => {
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
+                    if (Utils.IndexTest(args)) { return null; }
 
                     string text = string.Join(" ", args[1..]);
                     List<string> converted = new();
@@ -1034,9 +1018,7 @@ namespace utilities_cs {
             FormattableCommand doublestruck = new(
                 commandName: "doublestruck",
                 function: (string[] args, bool copy, bool notif) => {
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
+                    if (Utils.IndexTest(args)) { return null; }
                     string text = string.Join(" ", args[1..]);
                     List<string> converted = new();
 
@@ -1065,9 +1047,7 @@ namespace utilities_cs {
                 function: (string[] args, bool copy, bool notif) => {
                     string text = string.Join(" ", args[1..]);
 
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
+                    if (Utils.IndexTest(args)) { return null; }
 
                     List<string> converted = new();
 
@@ -1094,9 +1074,7 @@ namespace utilities_cs {
             FormattableCommand leet = new(
                 commandName: "leet",
                 function: (string[] args, bool copy, bool notif) => {
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
+                    if (Utils.IndexTest(args)) { return null; }
 
                     string text = string.Join(" ", args[1..]);
                     text = text.ToUpper();
@@ -1138,9 +1116,7 @@ namespace utilities_cs {
             FormattableCommand exponent = new(
                 commandName: "exponent",
                 function: (string[] args, bool copy, bool notif) => {
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
+                    if (Utils.IndexTest(args)) { return null; }
                     string text = string.Join(" ", args[1..]);
                     List<string> converted = new();
 
@@ -1166,9 +1142,7 @@ namespace utilities_cs {
             FormattableCommand flip = new(
                 commandName: "flip",
                 function: (string[] args, bool copy, bool notif) => {
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
+                    if (Utils.IndexTest(args)) { return null; }
                     string text = string.Join(" ", args[1..]);
                     List<string> converted = new();
 
@@ -1184,8 +1158,9 @@ namespace utilities_cs {
                     converted.Reverse();
                     var answer = string.Join("", converted);
                     Utils.CopyCheck(copy, answer);
-                    Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "flipSuccess");
-                    return answer;
+                    Utils.NotifCheck(
+                        notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "flipSuccess"
+                    ); return answer;
                 },
                 aliases: new string[] { "flipped", "upside-down" },
                 useInAllCommand: true,
@@ -1218,9 +1193,7 @@ namespace utilities_cs {
             FormattableCommand fraction = new(
                 commandName: "fraction",
                 function: (string[] args, bool copy, bool notif) => {
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
+                    if (Utils.IndexTest(args)) { return null; }
                     string text = string.Join(" ", args[1..]);
                     List<string> converted = new();
 
@@ -1315,9 +1288,7 @@ namespace utilities_cs {
                             return factors;
                         };
 
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
+                    if (Utils.IndexTest(args)) { return null; }
 
                     System.Numerics.BigInteger num = System.Numerics.BigInteger.Parse(args[1]);
                     List<System.Numerics.BigInteger> factors = findFactors(num);
@@ -1333,9 +1304,7 @@ namespace utilities_cs {
             FormattableCommand average = new(
                 commandName: "average",
                 function: (string[] args, bool copy, bool notif) => {
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
+                    if (Utils.IndexTest(args)) { return null; }
 
                     string text = string.Join(" ", args[1..]);
                     List<System.Numerics.BigInteger> nums = Utils.RegexFindAllInts(text);
