@@ -1198,6 +1198,14 @@ namespace utilities_cs {
                     string text = string.Join(" ", args[1..]);
                     List<string> converted = new();
 
+                    if (!(text.Contains("/"))) {
+                        Utils.NotifCheck(
+                            true,
+                            new string[] { "An exception occured.", "There must be a / in your string.", "3" },
+                            "fractionError"
+                        ); return null;
+                    }
+
                     string[] slashSplit = text.Split("/");
                     string numerator = slashSplit[0];
                     string denominator = slashSplit[1];
