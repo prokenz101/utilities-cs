@@ -2017,6 +2017,30 @@ Word count: {args[1..].Length}";
                 }
             );
 
+            FormattableCommand md5 = new(
+                commandName: "md5",
+                function: (string[] args, bool copy, bool notif) => {
+                    if (Utils.IndexTest(args)) { return null; }
+                    
+                    Func<string, string> MD5Hasher = (string input) => {
+                        using (System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create()) {
+                            byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(input);
+                            byte[] hashBytes = md5.ComputeHash(inputBytes);
+
+                            return Convert.ToHexString(hashBytes);
+                        }
+                    };
+
+                    string text = string.Join(" ", args[1..]);
+                    string hash = MD5Hasher(text);
+
+                    Utils.CopyCheck(copy, hash);
+                    Utils.NotifCheck(
+                        notif, new string[] { "Success!", "Hash copied to clipboard.", "3" }, "md5Success"
+                    ); return hash;
+                }
+            );
+
             FormattableCommand spacer = new(
                 commandName: "spacer",
                 function: (string[] args, bool copy, bool notif) => {
