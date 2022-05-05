@@ -2021,7 +2021,7 @@ Word count: {args[1..].Length}";
                 commandName: "md5",
                 function: (string[] args, bool copy, bool notif) => {
                     if (Utils.IndexTest(args)) { return null; }
-                    
+
                     Func<string, string> MD5Hasher = (string input) => {
                         using (System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create()) {
                             byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(input);
