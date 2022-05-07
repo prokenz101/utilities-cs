@@ -135,7 +135,7 @@ namespace utilities_cs {
         public static List<FormattableCommand> FormattableCommands = new();
 
         /// <summary>
-        /// Constructor for FormattableCommands.
+        /// Initializes a new instance of a FormattableCommand.
         /// </summary>
         /// <param name="commandName">The commandName for the FormattableCommand.</param>
         /// <param name="function">The function for the FormattableCommand.</param>
@@ -274,6 +274,12 @@ namespace utilities_cs {
     public class RegularCommand : Command {
         public Action<string[]>? Function;
         public static List<RegularCommand> RegularCommands = new();
+        /// <summary>
+        /// Initializes a new instance of a RegularCommand.
+        /// </summary>
+        /// <param name="commandName">The name of the regular command.</param>
+        /// <param name="function">The function to be run.</param>
+        /// <param name="aliases">The aliases for the command.</param>
         public RegularCommand(
             string commandName,
             Action<string[]> function,
