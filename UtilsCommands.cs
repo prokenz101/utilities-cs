@@ -1627,7 +1627,9 @@ Word count: {args[1..].Length}";
                     foreach (char c in text) { uniqueChars.Add(c); }
 
                     Dictionary<char, string> charDistrDict = new();
-                    foreach (char i in uniqueChars) { charDistrDict.Add(i, $"{i}: {text.Count(f => (f == i))}\n"); }
+                    uniqueChars.ToList().ForEach(
+                        i => charDistrDict.Add(i, $"{i}: {text.Count(f => (f == i))}\n")
+                    );
 
                     List<char> firstLetters = charDistrDict.Keys.ToList();
                     firstLetters.Sort();
