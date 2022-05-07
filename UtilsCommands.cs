@@ -1770,6 +1770,37 @@ Word count: {args[1..].Length}";
                 allCommandMode: "encodings"
             );
 
+            FormattableCommand reciprocal = new(
+                commandName: "reciprocal",
+                function: (string[] args, bool copy, bool notif) => {
+                    if (Utils.IndexTest(args)) { return null; }
+
+                    try {
+                        double number = double.Parse(args[1]);
+                        string reciprocal = Math.ReciprocalEstimate(number).ToString();
+
+                        Utils.CopyCheck(copy, reciprocal);
+                        Utils.NotifCheck(
+                            notif,
+                            new string[] { "Success!", $"The reciprocal is: {reciprocal}", "3" },
+                            "reciprocalSuccess"
+                        ); return reciprocal;
+                    } catch (OverflowException) {
+                        Utils.NotifCheck(
+                            true,
+                            new string[] { "Something went wrong.", "Perhaps the number was too large.", "3" },
+                            "reciprocalError"
+                        ); return null;
+                    } catch (FormatException) {
+                        Utils.NotifCheck(
+                            true,
+                            new string[] { "Something went wrong.", "Are you sure that was a number?" },
+                            "reciprocalError"
+                        ); return null;
+                    }
+                }
+            );
+
             FormattableCommand divide = new(
                 commandName: "divide",
                 function: (string[] args, bool copy, bool notif) => {
