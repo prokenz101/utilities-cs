@@ -1650,6 +1650,57 @@ Word count: {args[1..].Length}";
                 aliases: new string[] { "chardistr", "chardistribution", "characterdistr" }
             );
 
+            FormattableCommand characterCount = new(
+                commandName: "charactercount",
+                function: (string[] args, bool copy, bool notif) => {
+                    if (Utils.IndexTest(args)) { return null; }
+
+                    string text = string.Join(" ", args[1..]);
+                    bool failed = false;
+                    var matchToGroups = Utils.RegexFind(
+                        input: text,
+                        expression: "(?<char>.) in (?<text>.+)",
+                        useIsMatch: true,
+                        ifNotMatch: () => {
+                            Utils.NotifCheck(
+                                true,
+                                new string[] {
+                                    "Something went wrong.", "Perhaps you did not follow the syntax correctly.", "3"
+                                },
+                                "characterCountError"
+                            );
+                            failed = true;
+                        }
+                    );
+
+                    if (failed) { return null; }
+
+                    if (matchToGroups != null) {
+                        foreach (var kvp in matchToGroups) {
+                            char? character = kvp.Key.Groups["char"].Value.ToCharArray()[0];
+                            string? textToSearch = kvp.Key.Groups["text"].Value;
+
+                            if (character != null && textToSearch != null) {
+                                int count = textToSearch.Count(f => (f == character));
+                                string result = $"{character}: {count}";
+
+                                Utils.CopyCheck(copy, result);
+                                Utils.NotifCheck(
+                                    notif, new string[] { "Success!", result, "5" }, "characterCountSuccess"
+                                ); return result;
+                            } else {
+                                return null;
+                            }
+                        }
+
+                        return null;
+                    } else {
+                        return null;
+                    }
+                },
+                aliases: new string[] { "charcount" }
+            );
+
             FormattableCommand lowercase = new(
                 commandName: "lowercase",
                 function: (string[] args, bool copy, bool notif) => {
