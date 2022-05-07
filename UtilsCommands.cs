@@ -409,6 +409,44 @@ namespace utilities_cs {
                 }
             );
 
+            RegularCommand permutations = new(
+                commandName: "permutations",
+                function: async (string[] args) => {
+                    if (Utils.IndexTest(args)) { return; }
+
+                    char[] textAsCharArray = string.Join(" ", args[1..]).ToCharArray();
+
+                    // checks if textAsCharArray is than the permutationsCalculationLimit
+                    int limit = UtilitiesAppContext.currentSettings.permutationsCalculationLimit;
+
+                    if (textAsCharArray.Length <= limit) {
+                        Permutations permutation = new();
+                        await Task.Run(() => permutation.GetPer(textAsCharArray));
+
+                        HashSet<string> hashSetAnswer = permutation.Permutation;
+
+                        string answer = string.Join("\n", hashSetAnswer);
+                        Utils.CopyCheck(true, answer);
+                        Utils.NotifCheck(
+                            true,
+                            new string[] {
+                                "Success!", "The permutations were copied to your clipboard.", "3"
+                            }, "permutationsSuccess"
+                        );
+                    } else {
+                        Utils.NotifCheck(
+                            true,
+                            new string[] {
+                                "Error!",
+                                $"For performance reasons, permutation calculations can only be used on {limit} or less characters.",
+                                "3"
+                            }, "permutationsError"
+                        );
+                    }
+                },
+                aliases: new string[] { "getpermutations", "get-permutations" }
+            );
+
             RegularCommand exit = new(
                 commandName: "exit",
                 function: (string[] args) => {
@@ -1195,44 +1233,6 @@ namespace utilities_cs {
                         notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "shuffleSuccess"
                     ); return answer;
                 }
-            );
-
-            FormattableCommand permutations = new(
-                commandName: "permutations",
-                function: (string[] args, bool copy, bool notif) => {
-                    if (Utils.IndexTest(args)) { return null; }
-
-                    char[] textAsCharArray = string.Join(" ", args[1..]).ToCharArray();
-
-                    // checks if textAsCharArray is than the permutationsCalculationLimit
-                    int limit = UtilitiesAppContext.currentSettings.permutationsCalculationLimit;
-                    
-                    if (textAsCharArray.Length <= limit) {
-                        Permutations permutation = new();
-                        permutation.GetPer(textAsCharArray);
-
-                        HashSet<string> hashSetAnswer = permutation.Permutation;
-
-                        string answer = string.Join("\n", hashSetAnswer);
-                        Utils.CopyCheck(copy, answer);
-                        Utils.NotifCheck(
-                            notif,
-                            new string[] {
-                            "Success!", "The permutations were copied to your clipboard.", "3"
-                            }, "permutationsSuccess"
-                        ); return answer;
-                    } else {
-                        Utils.NotifCheck(
-                            notif,
-                            new string[] {
-                                "Error!",
-                                $"For performance reasons, permutation calculations can only be used on {limit} or less characters.",
-                                "3"
-                            }, "permError"
-                        ); return null;
-                    }
-                },
-                aliases: new string[] { "getpermutations", "get-permutations" }
             );
 
             FormattableCommand fraction = new(
