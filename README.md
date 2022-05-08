@@ -19,7 +19,7 @@ If you just don't want to download anything at all for utilities-cs, then you ca
 The releases are not always the quickest for getting new versions of utilities-cs. If you want to test new commands you can check out the GitHub Actions which automatically compiles the latest commit of utilities-cs into a .exe for you. Just download the ZIP file, then extract it to get access to the executable. This .exe is not completely stable and will open up an empty console window, which you can just ignore. If you have Visual Studio then you can run `editbin /subsytem:windows .\utilities-cs-framework-dependent.exe` or self-contained.exe to get rid of this console window. Now, you can use the latest version of utilities-cs, even newer than the newest release!
 
 ## Using
-Open PowerToys, and then type any command that utilities-cs will recognise and press Ctrl + F8 to trigger. If you don't know any commands, then just try `cursive hello world` and Ctrl + F8 as a test and then check the [wiki](https://github.com/prokenz101/utilities-cs/wiki/Utilities-Wiki) to understand how to use utilities-cs. The wiki also does show help for another fork of utilities which I wrote a year ago in python, but just ignore that.
+Open PowerToys, and then type any command that utilities-cs will recognise and press Ctrl + F8 to trigger. If you don't know any commands, then just try `cursive hello world` and Ctrl + F8 as a test and then check the [wiki](https://github.com/prokenz101/utilities-cs/wiki/Utilities-Wiki) to understand how to use utilities-cs.
 
 If you didn't want to install PowerToys, then open the windows search or and place where you can type text and then type your command, then press Ctrl + F8.
 
