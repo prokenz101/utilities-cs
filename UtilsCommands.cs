@@ -377,9 +377,7 @@ namespace utilities_cs {
             RegularCommand factorial = new(
                 commandName: "factorial",
                 function: async (string[] args) => {
-                    if (Utils.IndexTest(args)) {
-                        return;
-                    }
+                    if (Utils.IndexTest(args)) { return; }
 
                     try {
                         await Task.Run(() => {
@@ -604,9 +602,8 @@ namespace utilities_cs {
                                 int timeSeconds = (time * 1000) * multiplier;
 
                                 Microsoft.Toolkit.Uwp.Notifications.ToastContentBuilder customReminderToast =
-                                    new Microsoft.Toolkit.Uwp.Notifications.ToastContentBuilder();
-
-                                customReminderToast.AddText("Reminder!");
+                                    new Microsoft.Toolkit.Uwp.Notifications.ToastContentBuilder()
+                                        .AddText("Reminder!");
 
                                 string timeEquals1 = $"Hey! You set a reminder for 1 {word} and it's time!";
                                 string timeNotEqualTo1 = $"Hey! You set a reminder for {time} {word}s and it's time!";
@@ -848,6 +845,7 @@ namespace utilities_cs {
                 commandName: "bubbletext",
                 function: (string[] args, bool copy, bool notif) => {
                     if (Utils.IndexTest(args)) { return null; }
+
                     string text = string.Join(" ", args[1..]);
                     List<string> converted = new();
 
@@ -877,6 +875,7 @@ namespace utilities_cs {
                 commandName: "commaseperator",
                 function: (string[] args, bool copy, bool notif) => {
                     if (Utils.IndexTest(args)) { return null; }
+
                     string strNum = string.Join(' ', args[1..]);
 
                     try {
@@ -908,6 +907,7 @@ namespace utilities_cs {
                 commandName: "copypaste",
                 function: (string[] args, bool copy, bool notif) => {
                     if (Utils.IndexTest(args)) { return null; }
+
                     string text = string.Join(" ", args[1..]);
 
                     if (Dictionaries.CopypasteDict.ContainsKey(text)) {
@@ -936,6 +936,7 @@ namespace utilities_cs {
                 commandName: "creepy",
                 function: (string[] args, bool copy, bool notif) => {
                     if (Utils.IndexTest(args)) { return null; }
+
                     string text = string.Join(" ", args[1..]);
                     List<string> converted = new();
 
@@ -1063,6 +1064,7 @@ namespace utilities_cs {
                 commandName: "doublestruck",
                 function: (string[] args, bool copy, bool notif) => {
                     if (Utils.IndexTest(args)) { return null; }
+
                     string text = string.Join(" ", args[1..]);
                     List<string> converted = new();
 
@@ -1161,6 +1163,7 @@ namespace utilities_cs {
                 commandName: "exponent",
                 function: (string[] args, bool copy, bool notif) => {
                     if (Utils.IndexTest(args)) { return null; }
+
                     string text = string.Join(" ", args[1..]);
                     List<string> converted = new();
 
@@ -1187,6 +1190,7 @@ namespace utilities_cs {
                 commandName: "flip",
                 function: (string[] args, bool copy, bool notif) => {
                     if (Utils.IndexTest(args)) { return null; }
+
                     string text = string.Join(" ", args[1..]);
                     List<string> converted = new();
 
@@ -1239,6 +1243,7 @@ namespace utilities_cs {
                 commandName: "fraction",
                 function: (string[] args, bool copy, bool notif) => {
                     if (Utils.IndexTest(args)) { return null; }
+
                     string text = string.Join(" ", args[1..]);
                     List<string> converted = new();
 
@@ -1431,9 +1436,7 @@ namespace utilities_cs {
                 commandName: "hexadecimal",
                 function: (string[] args, bool copy, bool notif) => {
                     string text = string.Join(" ", args[1..]);
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
+                    if (Utils.IndexTest(args)) { return null; }
 
                     Func<string, string> fromTextToHex = (string text) => {
                         byte[] ba = System.Text.Encoding.Default.GetBytes(text);
@@ -1517,9 +1520,7 @@ namespace utilities_cs {
             FormattableCommand ascii = new(
                 commandName: "ascii",
                 function: (string[] args, bool copy, bool notif) => {
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
+                    if (Utils.IndexTest(args)) { return null; }
 
                     Func<string, string> toAscii = (string text) => {
                         List<string> ascii = new();
@@ -1600,9 +1601,7 @@ namespace utilities_cs {
             FormattableCommand length = new(
                 commandName: "length",
                 function: (string[] args, bool copy, bool notif) => {
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
+                    if (Utils.IndexTest(args)) { return null; }
 
                     string text = string.Join(" ", args[1..]);
                     string len = $@"Character count: {text.Length.ToString()}
@@ -1618,9 +1617,7 @@ Word count: {args[1..].Length}";
             FormattableCommand characterDistribution = new(
                 commandName: "characterdistribution",
                 function: (string[] args, bool copy, bool notif) => {
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
+                    if (Utils.IndexTest(args)) { return null; }
 
                     string text = string.Join(" ", args[1..]);
                     HashSet<char> uniqueChars = new();
@@ -1704,9 +1701,8 @@ Word count: {args[1..].Length}";
             FormattableCommand lowercase = new(
                 commandName: "lowercase",
                 function: (string[] args, bool copy, bool notif) => {
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
+                    if (Utils.IndexTest(args)) { return null; }
+
                     string text = string.Join(" ", args[1..]);
                     string lowerText = text.ToLower();
                     Utils.CopyCheck(copy, lowerText);
@@ -1722,9 +1718,7 @@ Word count: {args[1..].Length}";
             FormattableCommand mathitalic = new(
                 commandName: "mathitalic",
                 function: (string[] args, bool copy, bool notif) => {
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
+                    if (Utils.IndexTest(args)) { return null; }
 
                     string text = string.Join(" ", args[1..]);
                     List<string> converted = new();
@@ -1755,9 +1749,7 @@ Word count: {args[1..].Length}";
                 commandName: "morse",
                 function: (string[] args, bool copy, bool notif) => {
                     string text = string.Join(" ", args[1..]).ToLower();
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
+                    if (Utils.IndexTest(args)) { return null; }
 
                     if (Utils.FormatValid("-./ ", text)) {
                         return Morse.toText(text, copy, notif);
@@ -1804,9 +1796,7 @@ Word count: {args[1..].Length}";
             FormattableCommand divide = new(
                 commandName: "divide",
                 function: (string[] args, bool copy, bool notif) => {
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
+                    if (Utils.IndexTest(args)) { return null; }
 
                     string text = string.Join(" ", args[1..]);
                     List<System.Numerics.BigInteger> ints = Utils.RegexFindAllInts(text);
@@ -1839,9 +1829,8 @@ Word count: {args[1..].Length}";
             FormattableCommand percentage = new(
                 commandName: "percentage",
                 function: (string[] args, bool copy, bool notif) => {
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
+                    if (Utils.IndexTest(args)) { return null; }
+
                     string text = string.Join(" ", args[1..]);
                     //* making regex
                     System.Text.RegularExpressions.Regex findNumberFromPercentage =
@@ -1892,9 +1881,7 @@ Word count: {args[1..].Length}";
             FormattableCommand randchar = new(
                 commandName: "randchar",
                 function: (string[] args, bool copy, bool notif) => {
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
+                    if (Utils.IndexTest(args)) { return null; }
 
                     string[] asciiCharacters = {
                         "a", "b", "c", "d", "e",
@@ -1942,9 +1929,7 @@ Word count: {args[1..].Length}";
             FormattableCommand randint = new(
                 commandName: "randint",
                 function: (string[] args, bool copy, bool notif) => {
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
+                    if (Utils.IndexTest(args)) { return null; }
 
                     string text = string.Join(" ", args[1..]);
                     List<int> nums = new();
@@ -1999,9 +1984,8 @@ Word count: {args[1..].Length}";
             FormattableCommand reverse = new(
                 commandName: "reverse",
                 function: (string[] args, bool copy, bool notif) => {
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
+                    if (Utils.IndexTest(args)) { return null; }
+
                     string text = string.Join(" ", args[1..]);
                     List<char> textList = text.ToCharArray().ToList();
 
@@ -2019,9 +2003,8 @@ Word count: {args[1..].Length}";
             FormattableCommand sarcasm = new(
                 commandName: "sarcasm",
                 function: (string[] args, bool copy, bool notif) => {
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
+                    if (Utils.IndexTest(args)) { return null; }
+
                     string text = string.Join(" ", args[1..]);
                     List<string> converted = new();
                     char currentCase = 'u';
@@ -2047,9 +2030,7 @@ Word count: {args[1..].Length}";
                 commandName: "sha1",
                 function: (string[] args, bool copy, bool notif) => {
                     string text = string.Join(" ", args[1..]);
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
+                    if (Utils.IndexTest(args)) { return null; }
 
                     System.Text.StringBuilder Sb = new System.Text.StringBuilder();
 
@@ -2072,9 +2053,7 @@ Word count: {args[1..].Length}";
                 commandName: "sha256",
                 function: (string[] args, bool copy, bool notif) => {
                     string text = string.Join(" ", args[1..]);
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
+                    if (Utils.IndexTest(args)) { return null; }
 
                     System.Text.StringBuilder Sb = new System.Text.StringBuilder();
 
@@ -2097,9 +2076,7 @@ Word count: {args[1..].Length}";
                 commandName: "sha384",
                 function: (string[] args, bool copy, bool notif) => {
                     string text = string.Join(" ", args[1..]);
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
+                    if (Utils.IndexTest(args)) { return null; }
 
                     System.Text.StringBuilder Sb = new System.Text.StringBuilder();
 
@@ -2124,9 +2101,7 @@ Word count: {args[1..].Length}";
                 commandName: "sha512",
                 function: (string[] args, bool copy, bool notif) => {
                     string text = string.Join(" ", args[1..]);
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
+                    if (Utils.IndexTest(args)) { return null; }
 
                     System.Text.StringBuilder Sb = new System.Text.StringBuilder();
 
@@ -2172,9 +2147,8 @@ Word count: {args[1..].Length}";
             FormattableCommand spacer = new(
                 commandName: "spacer",
                 function: (string[] args, bool copy, bool notif) => {
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
+                    if (Utils.IndexTest(args)) { return null; }
+
                     string text = string.Join(" ", args[1..]);
                     List<string> converted = new();
                     foreach (char i in text) {
@@ -2194,9 +2168,8 @@ Word count: {args[1..].Length}";
             FormattableCommand spoilerspam = new(
                 commandName: "spoilerspam",
                 function: (string[] args, bool copy, bool notif) => {
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
+                    if (Utils.IndexTest(args)) { return null; }
+
                     string text = string.Join(" ", args[1..]);
                     List<string> converted = new();
                     foreach (char i in text) {
@@ -2213,11 +2186,9 @@ Word count: {args[1..].Length}";
             FormattableCommand title = new(
                 commandName: "titlecase",
                 function: (string[] args, bool copy, bool notif) => {
-                    string text = string.Join(" ", args[1..]).ToLower();
+                    if (Utils.IndexTest(args)) { return null; }
 
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
+                    string text = string.Join(" ", args[1..]).ToLower();
                     System.Globalization.TextInfo textInfo =
                         new System.Globalization.CultureInfo("en-US", false).TextInfo;
                     string ans = textInfo.ToTitleCase(string.Join(" ", text));
@@ -2235,9 +2206,8 @@ Word count: {args[1..].Length}";
             FormattableCommand uppercase = new(
                 commandName: "uppercase",
                 function: (string[] args, bool copy, bool notif) => {
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
+                    if (Utils.IndexTest(args)) { return null; }
+
                     string text = string.Join(" ", args[1..]);
                     string upperText = text.ToUpper();
                     Utils.CopyCheck(copy, upperText);
@@ -2253,9 +2223,7 @@ Word count: {args[1..].Length}";
             FormattableCommand camelcase = new(
                 commandName: "camelcase",
                 function: (string[] args, bool copy, bool notif) => {
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
+                    if (Utils.IndexTest(args)) { return null; }
 
                     Func<string, string> output = (string result) => {
                         Utils.CopyCheck(copy, result);
@@ -2283,9 +2251,7 @@ Word count: {args[1..].Length}";
             FormattableCommand snakecase = new(
                 commandName: "snakecase",
                 function: (string[] args, bool copy, bool notif) => {
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
+                    if (Utils.IndexTest(args)) { return null; }
 
                     string text = string.Join("_", args[1..]).ToLower();
                     Utils.CopyCheck(copy, text);
@@ -2298,9 +2264,7 @@ Word count: {args[1..].Length}";
             FormattableCommand piglatin = new(
                 commandName: "piglatin",
                 function: (string[] args, bool copy, bool notif) => {
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
+                    if (Utils.IndexTest(args)) { return null; }
 
                     List<string> pigLatin = new();
                     foreach (string word in args[1..]) {
@@ -2329,8 +2293,7 @@ Word count: {args[1..].Length}";
                     Utils.CopyCheck(copy, result);
                     Utils.NotifCheck(
                         notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "piglatinSuccess"
-                    );
-                    return result;
+                    ); return result;
                 }
             );
         }
