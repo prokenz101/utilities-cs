@@ -662,7 +662,8 @@ namespace utilities_cs {
             RegularCommand youtubeSearch = new(
                 commandName: "youtube",
                 function: (string[] args) => {
-                    string url = System.Web.HttpUtility.UrlEncode(string.Join("+", args[1..]));
+                    string url = System.Web.HttpUtility.UrlEncode(string.Join(" ", args[1..]));
+
                     System.Diagnostics.Process.Start(
                         new System.Diagnostics.ProcessStartInfo(
                             "cmd", $"/c start https://youtube.com/results?search_query={url}"
@@ -675,7 +676,8 @@ namespace utilities_cs {
             RegularCommand imageSearch = new(
                 commandName: "images",
                 function: (string[] args) => {
-                    string url = System.Web.HttpUtility.UrlEncode(string.Join("+", args[1..]));
+                    string url = System.Web.HttpUtility.UrlEncode(string.Join(" ", args[1..]));
+
                     System.Diagnostics.Process.Start(
                         new System.Diagnostics.ProcessStartInfo(
                             "cmd", $"/c start https://www.google.com/search?tbm=isch&q={url}"
