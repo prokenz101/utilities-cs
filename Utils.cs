@@ -98,17 +98,14 @@ namespace utilities_cs {
         /// <param name="copy">Boolean that is usually true and checks if the function wants to copy something.</param>
         /// <param name="toCopy">The string that is to be copied to the clipboard if copy is true.</param>
         public static void CopyCheck(bool copy, string toCopy) {
-            bool settingsDisallowed = UtilitiesAppContext.currentSettings.disableClipboardManipulation;
-            bool autoPaste = UtilitiesAppContext.currentSettings.autoPaste;
-            bool disableClipboardManipulation = UtilitiesAppContext.currentSettings.disableClipboardManipulation;
-
-            if (copy && !settingsDisallowed) {
+            if (copy && !UtilitiesAppContext.currentSettings.disableClipboardManipulation) {
                 WindowsClipboard.SetText(toCopy);
             }
 
-            Console.WriteLine(autoPaste);
-
-            if (autoPaste && !disableClipboardManipulation) {
+            if (
+                UtilitiesAppContext.currentSettings.autoPaste
+                && !UtilitiesAppContext.currentSettings.disableClipboardManipulation
+            ) {
                 Thread.Sleep(100);
                 SendKeys.SendWait("^v");
             }
