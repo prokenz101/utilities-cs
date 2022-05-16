@@ -1787,9 +1787,7 @@ Word count: {args[1..].Length}";
                         notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "lowercaseSuccess"
                     ); return lowerText;
                 },
-                aliases: new string[] { "lower" },
-                useInAllCommand: true,
-                allCommandMode: "fancy"
+                aliases: new string[] { "lower" }
             );
 
             FormattableCommand mathitalic = new(
@@ -2292,9 +2290,7 @@ Word count: {args[1..].Length}";
                         notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "uppercaseSuccess"
                     ); return upperText;
                 },
-                aliases: new string[] { "upper" },
-                useInAllCommand: true,
-                allCommandMode: "fancy"
+                aliases: new string[] { "upper" }
             );
 
             FormattableCommand camelcase = new(
