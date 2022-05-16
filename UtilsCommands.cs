@@ -994,6 +994,32 @@ namespace utilities_cs {
                 allCommandMode: "fancy"
             );
 
+            FormattableCommand exponent = new(
+                commandName: "exponent",
+                function: (string[] args, bool copy, bool notif) => {
+                    if (Utils.IndexTest(args)) { return null; }
+
+                    string text = string.Join(" ", args[1..]);
+                    List<string> converted = new();
+
+                    foreach (char e in text) {
+                        var replaced = Dictionaries.ExponentDict.GetValueOrDefault(e.ToString(), "");
+                        if (replaced != "") {
+                            converted.Add(replaced!);
+                        } else {
+                            converted.Add(e.ToString());
+                        }
+                    }
+
+                    var answer = string.Join("", converted);
+                    Utils.CopyCheck(copy, answer);
+                    Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "epSuccess");
+                    return answer;
+                },
+                aliases: new string[] { "ep" },
+                useInAllCommand: true,
+                allCommandMode: "fancy"
+            );
             FormattableCommand cuberoot = new(
                 commandName: "cuberoot",
                 function: (string[] args, bool copy, bool notif) => {
@@ -1160,33 +1186,6 @@ namespace utilities_cs {
                 commandName: "lorem",
                 function: LoremIpsum.LoremMain,
                 aliases: new string[] { "loremipsum" }
-            );
-
-            FormattableCommand exponent = new(
-                commandName: "exponent",
-                function: (string[] args, bool copy, bool notif) => {
-                    if (Utils.IndexTest(args)) { return null; }
-
-                    string text = string.Join(" ", args[1..]);
-                    List<string> converted = new();
-
-                    foreach (char e in text) {
-                        var replaced = Dictionaries.ExponentDict.GetValueOrDefault(e.ToString(), "");
-                        if (replaced != "") {
-                            converted.Add(replaced!);
-                        } else {
-                            converted.Add(e.ToString());
-                        }
-                    }
-
-                    var answer = string.Join("", converted);
-                    Utils.CopyCheck(copy, answer);
-                    Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "epSuccess");
-                    return answer;
-                },
-                aliases: new string[] { "ep" },
-                useInAllCommand: true,
-                allCommandMode: "fancy"
             );
 
             FormattableCommand flip = new(
