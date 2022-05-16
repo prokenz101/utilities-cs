@@ -257,6 +257,25 @@ namespace utilities_cs {
             a[0] = char.ToUpper(a[0]);
             return new string(a);
         }
+
+        /// <summary>
+        /// A method that returns a rounded-version of a number if it is close enough to a whole number.
+        /// 5.999999998 -> 6, 5.5 = 5.5.
+        /// </summary>
+        /// <param name="num">The number to be rounded off to, or not.</param>
+        /// <returns>
+        /// A double based on if the number was rounded or not.
+        /// If the number was not rounded off, it returns the same number.s
+        /// </returns>
+        public static double RoundIfNumberIsNearEnough(double num) {
+            System.Text.RegularExpressions.Regex re = new(@"\d+\.(?:9){6,}");
+
+            if (re.Matches(num.ToString()).Count == 1) {
+                return Math.Round(num);
+            } else {
+                return num;
+            }
+        }
     }
     /// <summary>
     /// Primary class for modifying and manipulating the windows clipboard.
