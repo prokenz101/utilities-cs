@@ -1086,6 +1086,93 @@ namespace utilities_cs {
                 useInAllCommand: true,
                 allCommandMode: "fancy"
             );
+
+            FormattableCommand root = new(
+                commandName: "root",
+                function: (string[] args, bool copy, bool notif) => {
+                    if (args[1] == "calc" | args[1] == "calculator") {
+                        string text = string.Join(" ", args[2..]);
+                        System.Text.RegularExpressions.Regex regex =
+                            new(@"(?<root>\d+|\d+\.\d+)(?:st|nd|rd|th) root of (?<num>\d+|\d+\.\d+)");
+
+                        if (regex.IsMatch(text)) {
+                            var match = regex.Match(text);
+                            try {
+                                double root = Convert.ToDouble(match.Groups["root"].Value);
+                                double num = Convert.ToDouble(match.Groups["num"].Value);
+                                double answer = Utils.RoundIfNumberIsNearEnough(Math.Pow(num, 1 / root));
+
+                                Utils.CopyCheck(copy, answer.ToString());
+                                Utils.NotifCheck(
+                                    notif,
+                                    new string[] { "Success!", "Number copied to clipboard.", "3" },
+                                    "rootSuccess"
+                                ); return answer.ToString();
+                            } catch (FormatException) {
+                                Utils.NotifCheck(
+                                    true,
+                                    new string[] { "Huh.", "It seems you did not input aa proper number.", "3" },
+                                    "rootError"
+                                ); return null;
+                            } catch (OverflowException) {
+                                Utils.NotifCheck(
+                                    true,
+                                    new string[] { "Huh.", "Perhaps the number you inputted was too large.", "3" },
+                                    "rootError"
+                                ); return null;
+                            }
+                        } else {
+                            Utils.NotifCheck(
+                                true,
+                                new string[] {
+                                    "Huh.", "It seems that you did not follow the syntax correctly.", "3"
+                                }, "rootError"
+                            ); return null;
+                        }
+                    } else if (args[1] == "get") {
+                        try {
+                            System.Numerics.BigInteger num = System.Numerics.BigInteger.Parse(args[2]);
+                            Action<string> notifAndCopy = (string result) => {
+                                Utils.CopyCheck(copy, result);
+                                Utils.NotifCheck(
+                                    notif,
+                                    new string[] { "Success!", "The root was copied to clipboard.", "3" },
+                                    "rootSuccess"
+                                );
+                            };
+
+                            if (num == 2) { notifAndCopy("√"); return "√"; }
+
+                            string? exp =
+                                exponent.Execute(new string[] { "exponent", num.ToString() }, false, false);
+
+                            if (exp != null) {
+                                string result = $"{exp}√";
+                                notifAndCopy(result);
+                                return result;
+                            } else {
+                                Utils.NotifCheck(
+                                    true,
+                                    new string[] {
+                                        "Something went wrong.", "Are you sure that was a number?", "3"
+                                    }, "rootError"
+                                ); return null;
+                            }
+                        } catch (FormatException) {
+                            Utils.NotifCheck(
+                                true,
+                                new string[] { "Huh.", "It seems you did not input a number.", "3" },
+                                "rootError"
+                            ); return null;
+                        }
+                    } else {
+                        Utils.NotifCheck(
+                            true, new string[] { "Huh.", "It seems you did not input a proper mode.", "3" }, "rootError"
+                        ); return null;
+                    }
+                }
+            );
+
             FormattableCommand cuberoot = new(
                 commandName: "cuberoot",
                 function: (string[] args, bool copy, bool notif) => {
