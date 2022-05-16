@@ -170,11 +170,16 @@ namespace utilities_cs {
         /// <param name="copy">Controls whether the function is willing to copy text to the clipboard.</param>
         /// <param name="notif">Controls whether the function is willing to send a notification.</param>
         //! Mostly unused method. Only used for testing purposes.
-        public void Execute(string[] args, bool copy, bool notif) {
+        public string? Execute(string[] args, bool copy, bool notif) {
             if (this.Function != null) {
                 string? output = this.Function.Invoke(args, copy, notif);
-                if (output != null) { Console.WriteLine(output); }
+                if (output != null) {
+                    Console.WriteLine(output);
+                    return output;
+                }
             }
+
+            return null;
         }
 
         /// <summary>
