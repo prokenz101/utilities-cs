@@ -15,7 +15,7 @@ namespace utilities_cs {
             try {
                 if (nums.Count > 1) {
                     BigInteger answer =
-                    LCMClass.lcmExec(nums.ToArray<BigInteger>());
+                    LCMClass.FindLCM(nums.ToArray<BigInteger>());
                     Utils.CopyCheck(copy, answer.ToString());
                     Utils.NotifCheck(
                         notif, new string[] { "Success!", $"The answer was {answer}.", "5" }, "lcmSuccess"
@@ -42,7 +42,7 @@ namespace utilities_cs {
             }
         }
 
-        public static BigInteger lcmExec(BigInteger[] element_array) {
+        public static BigInteger FindLCM(BigInteger[] element_array) {
             BigInteger lcm_of_array_elements = 1;
             int divisor = 2;
 

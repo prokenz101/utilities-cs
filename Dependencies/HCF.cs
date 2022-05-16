@@ -14,7 +14,7 @@ namespace utilities_cs {
             try {
                 if (nums.Count > 1) {
                     BigInteger answer =
-                    HCF.findGCD(
+                    HCF.FindGCD(
                         nums.ToArray<BigInteger>(),
                         nums.ToArray().Length
                     );
@@ -47,23 +47,23 @@ namespace utilities_cs {
             }
         }
 
-        public static System.Numerics.BigInteger hcf_exec(
+        public static System.Numerics.BigInteger FindHCF(
             System.Numerics.BigInteger a, System.Numerics.BigInteger b
         ) {
             if (a == 0)
                 return b;
-            return hcf_exec(b % a, a);
+            return FindHCF(b % a, a);
         }
 
         //* Function to find gcd of 
         //* array of numbers
-        public static System.Numerics.BigInteger findGCD(
+        public static System.Numerics.BigInteger FindGCD(
             System.Numerics.BigInteger[] arr,
             System.Numerics.BigInteger n
         ) {
             System.Numerics.BigInteger result = arr[0];
             for (int i = 1; i < n; i++) {
-                result = hcf_exec(arr[i], result);
+                result = FindHCF(arr[i], result);
 
                 if (result == 1) {
                     return 1;
