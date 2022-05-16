@@ -1198,12 +1198,7 @@ namespace utilities_cs {
                     double num = Convert.ToDouble(text);
                     string result = Math.Pow(num, ((double)1 / 3)).ToString();
 
-                    System.Text.RegularExpressions.Regex re =
-                        new System.Text.RegularExpressions.Regex(@"\d+\.99999+(?:\d+)");
-
-                    if (re.IsMatch(result)) {
-                        result = Math.Ceiling(Convert.ToDouble(result)).ToString();
-                    }
+                    result = Utils.RoundIfNumberIsNearEnough(Convert.ToDouble(result)).ToString();
 
                     Utils.CopyCheck(copy, result);
                     Utils.NotifCheck(
