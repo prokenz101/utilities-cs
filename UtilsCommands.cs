@@ -2,6 +2,7 @@ namespace utilities_cs {
     /// <summary>
     /// The hierarchy of all command-classes for all commands in utilities-cs.
     /// </summary>
+
     public class Command {
         /// <summary>
         /// The primary name of the command.
@@ -1243,80 +1244,7 @@ namespace utilities_cs {
 
             FormattableCommand fraction = new(
                 commandName: "fraction",
-                function: (string[] args, bool copy, bool notif) => {
-                    if (Utils.IndexTest(args)) { return null; }
-
-                    string text = string.Join(" ", args[1..]);
-                    List<string> converted = new();
-
-                    if (!(text.Contains("/"))) {
-                        Utils.NotifCheck(
-                            true,
-                            new string[] { "An exception occured.", "There must be a / in your string.", "3" },
-                            "fractionError"
-                        ); return null;
-                    }
-
-                    string[] slashSplit = text.Split("/");
-                    string numerator = slashSplit[0];
-                    string denominator = slashSplit[1];
-
-                    foreach (char x in numerator) {
-                        if (Dictionaries.FractionDict.ContainsKey(x)) {
-                            string i = Dictionaries.FractionDict[x][0];
-                            converted.Add(i);
-                        } else {
-                            Utils.NotifCheck(
-                                true,
-                                new string[] {
-                                    "Something went wrong.",
-                                    "Either the code is broken, or you did not input the parameters correctly.",
-                                    "4"
-                                },
-                                "fractionError"
-                            ); return null;
-                        }
-                    }
-
-                    converted.Add("⁄");
-
-                    foreach (char x in denominator) {
-                        if (Dictionaries.FractionDict.ContainsKey(x)) {
-                            string i = Dictionaries.FractionDict[x][1];
-                            if (i != "failed") {
-                                converted.Add(i);
-                            } else {
-                                Utils.NotifCheck(
-                                    true,
-                                    new string[] {
-                                        "Hey!",
-                                        @"It seems you tried to input a character that's not supported.",
-                                        "4"
-                                    },
-                                    "fractionError"
-                                );
-                                return null;
-                            }
-                        } else {
-                            Utils.NotifCheck(
-                                true,
-                                new string[] {
-                                    "Something went wrong.",
-                                    "Either the code is broken, or you did not input the parameters correctly.",
-                                    "4"
-                                },
-                                "fractionError"
-                            );
-                            return null;
-                        }
-                    }
-
-                    string fraction = string.Join("", converted);
-                    Utils.CopyCheck(copy, fraction);
-                    Utils.NotifCheck(
-                        notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "fractionSuccess"
-                    ); return fraction;
-                },
+                function: Fractions.FractionsMain,
                 aliases: new string[] { "fc" }
             );
 
