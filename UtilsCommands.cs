@@ -446,6 +446,67 @@ namespace utilities_cs {
                 aliases: new string[] { "getpermutations", "get-permutations" }
             );
 
+            RegularCommand raise = new(
+                commandName: "raise",
+                function: async (string[] args) => {
+                    if (Utils.IndexTest(args)) { return; }
+
+                    string text = string.Join(" ", args[1..]);
+                    bool cancel = false;
+
+                    var matchToGroups =
+                        Utils.RegexFind(
+                            text,
+                            @"(?<base>\d+|\d+\.\d+) to (?<power>\d+|\d+\.\d+)",
+                            useIsMatch: true,
+                            () => {
+                                Utils.NotifCheck(
+                                    true,
+                                    new string[] { "Huh.", "It seems you did not follow the syntax correctly.", "4" },
+                                    "raiseError"
+                                ); cancel = true;
+                            }
+                        );
+
+                    if (cancel) { return; }
+
+                    if (matchToGroups != null) {
+                        foreach (var kvp in matchToGroups) {
+                            try {
+                                System.Numerics.BigInteger baseNum =
+                                    System.Numerics.BigInteger.Parse(kvp.Key.Groups["base"].Value);
+
+                                int powerNum = int.Parse(kvp.Key.Groups["power"].Value);
+
+                                await Task.Run(() => {
+                                    System.Numerics.BigInteger result =
+                                        System.Numerics.BigInteger.Pow(baseNum, powerNum);
+
+                                    Utils.CopyCheck(true, result.ToString());
+                                    Utils.NotifCheck(
+                                        true,
+                                        new string[] {
+                                    "Success!", "The result was copied to your clipboard.", "3"
+                                        }, "raiseSuccess"
+                                    );
+                                });
+                            } catch (OverflowException) {
+                                Utils.NotifCheck(
+                                    true, new string[] { "Error!", "Perhaps the exponent was too large.", "3" },
+                                    "raiseError"
+                                );
+                            }
+                        }
+                    } else {
+                        Utils.NotifCheck(
+                            true,
+                            new string[] { "Huh.", "It seems you did not input the parameters correctly." },
+                            "raiseError"
+                        );
+                    }
+                }
+            );
+
             RegularCommand exit = new(
                 commandName: "exit",
                 function: (string[] args) => {
