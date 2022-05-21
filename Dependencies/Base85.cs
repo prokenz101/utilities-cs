@@ -12,9 +12,7 @@ namespace utilities_cs {
     /// </remarks>
     class Ascii85 {
         public static string? Ascii85Main(string[] args, bool copy, bool notif) {
-            if (Utils.IndexTest(args)) {
-                return null;
-            }
+            if (Utils.IndexTest(args)) { return null; }
 
             string mode = args[1];
             string text = string.Join(" ", args[2..]);
@@ -24,30 +22,34 @@ namespace utilities_cs {
             switch (mode) {
                 case "to":
                     try {
-                        string encodedWithArrows = ascii85.Encode(byteArray);
-                        if (encodedWithArrows.StartsWith("<~") && encodedWithArrows.EndsWith("~>")) {
-                            string encoded = encodedWithArrows.Remove(encodedWithArrows.Length - 2)[2..];
-
-                            Utils.CopyCheck(copy, encoded);
-                            Utils.NotifCheck(
-                                true, new string[] { "Success!", "Message copied to clipboard.", "3" },
-                                "base85Success"
-                            ); return encoded;
-                        } else {
-                            Utils.CopyCheck(copy, encodedWithArrows);
-                            Utils.NotifCheck(
-                                true,
-                                new string[] { "Success!", "Message copied to clipboard.", "3" },
-                                "base85Success"
-                            ); return encodedWithArrows;
+                        string encoded = ascii85.Encode(byteArray);
+                        if (encoded.StartsWith("<~") && encoded.EndsWith("~>")) {
+                            encoded = encoded.Remove(encoded.Length - 2)[2..];
                         }
+
+                        if (UtilitiesAppContext.currentSettings.escapeBase85OutputText) {
+                            string? escapedBase85 = FormattableCommand.FindAndExecute("escape", new string[] { "escape", encoded }, false, false);
+                            if (escapedBase85 != null) {
+                                Utils.CopyCheck(copy, escapedBase85);
+                                Utils.NotifCheck(
+                                    notif,
+                                    new string[] { "Success!", "Message copied to clipboard.", "3" },
+                                    "base85Success"
+                                ); return escapedBase85;
+                            }
+                        }
+
+                        Utils.CopyCheck(copy, encoded);
+                        Utils.NotifCheck(
+                            notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "base85Success"
+                        ); return encoded;
                     } catch {
                         Utils.NotifCheck(
                             true,
                             new string[] {
-                                        "Something went wrong.",
-                                        "Looks like something went wrong when trying to convert your text to Base85.",
-                                        "4"
+                                "Something went wrong.",
+                                "Looks like something went wrong when trying to convert your text to Base85.",
+                                "4"
                             },
                             "base85Error"
                         ); return null;
@@ -70,13 +72,12 @@ namespace utilities_cs {
                         Utils.NotifCheck(
                             true,
                             new string[] {
-                            "Something went wrong.",
-                            "Looks like something went wrong when trying to convert your text from Base85.",
-                            "4"
+                                "Something went wrong.",
+                                "Looks like something went wrong when trying to convert your text from Base85.",
+                                "4"
                             },
                             "base85Error"
-                        );
-                        return null;
+                        ); return null;
                     }
 
                 default:
