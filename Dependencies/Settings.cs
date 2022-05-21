@@ -4,6 +4,7 @@ namespace utilities_cs {
             disableNotifications = false,
             disableClipboardManipulation = false,
             permutationsCalculationLimit = 6,
+            escapeBase85OutputText = true,
             copyingHotkeyDelay = 25,
             autoPaste = false,
             pressEscape = true,
@@ -135,6 +136,9 @@ They cannot both be true at the same time."
                 case "permutationscalculationimit":
                     currentSettings.permutationsCalculationLimit = Convert.ToInt32(ConvertToBoolOrInt("int", value));
                     break;
+                case "escapebase85outputtext":
+                    currentSettings.escapeBase85OutputText = Convert.ToBoolean(ConvertToBoolOrInt("bool", value));
+                    break;
                 case "copyinghotkeydelay":
                     currentSettings.copyingHotkeyDelay = int.Parse(ConvertToBoolOrInt("int", value)!.ToString()!);
                     break;
@@ -219,6 +223,7 @@ They cannot both be true at the same time."
         public bool disableNotifications { get; set; }
         public bool disableClipboardManipulation { get; set; }
         public int permutationsCalculationLimit { get; set; }
+        public bool escapeBase85OutputText { get; set; }
         public int copyingHotkeyDelay { get; set; }
         public bool autoPaste { get; set; }
         public bool pressEscape { get; set; }
