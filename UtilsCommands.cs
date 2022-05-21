@@ -2324,6 +2324,22 @@ Word count: {args[1..].Length}";
                 }
             );
 
+            FormattableCommand pascalcase = new(
+                commandName: "pascalcase",
+                function: (string[] args, bool copy, bool notif) => {
+                    if (Utils.IndexTest(args)) { return null; }
+
+                    List<string> output = new();
+                    args.ToList<string>().ForEach(i => output.Add(Utils.Capitalise(i)));
+                    string result = string.Join("", output);
+
+                    Utils.CopyCheck(copy, result);
+                    Utils.NotifCheck(
+                        notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "pascalcaseSuccess"
+                    ); return result;
+                }
+            );
+
             FormattableCommand snakecase = new(
                 commandName: "snakecase",
                 function: (string[] args, bool copy, bool notif) => {
