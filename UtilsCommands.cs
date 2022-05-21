@@ -546,7 +546,7 @@ namespace utilities_cs {
                     } else {
                         string searchQuery = args[1].ToLower();
                         if (Command.Exists(searchQuery)) {
-                            string commandName = 
+                            string commandName =
                                 RegularCommand.GetRegularCommand(searchQuery) != null
                                     ? RegularCommand.GetRegularCommand(searchQuery)!.CommandName!
                                 : FormattableCommand.GetFormattableCommand(searchQuery) != null
@@ -797,6 +797,28 @@ Opening Wiki anyway.", "3" },
                     }
                 },
                 aliases: new string[] { "getaliases", "getalias", "get-alias", "get-aliases" }
+            );
+
+            FormattableCommand escape = new(
+                commandName: "escape",
+                function: (string[] args, bool copy, bool notif) => {
+                    if (Utils.IndexTest(args)) { return null; }
+
+                    string text = string.Join(" ", args[1..]);
+                    string ans = text
+                        .Replace("\\", "\\")
+                        .Replace("\"", "\\\"")
+                        .Replace("'", "\\'")
+                        .Replace("_", "\\_")
+                        .Replace("`", "\\`")
+                        .Replace("*", "\\*")
+                        .Replace(">", "\\>");
+
+                    Utils.CopyCheck(copy, ans);
+                    Utils.NotifCheck(
+                        notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "escapeSuccess"
+                    ); return ans;
+                }
             );
 
             FormattableCommand base32 = new(
