@@ -358,7 +358,7 @@ namespace utilities_cs {
         /// </summary>
         public static void RegisterAllRCommands() {
             RegularCommand autoclick = new(
-                "autoclick",
+                commandName: "autoclick",
                 Autoclick.Autoclicker
             );
 
