@@ -254,6 +254,10 @@ namespace utilities_cs {
             foreach (FormattableCommand i in FormattableCommands) {
                 if (i.CommandName == cmd) {
                     return i;
+                } else if (i.Aliases != null) {
+                    if (i.Aliases.Any(x => x == cmd)) {
+                        return i;
+                    }
                 }
             }
 
@@ -325,6 +329,10 @@ namespace utilities_cs {
             foreach (RegularCommand i in RegularCommands!) {
                 if (i.CommandName == commandName) {
                     return i;
+                } else if (i.Aliases != null) {
+                    if (i.Aliases.Any(x => x == commandName)) {
+                        return i;
+                    }
                 }
             }
 
@@ -528,44 +536,39 @@ namespace utilities_cs {
                     var process = new System.Diagnostics.ProcessStartInfo("cmd", $"/c start {wikiLink}");
                     process.CreateNoWindow = true;
 
-                    if (args.Length > 0) {
+                    if (Utils.IndexTest(args, sendNotif: false)) {
+                        System.Diagnostics.Process.Start(process);
+                        Utils.NotifCheck(
+                            true,
+                            new string[] { "Opening wiki...", "Opening wiki in your default browser.", "3" },
+                            "wikiOpen"
+                        ); return;
+                    } else {
                         string searchQuery = args[1].ToLower();
                         if (Command.Exists(searchQuery)) {
-                            string commandName;
-                            if (RegularCommand.GetRegularCommand(searchQuery) != null) {
-                                commandName =
-                                    RegularCommand.GetRegularCommand(searchQuery)!.CommandName!;
-                            } else if (FormattableCommand.GetFormattableCommand(searchQuery) != null) {
-                                commandName =
-                                    FormattableCommand.GetFormattableCommand(searchQuery)!.CommandName!;
-                            } else {
-                                //* Cannot possibly run.
-                                commandName = "Impossible.";
-                            }
+                            string commandName = 
+                                RegularCommand.GetRegularCommand(searchQuery) != null
+                                    ? RegularCommand.GetRegularCommand(searchQuery)!.CommandName!
+                                : FormattableCommand.GetFormattableCommand(searchQuery) != null
+                                    ? FormattableCommand.GetFormattableCommand(searchQuery)!.CommandName!
+                                : "Impossible";
 
                             process.Arguments = process.Arguments += $"#{commandName}";
                             Utils.NotifCheck(
                                 true,
                                 new string[] { "Opening wiki...", $"Opening wiki for \"{commandName}\"", "3" },
                                 "wikiOpen"
-                            );
-
-                            System.Diagnostics.Process.Start(process);
+                            ); System.Diagnostics.Process.Start(process);
                         } else {
                             Utils.NotifCheck(
                                 true,
-                                new string[] { "Huh.", "It seems that command does not exist.", "3" },
+                                new string[] { "Huh.", @"It seems that command does not exist.
+Opening Wiki anyway.", "3" },
                                 "wikiError"
                             );
-                        }
-                    } else {
-                        Utils.NotifCheck(
-                            true,
-                            new string[] { "Opening wiki...", "Opening wiki in your default browser.", "3" },
-                            "wikiOpen"
-                        );
 
-                        System.Diagnostics.Process.Start(process);
+                            System.Diagnostics.Process.Start(process);
+                        }
                     }
                 }
             );
