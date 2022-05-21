@@ -193,14 +193,14 @@ namespace utilities_cs {
                         | conversion == "mixed"
                     ) {
                         string ans = conversion == "percent" | conversion == "percentage"
-                            ? fc.ToPercentage().ToString()
+                            ? fc.ToPercentage().ToString() + "%"
                             : conversion == "decimal" ? fc.ToDecimal().ToString()
                             : conversion == "mixed" ? fc.ToMixedFraction().ToString()
                             : "0"; //* should never happen
 
                         Utils.CopyCheck(copy, ans);
                         Utils.NotifCheck(
-                            notif, new string[] { "Success!", $"The answer is: {ans}%", "4" }, "fractionSuccess"
+                            notif, new string[] { "Success!", $"The answer is: {ans}", "4" }, "fractionSuccess"
                         ); return ans;
                     } else {
                         Utils.NotifCheck(
@@ -226,14 +226,14 @@ namespace utilities_cs {
                         | conversion == "improper"
                     ) {
                         string ans = conversion == "percent" | conversion == "percentage"
-                            ? mfc.ToPercentage().ToString()
+                            ? mfc.ToPercentage().ToString() + "%"
                             : conversion == "decimal" ? mfc.ToDecimal().ToString()
                             : conversion == "improper" ? mfc.ToImproperFraction().ToString()
                             : "0"; //* should never happen
 
                         Utils.CopyCheck(copy, ans);
                         Utils.NotifCheck(
-                            notif, new string[] { "Success!", $"The answer is: {ans}%", "4" }, "fractionSuccess"
+                            notif, new string[] { "Success!", $"The answer is: {ans}", "4" }, "fractionSuccess"
                         ); return ans;
                     } else {
                         Utils.NotifCheck(
