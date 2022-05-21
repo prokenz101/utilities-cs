@@ -50,16 +50,18 @@ namespace utilities_cs {
         /// <param name="argscount">The index that indextest will check to see if it exists.</param>
         /// <param name="ifOutOfRange">Method that is called incase indextest is false.</param>
         /// <returns>A bool that will be false if IndexTest failed, and true if it didn't.</returns>
-        public static bool IndexTest(string[] args, int argscount = 1, Action? ifOutOfRange = null) {
+        public static bool IndexTest(string[] args, int argscount = 1, bool sendNotif = true) {
             try {
                 string test = args[argscount];
                 return false;
             } catch (IndexOutOfRangeException) {
                 NotifCheck(
-                    true,
+                    sendNotif,
                     new string[] { "Huh.", "It seems you did not specify the parameters correctly.", "3" },
                     "indexTestError"
-                ); ifOutOfRange?.Invoke(); return true;
+                );
+
+                return true;
             }
         }
 
