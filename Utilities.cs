@@ -5,8 +5,18 @@
         /// The main starting point of the program.
         /// </summary>
         static void Main(string[] args) {
+            Utils.NotifCheck(
+                true,
+                new string[] {
+                    "Opened utilities-cs.",
+                    "I am now in your system tray, right click me and press Exit to exit.",
+                    "3"
+                }, "utilities-csOpen"
+            );
+
             RegisterCommands.RegisterAllRCommands();
             RegisterCommands.RegisterAllFCommands();
+
 #if UTILITIES_DEBUG
             //* debug mode, only used for specific times
             string? copied_text = UtilitiesAppContext.Utilities(args);
