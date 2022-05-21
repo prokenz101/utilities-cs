@@ -470,7 +470,7 @@ namespace utilities_cs {
                     var matchToGroups =
                         Utils.RegexFind(
                             text,
-                            @"(?<base>\d+|\d+\.\d+) to (?<power>\d+|\d+\.\d+)",
+                            @"(?<base>-?\d+\.\d+|-?\d+) to (?<power>-?\d+\.\d+|-?\d+)",
                             useIsMatch: true,
                             () => {
                                 Utils.NotifCheck(
@@ -1118,7 +1118,7 @@ Opening Wiki anyway.", "3" },
                     if (args[1] == "calc" | args[1] == "calculator") {
                         string text = string.Join(" ", args[2..]);
                         System.Text.RegularExpressions.Regex regex =
-                            new(@"(?<root>\d+|\d+\.\d+)(?:st|nd|rd|th) root of (?<num>\d+|\d+\.\d+)");
+                            new(@"(?<root>-?\d+\.\d+|-?\d+)(?:st|nd|rd|th) root of (?<num>-?\d+\.\d+|-?\d+)");
 
                         if (regex.IsMatch(text)) {
                             var match = regex.Match(text);
@@ -1511,7 +1511,7 @@ Opening Wiki anyway.", "3" },
                     if (nums.Count > 1) {
                         //* find sum of all nums in "nums"
                         System.Numerics.BigInteger sum = 0;
-                        foreach (int num in nums) {
+                        foreach (System.Numerics.BigInteger num in nums) {
                             sum += num;
                         }
 
@@ -1934,9 +1934,9 @@ Word count: {args[1..].Length}";
                     string text = string.Join(" ", args[1..]);
                     //* making regex
                     System.Text.RegularExpressions.Regex findNumberFromPercentage =
-                        new(@"(?<percent>\d+(\.\d+)?)% of (?<number>\d+(\.\d+)?)");
+                        new(@"(?<percent>-?\d+\.\d+|-?\d+)% of (?<number>-?\d+\.\d+|-?\d+)");
                     System.Text.RegularExpressions.Regex findPercentageFromNumbers =
-                        new(@"get (?<num1>\d+|\d+\.\d+) and (?<num2>\d+|\d+\.\d+)");
+                        new(@"get (?<num1>-?\d+\.\d+|-?\d+) and (?<num2>-?\d+\.\d+|-?\d+)");
 
                     if (findNumberFromPercentage.IsMatch(text)) {
                         System.Text.RegularExpressions.MatchCollection matches =
@@ -2038,7 +2038,7 @@ Word count: {args[1..].Length}";
                     } catch (OverflowException) {
                         Utils.NotifCheck(
                             true,
-                            new string[] { "Something went wrong.", "The number you entered was too large.", "3" },
+                            new string[] { "Something went wrong.", "Perhaps the number you entered was too large.", "3" },
                             "randintError"
                         ); return null;
                     }

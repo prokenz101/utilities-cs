@@ -170,7 +170,7 @@ namespace utilities_cs {
         public static List<System.Numerics.BigInteger> RegexFindAllInts(string input) {
             List<System.Numerics.BigInteger> BigInts = new();
             System.Text.RegularExpressions.Regex re =
-                new System.Text.RegularExpressions.Regex(@"(?<num>\d+)+");
+                new System.Text.RegularExpressions.Regex(@"(?<num>-?\d+)+");
 
             if (re.Matches(input).Count >= 1) {
                 System.Text.RegularExpressions.MatchCollection matches = re.Matches(input);
@@ -270,7 +270,7 @@ namespace utilities_cs {
         /// If the number was not rounded off, it returns the same number.s
         /// </returns>
         public static double RoundIfNumberIsNearEnough(double num) {
-            System.Text.RegularExpressions.Regex re = new(@"\d+\.(?:9){6,}");
+            System.Text.RegularExpressions.Regex re = new(@"-?\d+\.(?:9){6,}");
 
             if (re.Matches(num.ToString()).Count == 1) {
                 return Math.Round(num);

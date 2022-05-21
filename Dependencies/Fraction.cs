@@ -30,9 +30,9 @@ namespace utilities_cs {
                         Utils.NotifCheck(
                             true,
                             new string[] {
-                                    "Something went wrong.",
-                                    "Either the code is broken, or you did not input the parameters correctly.",
-                                    "4"
+                                "Something went wrong.",
+                                "Either the code is broken, or you did not input the parameters correctly.",
+                                "4"
                             },
                             "fractionError"
                         ); return null;
@@ -79,11 +79,11 @@ namespace utilities_cs {
                 ); return fraction;
             } else if (mode == "add" | mode == "subtract" | mode == "multiply" | mode == "divide") {
                 Regex fractionRegex = new(
-                    @"^(?<numerator1>\d+)\/(?<denominator1>\d+) and (?<numerator2>\d+)\/(?<denominator2>\d+)"
+                    @"^(?<numerator1>-?\d+)\/(?<denominator1>-?\d+) and (?<numerator2>-?\d+)\/(?<denominator2>-?\d+)"
                 );
 
                 Regex mixedFractionRegex = new(
-                    @"^(?<wholenum1>\d+) (?<numerator1>\d+)\/(?<denominator1>\d+) and (?<wholenum2>\d+) (?<numerator2>\d+)\/(?<denominator2>\d+)"
+                    @"^(?<wholenum1>-?\d+) (?<numerator1>-?\d+)\/(?<denominator1>-?\d+) and (?<wholenum2>-?\d+) (?<numerator2>-?\d+)\/(?<denominator2>-?\d+)"
                 );
 
                 string input = string.Join(" ", args[2..]);
@@ -137,8 +137,8 @@ namespace utilities_cs {
                 }
 
             } else if (mode == "simplify") {
-                Regex fractionRegex = new(@"^(?<numerator>\d+)\/(?<denominator>\d+)$");
-                Regex mixedFractionRegex = new(@"^(?<wholenum>\d+) (?<numerator>\d+)\/(?<denominator>\d+)$");
+                Regex fractionRegex = new(@"^(?<numerator>-?\d+)\/(?<denominator>-?\d+)$");
+                Regex mixedFractionRegex = new(@"^(?<wholenum>-?\d+) (?<numerator>-?\d+)\/(?<denominator>-?\d+)$");
                 string input = string.Join(" ", args[2..]);
 
                 if (fractionRegex.IsMatch(input)) {
@@ -172,9 +172,9 @@ namespace utilities_cs {
                     ); return null;
                 }
             } else if (mode == "convert") {
-                Regex fractionRegex = new(@"^(?<numerator>\d+)\/(?<denominator>\d+) to (?<conversion>\w+)$");
+                Regex fractionRegex = new(@"^(?<numerator>-?\d+)\/(?<denominator>-?\d+) to (?<conversion>\w+)$");
                 Regex mixedFractionRegex =
-                    new(@"^(?<wholenum>\d+) (?<numerator>\d+)\/(?<denominator>\d+) to (?<conversion>\w+)$");
+                    new(@"^(?<wholenum>-?\d+) (?<numerator>-?\d+)\/(?<denominator>-?\d+) to (?<conversion>\w+)$");
                 string input = string.Join(" ", args[2..]);
 
                 if (fractionRegex.IsMatch(input)) {
@@ -338,8 +338,14 @@ namespace utilities_cs {
             //* get GCD of numerator and denominator
             BigInteger gcd = HCF.FindGCD(new BigInteger[] { Numerator, Denominator }, 2);
 
-            //* return new fraction
-            return new Fraction(Numerator / gcd + "/" + Denominator / gcd);
+            Fraction fractionObtained = new(Numerator / gcd + "/" + Denominator / gcd);
+            if (fractionObtained.Denominator < 0) {
+                //* if denominator is negative, then convert to rational number simplest form
+                fractionObtained.Numerator = 0 - fractionObtained.Numerator;
+                fractionObtained.Denominator = -1 * fractionObtained.Denominator;
+            }
+
+            return fractionObtained;
         }
 
         public static Fraction SimplifyIfRequired(Fraction fc, bool simplify) {
