@@ -1749,6 +1749,39 @@ Word count: {args[1..].Length}";
                 aliases: new string[] { "chardistr", "chardistribution", "characterdistr" }
             );
 
+            FormattableCommand replace = new(
+                commandName: "replace",
+                function: (string[] args, bool copy, bool notif) => {
+                    if (Utils.IndexTest(args)) { return null; }
+
+                    string text = string.Join(" ", args[1..]);
+
+                    System.Text.RegularExpressions.Regex re =
+                        new(@"[""'](?<old>.+)[""'] to [""'](?<new>.+|)[""'] in [""'](?<text>.+)[""']");
+
+                    if (re.IsMatch(text)) {
+                        var match = re.Match(text);
+                        var old = match.Groups["old"].Value;
+                        var new_ = match.Groups["new"].Value;
+                        var textToReplace = match.Groups["text"].Value;
+
+                        string result = textToReplace.Replace(old, new_);
+                        Utils.CopyCheck(copy, result);
+                        Utils.NotifCheck(
+                            notif,
+                            new string[] { "Success!", "Message copied to clipboard.", "5" },
+                            "replaceSuccess"
+                        ); return null;
+                    } else {
+                        Utils.NotifCheck(
+                            true,
+                            new string[] { "Huh.", "It seems you did not follow the syntax correctly." },
+                            "replaceError"
+                        ); return null;
+                    }
+                }
+            );
+
             FormattableCommand characterCount = new(
                 commandName: "charactercount",
                 function: (string[] args, bool copy, bool notif) => {
