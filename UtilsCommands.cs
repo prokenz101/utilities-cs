@@ -2385,7 +2385,7 @@ Word count: {args[1..].Length}";
                     if (Utils.IndexTest(args)) { return null; }
 
                     List<string> output = new();
-                    args.ToList<string>().ForEach(i => output.Add(Utils.Capitalise(i)));
+                    args[1..].ToList<string>().ForEach(i => output.Add(Utils.Capitalise(i)));
                     string result = string.Join("", output);
 
                     Utils.CopyCheck(copy, result);
