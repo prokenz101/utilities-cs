@@ -970,29 +970,36 @@ Opening Wiki anyway.", "3" },
                 function: (string[] args, bool copy, bool notif) => {
                     if (Utils.IndexTest(args)) { return null; }
 
-                    string strNum = string.Join(' ', args[1..]);
+                    string input = string.Join(" ", args[1..]);
+                    System.Text.RegularExpressions.Regex re = new(@"(?<num>-?\d+)(?:\.(?<decimals>\d+))?");
 
-                    try {
-                        //* Checking if number is an actual number
-                        System.Numerics.BigInteger.Parse(strNum);
-                    } catch {
+                    if (re.IsMatch(input)) {
+                        System.Numerics.BigInteger num =
+                            System.Numerics.BigInteger.Parse(re.Match(input).Groups["num"].Value);
+
+                        System.Numerics.BigInteger decimals =
+                            re.Match(input).Groups["decimals"].Value != ""
+                                ? System.Numerics.BigInteger.Parse(re.Match(input).Groups["decimals"].Value)
+
+                            : 0;
+
+                        string result =
+                            decimals == 0 ? string.Format("{0:n0}", num)
+                            : string.Format("{0:n0}", num) + "." + decimals.ToString();
+
+                        Utils.CopyCheck(copy, result);
+                        Utils.NotifCheck(
+                            notif,
+                            new string[] { "Success!", "Message copied to clipboard.", "3" },
+                            "commaseperatorSuccess"
+                        ); return result;
+                    } else {
                         Utils.NotifCheck(
                             true,
-                            new string[] { "Huh.", "It seems you did not input anything to seperate with commas.", "2" },
+                            new string[] { "Huh.", "It seems you did not input a proper number.", "2" },
                             "commaseperatorError"
-                        );
-                        return null;
+                        ); return null;
                     }
-
-                    System.Numerics.BigInteger num = System.Numerics.BigInteger.Parse(strNum);
-                    string ans = String.Format("{0:n0}", num);
-
-                    Utils.CopyCheck(copy, ans);
-                    Utils.NotifCheck(
-                        notif,
-                        new string[] { "Success!", "Number copied to clipboard.", "3" },
-                        "commaseperatorSuccess"
-                    ); return ans;
                 },
                 aliases: new string[] { "cms" }
             );
