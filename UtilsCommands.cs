@@ -2392,7 +2392,8 @@ Word count: {args[1..].Length}";
                     Utils.NotifCheck(
                         notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "pascalcaseSuccess"
                     ); return result;
-                }
+                },
+                aliases: new string[] { "pascal" }
             );
 
             FormattableCommand snakecase = new(
