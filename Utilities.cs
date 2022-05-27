@@ -56,13 +56,13 @@
         /// <summary>
         /// Constructor for the application context.
         /// </summary>
-        public UtilitiesAppContext() {
+        public UtilitiesAppContext(bool debug = false) {
             //* making keyboard hook for ctrl + f8
             HookManager.AddHook(
                 "utilities",
                 new ModifierKeys[] { ModifierKeys.Control },
                 Keys.F8,
-                () => {
+                async () => {
                     int hotkeyDelay = currentSettings.copyingHotkeyDelay;
                     bool pressEscape = currentSettings.pressEscape;
 
@@ -72,9 +72,9 @@
                     Thread.Sleep(hotkeyDelay);
                     if (pressEscape) { SendKeys.Send("{ESC}"); }
                     string[] args = Clipboard.GetText().Split(" ");
-                    Utilities(args);
+                    if (!debug) { await Task.Run(() => Utilities(args)); } else { Utilities(args); }
                 },
-                () => {
+                onFail: () => {
                     Utils.NotifCheck(
                         true,
                         new string[] {
