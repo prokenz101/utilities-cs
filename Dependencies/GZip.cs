@@ -20,11 +20,8 @@ namespace utilities_cs {
                     Utils.NotifCheck(
                         true,
                         new string[] {
-                            "Something went wrong.",
-                            "An error occured when trying to convert your text to GZip.",
-                            "4"
-                        },
-                        "gzipError"
+                            "Something went wrong.", "An error occured when trying to convert your text to GZip.", "4"
+                        }, "gzipError"
                     );
                     return null;
                 }
@@ -95,6 +92,7 @@ namespace utilities_cs {
                     compressionStream.Write(input, 0, input.Length);
                     compressionStream.Flush();
                 }
+
                 return result.ToArray();
             }
         }
