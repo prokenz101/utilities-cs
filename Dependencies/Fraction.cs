@@ -33,8 +33,7 @@ namespace utilities_cs {
                                 "Something went wrong.",
                                 "Either the code is broken, or you did not input the parameters correctly.",
                                 "4"
-                            },
-                            "fractionError"
+                            }, "fractionError"
                         ); return null;
                     }
                 }
@@ -53,10 +52,8 @@ namespace utilities_cs {
                                     "Hey!",
                                     @"It seems you tried to input a character that's not supported.",
                                     "4"
-                                },
-                                "fractionError"
-                            );
-                            return null;
+                                }, "fractionError"
+                            ); return null;
                         }
                     } else {
                         Utils.NotifCheck(
@@ -65,10 +62,8 @@ namespace utilities_cs {
                                 "Something went wrong.",
                                 "Either the code is broken, or you did not input the parameters correctly.",
                                 "4"
-                            },
-                            "fractionError"
-                        );
-                        return null;
+                            }, "fractionError"
+                        ); return null;
                     }
                 }
 
@@ -287,7 +282,7 @@ namespace utilities_cs {
 
         public double ToDecimal() { return (double)(Numerator / Denominator); }
 
-        public double ToPercentage() { return (double)(Numerator / Denominator) * 100; }
+        public double ToPercentage() { return (double)Numerator / (double)Denominator * 100; }
 
         public bool IsProper() { return this.Denominator >= this.Numerator; }
 
@@ -383,11 +378,11 @@ namespace utilities_cs {
 
         public double ToDecimal() {
             Fraction asImproper = this.ToImproperFraction();
-            return (double)(asImproper.Numerator / asImproper.Denominator);
+            return (double)asImproper.Numerator / (double)asImproper.Denominator;
         }
 
         public double ToPercentage() {
-            return (double)(this.ToDecimal() * 100);
+            return this.ToDecimal() * 100;
         }
 
         public MixedFraction ToSimplestForm() {
