@@ -388,37 +388,6 @@ namespace utilities_cs {
                 function: Format.Formatter
             );
 
-            RegularCommand factorial = new(
-                commandName: "factorial",
-                function: (string[] args) => {
-                    if (Utils.IndexTest(args)) { return; }
-
-                    try {
-                        int n = int.Parse(args[1]);
-                        int i = 1;
-                        System.Numerics.BigInteger v = 1;
-
-                        while (i <= n) {
-                            v *= i;
-                            i += 1;
-                        }
-
-                        Utils.CopyCheck(true, v.ToString());
-                        Utils.NotifCheck(
-                            true,
-                            new string[] { v.ToString(), $"The factorial is: {v.ToString()}", "5" },
-                            "factorialSuccess"
-                        );
-                    } catch {
-                        Utils.NotifCheck(
-                            true,
-                            new string[] { "Huh.", "It seems that the number you inputted was not a number.", "4" },
-                            "factorialError"
-                        ); return;
-                    }
-                }
-            );
-
             RegularCommand exit = new(
                 commandName: "exit",
                 function: (string[] args) => {
@@ -1081,6 +1050,33 @@ Opening Wiki anyway.", "3" },
                 aliases: new string[] { "ep" },
                 useInAllCommand: true,
                 allCommandMode: "fancy"
+            );
+
+            FormattableCommand factorial = new(
+                commandName: "factorial",
+                function: (string[] args, bool copy, bool notif) => {
+                    if (Utils.IndexTest(args)) { return null; }
+
+                    try {
+                        System.Numerics.BigInteger n = System.Numerics.BigInteger.Parse(args[1]);
+                        System.Numerics.BigInteger i = 1;
+                        System.Numerics.BigInteger v = 1;
+                        while (i <= n) { v *= i; i += 1; }
+
+                        Utils.CopyCheck(copy, v.ToString());
+                        Utils.NotifCheck(
+                            notif,
+                            new string[] { v.ToString(), $"The factorial is: {v.ToString()}", "5" },
+                            "factorialSuccess"
+                        ); return v.ToString();
+                    } catch {
+                        Utils.NotifCheck(
+                            true,
+                            new string[] { "Huh.", "It seems that the number you inputted was not a number.", "4" },
+                            "factorialError"
+                        ); return null;
+                    }
+                }
             );
 
             FormattableCommand raise = new(
