@@ -1,6 +1,6 @@
 namespace utilities_cs {
     /// <summary>
-    /// The hierarchy of all command-classes for all commands in utilities-cs.
+    /// The base class of all command-classes for all commands in utilities-cs.
     /// </summary>
 
     public class Command {

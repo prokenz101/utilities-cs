@@ -5,7 +5,9 @@ namespace utilities_cs {
         /// </summary>
         /// <param name="title">The title of the notificaton.</param>
         /// <param name="subtitle">The subtitle of the notification.</param>
+        /// <param name="tag">The tag of the notification.</param>
         /// <param name="toastDuration">The amount of time that the toast will stay on screen.</param>
+        /// <param name="bypassLengthLimit">Whether or not to bypass the length limit of the notification.</param>
         public async static void Notification(
                 string title,
                 string subtitle,
@@ -142,6 +144,8 @@ namespace utilities_cs {
         /// Overload of original NotifCheck method that allows you to send a custom ToastContentBuilder.
         /// </summary>
         /// <param name="customToast">The ToastContentBuilder that is to be shown to the user.</param>
+        /// <param name="toastTag">The tag of the Toast Notification.</param>
+        /// <param name="clearToast">Denotes whether the toast should be cleared.</param>
         /// <param name="toastDuration">The duration of the toast.</param>
         public async static void NotifCheck(
             Microsoft.Toolkit.Uwp.Notifications.ToastContentBuilder customToast,
