@@ -133,8 +133,8 @@ They cannot both be true at the same time."
                         return;
                     }
                     break;
-                case "permutationscalculationimit":
-                    currentSettings.permutationsCalculationLimit = Convert.ToInt32(ConvertToBoolOrInt("int", value));
+                case "permutationscalculationlimit":
+                    currentSettings.permutationsCalculationLimit = int.Parse(ConvertToBoolOrInt("int", value)!.ToString()!);
                     break;
                 case "escapebase85outputtext":
                     currentSettings.escapeBase85OutputText = Convert.ToBoolean(ConvertToBoolOrInt("bool", value));

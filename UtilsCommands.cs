@@ -419,105 +419,6 @@ namespace utilities_cs {
                 }
             );
 
-            RegularCommand permutations = new(
-                commandName: "permutations",
-                function: (string[] args) => {
-                    if (Utils.IndexTest(args)) { return; }
-
-                    char[] textAsCharArray = string.Join(" ", args[1..]).ToCharArray();
-
-                    // checks if textAsCharArray is than the permutationsCalculationLimit
-                    int limit = UtilitiesAppContext.currentSettings.permutationsCalculationLimit;
-
-                    if (textAsCharArray.Length <= limit) {
-                        Permutations permutation = new();
-                        permutation.GetPer(textAsCharArray);
-                        HashSet<string> hashSetAnswer = permutation.Permutation;
-
-                        string answer = string.Join("\n", hashSetAnswer);
-                        Utils.CopyCheck(true, answer);
-                        Utils.NotifCheck(
-                            true,
-                            new string[] {
-                                "Success!", "The permutations were copied to your clipboard.", "3"
-                            }, "permutationsSuccess"
-                        );
-                    } else {
-                        Utils.NotifCheck(
-                            true,
-                            new string[] {
-                                "Error!",
-                                $"For performance reasons, permutation calculations can only be used on {limit} or less characters.",
-                                "3"
-                            }, "permutationsError"
-                        );
-                    }
-                },
-                aliases: new string[] { "getpermutations", "get-permutations" }
-            );
-
-            RegularCommand raise = new(
-                commandName: "raise",
-                function: (string[] args) => {
-                    if (Utils.IndexTest(args)) { return; }
-
-                    string text = string.Join(" ", args[1..]);
-                    bool cancel = false;
-
-                    var matchToGroups =
-                        Utils.RegexFind(
-                            text,
-                            @"(?<base>-?\d+\.\d+|-?\d+) to (?<power>-?\d+\.\d+|-?\d+)",
-                            useIsMatch: true,
-                            () => {
-                                Utils.NotifCheck(
-                                    true,
-                                    new string[] { "Huh.", "It seems you did not follow the syntax correctly.", "4" },
-                                    "raiseError"
-                                ); cancel = true;
-                            }
-                        );
-
-                    if (cancel) { return; }
-
-                    if (matchToGroups != null) {
-                        foreach (var kvp in matchToGroups) {
-                            try {
-                                System.Numerics.BigInteger result = 1;
-                                System.Numerics.BigInteger baseNum =
-                                    System.Numerics.BigInteger.Parse(kvp.Key.Groups["base"].Value);
-
-                                System.Numerics.BigInteger powerNum =
-                                    System.Numerics.BigInteger.Parse(kvp.Key.Groups["power"].Value);
-
-                                for (System.Numerics.BigInteger i = 0; i < powerNum; i += 1) {
-                                    result *= baseNum;
-                                }
-
-                                Utils.CopyCheck(true, result.ToString());
-                                Utils.NotifCheck(
-                                    true,
-                                    new string[] {
-                                      "Success!", "The result was copied to your clipboard.", "3"
-                                    }, "raiseSuccess"
-                                );
-                            } catch (OverflowException) {
-                                Utils.NotifCheck(
-                                    true, new string[] { "Error!", "Perhaps the exponent was too large.", "3" },
-                                    "raiseError"
-                                );
-                            }
-                        }
-                    } else {
-                        Utils.NotifCheck(
-                            true,
-                            new string[] { "Huh.", "It seems you did not input the parameters correctly." },
-                            "raiseError"
-                        );
-                    }
-                }
-            );
-
             RegularCommand exit = new(
                 commandName: "exit",
                 function: (string[] args) => {
@@ -1182,6 +1083,70 @@ Opening Wiki anyway.", "3" },
                 allCommandMode: "fancy"
             );
 
+            FormattableCommand raise = new(
+                commandName: "raise",
+                function: (string[] args, bool copy, bool notif) => {
+                    if (Utils.IndexTest(args)) { return null; }
+
+                    string text = string.Join(" ", args[1..]);
+                    bool cancel = false;
+
+                    var matchToGroups =
+                        Utils.RegexFind(
+                            text,
+                            @"(?<base>-?\d+\.\d+|-?\d+) to (?<power>-?\d+\.\d+|-?\d+)",
+                            useIsMatch: true,
+                            () => {
+                                Utils.NotifCheck(
+                                    true,
+                                    new string[] { "Huh.", "It seems you did not follow the syntax correctly.", "4" },
+                                    "raiseError"
+                                ); cancel = true;
+                            }
+                        );
+
+                    if (cancel) { return null; }
+
+                    if (matchToGroups != null) {
+                        foreach (var kvp in matchToGroups) {
+                            try {
+                                System.Numerics.BigInteger result = 1;
+                                System.Numerics.BigInteger baseNum =
+                                    System.Numerics.BigInteger.Parse(kvp.Key.Groups["base"].Value);
+
+                                System.Numerics.BigInteger powerNum =
+                                    System.Numerics.BigInteger.Parse(kvp.Key.Groups["power"].Value);
+
+                                for (System.Numerics.BigInteger i = 0; i < powerNum; i += 1) {
+                                    result *= baseNum;
+                                }
+
+                                Utils.CopyCheck(copy, result.ToString());
+                                Utils.NotifCheck(
+                                    notif,
+                                    new string[] {
+                                      "Success!", "The result was copied to your clipboard.", "3"
+                                    }, "raiseSuccess"
+                                ); return result.ToString();
+                            } catch (OverflowException) {
+                                Utils.NotifCheck(
+                                    true, new string[] { "Error!", "Perhaps the exponent was too large.", "3" },
+                                    "raiseError"
+                                ); return null;
+                            }
+                        }
+                    } else {
+                        Utils.NotifCheck(
+                            true,
+                            new string[] { "Huh.", "It seems you did not input the parameters correctly." },
+                            "raiseError"
+                        ); return null;
+                    }
+
+                    return null;
+                }
+            );
+
             FormattableCommand root = new(
                 commandName: "root",
                 function: (string[] args, bool copy, bool notif) => {
@@ -1482,6 +1447,43 @@ Opening Wiki anyway.", "3" },
                         notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "shuffleSuccess"
                     ); return answer;
                 }
+            );
+
+            FormattableCommand permutations = new(
+                commandName: "permutations",
+                function: (string[] args, bool copy, bool notif) => {
+                    if (Utils.IndexTest(args)) { return null; }
+
+                    char[] textAsCharArray = string.Join(" ", args[1..]).ToCharArray();
+
+                    // checks if textAsCharArray is than the permutationsCalculationLimit
+                    int limit = UtilitiesAppContext.currentSettings.permutationsCalculationLimit;
+
+                    if (textAsCharArray.Length <= limit) {
+                        Permutations permutation = new();
+                        permutation.GetPer(textAsCharArray);
+                        HashSet<string> hashSetAnswer = permutation.Permutation;
+
+                        string answer = string.Join("\n", hashSetAnswer);
+                        Utils.CopyCheck(copy, answer);
+                        Utils.NotifCheck(
+                            notif,
+                            new string[] {
+                                "Success!", "The permutations were copied to your clipboard.", "3"
+                            }, "permutationsSuccess"
+                        ); return answer;
+                    } else {
+                        Utils.NotifCheck(
+                            true,
+                            new string[] {
+                                "Error!",
+                                $"For performance reasons, permutation calculations can only be used on {limit} or less characters.",
+                                "3"
+                            }, "permutationsError"
+                        ); return null;
+                    }
+                },
+                aliases: new string[] { "getpermutations", "get-permutations" }
             );
 
             FormattableCommand fraction = new(
