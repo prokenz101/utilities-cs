@@ -33,7 +33,7 @@ namespace utilities_cs {
             }
         }
 
-        public static void performAutoclick(int interval, MouseOperations.MouseEventFlags mouseButton, int count) {
+        public async static void performAutoclick(int interval, MouseOperations.MouseEventFlags mouseButton, int count) {
             //* tokens
             var autoclickTokenSource = new CancellationTokenSource();
             var autoclickToken = autoclickTokenSource.Token;
@@ -91,7 +91,7 @@ namespace utilities_cs {
                 }
             );
 
-            autoclickTask.Start();
+            await Task.Run(() => autoclickTask.Start());
         }
     }
 

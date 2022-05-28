@@ -28,7 +28,7 @@ namespace utilities_cs {
             }
         }
 
-        public static void SendMain(string[] args) {
+        public async static void SendMain(string[] args) {
             if (Utils.IndexTest(args)) { return; }
 
             if (keys.ContainsKey(args[1])) {
@@ -37,20 +37,24 @@ namespace utilities_cs {
                 Thread.Sleep(500);
                 string text = string.Join(" ", args[1..]);
 
-                foreach (char i in text) {
-                    try {
-                        SendKeys.SendWait(i.ToString());
-                    } catch {
-                        Utils.NotifCheck(
-                            true,
-                            new string[] {
-                                "Something went wrong.",
-                                "Failed to send keys. Try removing any special characters like ().",
-                                "3"
-                            }, "sendError"
-                        ); break;
+                await Task.Run(
+                    () => {
+                        foreach (char i in text) {
+                            try {
+                                SendKeys.SendWait(i.ToString());
+                            } catch {
+                                Utils.NotifCheck(
+                                    true,
+                                    new string[] {
+                                        "Something went wrong.",
+                                        "Failed to send keys. Try removing any special characters like ().",
+                                        "3"
+                                    }, "sendError"
+                                ); break;
+                            }
+                        }
                     }
-                }
+                );
             }
         }
     }

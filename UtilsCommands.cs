@@ -390,25 +390,27 @@ namespace utilities_cs {
 
             RegularCommand factorial = new(
                 commandName: "factorial",
-                function: (string[] args) => {
+                function: async (string[] args) => {
                     if (Utils.IndexTest(args)) { return; }
 
                     try {
-                        int n = int.Parse(args[1]);
-                        int i = 1;
-                        System.Numerics.BigInteger v = 1;
+                        await Task.Run(() => {
+                            int n = int.Parse(args[1]);
+                            int i = 1;
+                            System.Numerics.BigInteger v = 1;
 
-                        while (i <= n) {
-                            v *= i;
-                            i += 1;
-                        }
+                            while (i <= n) {
+                                v *= i;
+                                i += 1;
+                            }
 
-                        Utils.CopyCheck(true, v.ToString());
-                        Utils.NotifCheck(
-                            true,
-                            new string[] { v.ToString(), $"The factorial is: {v.ToString()}", "5" },
-                            "factorialSuccess"
-                        );
+                            Utils.CopyCheck(true, v.ToString());
+                            Utils.NotifCheck(
+                                true,
+                                new string[] { v.ToString(), $"The factorial is: {v.ToString()}", "5" },
+                                "factorialSuccess"
+                            ); return v.ToString();
+                        });
                     } catch {
                         Utils.NotifCheck(
                             true,
@@ -421,7 +423,7 @@ namespace utilities_cs {
 
             RegularCommand permutations = new(
                 commandName: "permutations",
-                function: (string[] args) => {
+                function: async (string[] args) => {
                     if (Utils.IndexTest(args)) { return; }
 
                     char[] textAsCharArray = string.Join(" ", args[1..]).ToCharArray();
@@ -431,7 +433,8 @@ namespace utilities_cs {
 
                     if (textAsCharArray.Length <= limit) {
                         Permutations permutation = new();
-                        permutation.GetPer(textAsCharArray);
+                        await Task.Run(() => permutation.GetPer(textAsCharArray));
+
                         HashSet<string> hashSetAnswer = permutation.Permutation;
 
                         string answer = string.Join("\n", hashSetAnswer);
@@ -458,7 +461,7 @@ namespace utilities_cs {
 
             RegularCommand raise = new(
                 commandName: "raise",
-                function: (string[] args) => {
+                function: async (string[] args) => {
                     if (Utils.IndexTest(args)) { return; }
 
                     string text = string.Join(" ", args[1..]);
@@ -483,24 +486,23 @@ namespace utilities_cs {
                     if (matchToGroups != null) {
                         foreach (var kvp in matchToGroups) {
                             try {
-                                System.Numerics.BigInteger result = 1;
                                 System.Numerics.BigInteger baseNum =
                                     System.Numerics.BigInteger.Parse(kvp.Key.Groups["base"].Value);
 
-                                System.Numerics.BigInteger powerNum =
-                                    System.Numerics.BigInteger.Parse(kvp.Key.Groups["power"].Value);
+                                int powerNum = int.Parse(kvp.Key.Groups["power"].Value);
 
-                                for (System.Numerics.BigInteger i = 0; i < powerNum; i += 1) {
-                                    result *= baseNum;
-                                }
+                                await Task.Run(() => {
+                                    System.Numerics.BigInteger result =
+                                        System.Numerics.BigInteger.Pow(baseNum, powerNum);
 
-                                Utils.CopyCheck(true, result.ToString());
-                                Utils.NotifCheck(
-                                    true,
-                                    new string[] {
-                                      "Success!", "The result was copied to your clipboard.", "3"
-                                    }, "raiseSuccess"
-                                );
+                                    Utils.CopyCheck(true, result.ToString());
+                                    Utils.NotifCheck(
+                                        true,
+                                        new string[] {
+                                    "Success!", "The result was copied to your clipboard.", "3"
+                                        }, "raiseSuccess"
+                                    );
+                                });
                             } catch (OverflowException) {
                                 Utils.NotifCheck(
                                     true, new string[] { "Error!", "Perhaps the exponent was too large.", "3" },
@@ -618,7 +620,7 @@ Opening Wiki anyway.", "3" },
 
             RegularCommand remind = new(
                 commandName: "remind",
-                function: (string[] args) => {
+                function: async (string[] args) => {
                     string text = string.Join(" ", args[1..]);
 
                     Dictionary<
@@ -663,50 +665,52 @@ Opening Wiki anyway.", "3" },
                             { 'h', new string[] { "3600", "hour" } }
                         };
 
-                        if (timeOptions.ContainsKey(unit)) {
-                            int multiplier = int.Parse(timeOptions[unit][0]);
-                            string word = timeOptions[unit][1].ToString();
-                            int timeSeconds = (time * 1000) * multiplier;
+                        await Task.Run(() => { //* Task for reminder.
+                            if (timeOptions.ContainsKey(unit)) {
+                                int multiplier = int.Parse(timeOptions[unit][0]);
+                                string word = timeOptions[unit][1].ToString();
+                                int timeSeconds = (time * 1000) * multiplier;
 
-                            Microsoft.Toolkit.Uwp.Notifications.ToastContentBuilder customReminderToast =
-                                new Microsoft.Toolkit.Uwp.Notifications.ToastContentBuilder()
-                                    .AddText("Reminder!");
+                                Microsoft.Toolkit.Uwp.Notifications.ToastContentBuilder customReminderToast =
+                                    new Microsoft.Toolkit.Uwp.Notifications.ToastContentBuilder()
+                                        .AddText("Reminder!");
 
-                            string timeEquals1 = $"Hey! You set a reminder for 1 {word} and it's time!";
-                            string timeNotEqualTo1 = $"Hey! You set a reminder for {time} {word}s and it's time!";
-                            string timeWithMessage = $"Hey! Your reminder was: {reminderText}";
+                                string timeEquals1 = $"Hey! You set a reminder for 1 {word} and it's time!";
+                                string timeNotEqualTo1 = $"Hey! You set a reminder for {time} {word}s and it's time!";
+                                string timeWithMessage = $"Hey! Your reminder was: {reminderText}";
 
-                            if (time == 1 && reminderText == string.Empty) {
-                                customReminderToast.AddText(timeEquals1);
-                            } else if (reminderText == string.Empty) {
-                                customReminderToast.AddText(timeNotEqualTo1);
-                            } else {
-                                customReminderToast.AddText(timeWithMessage);
+                                if (time == 1 && reminderText == string.Empty) {
+                                    customReminderToast.AddText(timeEquals1);
+                                } else if (reminderText == string.Empty) {
+                                    customReminderToast.AddText(timeNotEqualTo1);
+                                } else {
+                                    customReminderToast.AddText(timeWithMessage);
+                                }
+
+                                customReminderToast.AddButton(
+                                    new Microsoft.Toolkit.Uwp.Notifications.ToastButton()
+                                        .SetContent("Dismiss")
+                                        .AddArgument("dismiss", "dismiss")
+                                        .SetBackgroundActivation()
+                                );
+
+                                customReminderToast.SetToastScenario(
+                                    Microsoft.Toolkit.Uwp.Notifications.ToastScenario.Alarm
+                                ); Task.Delay(timeSeconds).Wait();
+
+                                Utils.NotifCheck(customReminderToast, "reminder", clearToast: false);
+
+                                Microsoft.Toolkit.Uwp.Notifications.ToastNotificationManagerCompat.OnActivated +=
+                                    toastArgs => {
+                                        string[] toastArgsArraySplitByEqualsSigns = toastArgs.Argument.Split("=");
+
+                                        if (toastArgsArraySplitByEqualsSigns[0] == "dismiss") {
+                                            Microsoft.Toolkit.Uwp.Notifications.
+                                                ToastNotificationManagerCompat.History.Remove("reminder");
+                                        }
+                                    };
                             }
-
-                            customReminderToast.AddButton(
-                                new Microsoft.Toolkit.Uwp.Notifications.ToastButton()
-                                    .SetContent("Dismiss")
-                                    .AddArgument("dismiss", "dismiss")
-                                    .SetBackgroundActivation()
-                            );
-
-                            customReminderToast.SetToastScenario(
-                                Microsoft.Toolkit.Uwp.Notifications.ToastScenario.Alarm
-                            ); Task.Delay(timeSeconds).Wait();
-
-                            Utils.NotifCheck(customReminderToast, "reminder", clearToast: false);
-
-                            Microsoft.Toolkit.Uwp.Notifications.ToastNotificationManagerCompat.OnActivated +=
-                                toastArgs => {
-                                    string[] toastArgsArraySplitByEqualsSigns = toastArgs.Argument.Split("=");
-
-                                    if (toastArgsArraySplitByEqualsSigns[0] == "dismiss") {
-                                        Microsoft.Toolkit.Uwp.Notifications.
-                                            ToastNotificationManagerCompat.History.Remove("reminder");
-                                    }
-                                };
-                        }
+                        });
                     }
                 },
                 aliases: new string[] { "reminder" }
@@ -2550,7 +2554,7 @@ Word count: {args[1..].Length}";
                     Utils.CopyCheck(copy, string.Join(" ", pigLatin));
                     Utils.NotifCheck(
                         notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "piglatinSuccess"
-                    ); return string.Join(" ", pigLatin); ;
+                    ); return string.Join(" ", pigLatin);;
                 }
             );
         }
