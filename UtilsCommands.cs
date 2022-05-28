@@ -829,52 +829,7 @@ Opening Wiki anyway.", "3" },
 
             FormattableCommand base64 = new(
                 commandName: "base64",
-                function: (string[] args, bool copy, bool notif) => {
-                    if (Utils.IndexTest(args)) { return null; }
-
-                    Func<string, string> Base64Encode = (string plainText) => {
-                        return Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(plainText));
-                    };
-
-                    Func<string, string> Base64Decode = (string base64EncodedData) => {
-                        return System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(base64EncodedData));
-                    };
-
-                    Func<string, bool> isBase64 = (string s) => {
-                        s = s.Trim();
-                        bool isB64 = (s.Length % 4 == 0) && System.Text.RegularExpressions.Regex.IsMatch(
-                            s, @"^[a-zA-Z0-9\+/]*={0,3}$",
-                            System.Text.RegularExpressions.RegexOptions.None
-                        ); return isB64;
-                    };
-
-                    string text = string.Join(" ", args[1..]);
-                    if (isBase64(text)) {
-                        try {
-                            string ans = Base64Decode(text);
-                            Utils.CopyCheck(copy, ans);
-                            Utils.NotifCheck(
-                                notif,
-                                new string[] { "Success!", $"The message was: {ans}", "6" },
-                                "base64Success"
-                            ); return ans;
-                        } catch {
-                            Utils.NotifCheck(
-                                true,
-                                new string[] { "Huh.", "An exception occured when converting this text to Base64.", "4" },
-                                "base64Error"
-                            ); return null;
-                        }
-                    } else {
-                        string ans = Base64Encode(text);
-                        Utils.CopyCheck(copy, ans);
-                        Utils.NotifCheck(
-                            notif,
-                            new string[] { "Success!", "The message was copied to your clipboard.", "3" },
-                            "base64Success"
-                        ); return ans;
-                    }
-                },
+                function: Base64Convert.Base64ConvertMain,
                 aliases: new string[] { "b64" },
                 useInAllCommand: true,
                 allCommandMode: "encodings"
@@ -882,29 +837,7 @@ Opening Wiki anyway.", "3" },
 
             FormattableCommand isBase64 = new(
                 commandName: "isbase64",
-                function: (string[] args, bool copy, bool notif) => {
-                    if (Utils.IndexTest(args)) {
-                        return null;
-                    }
-
-                    string text = string.Join(" ", args[1..]);
-
-                    Func<string, bool> isBase64 = (string s) => {
-                        s = s.Trim();
-                        bool isB64 = (s.Length % 4 == 0) && System.Text.RegularExpressions.Regex.IsMatch(
-                            s, @"^[a-zA-Z0-9\+/]*={0,3}$",
-                            System.Text.RegularExpressions.RegexOptions.None
-                        ); return isB64;
-                    };
-
-                    if (isBase64(text)) {
-                        Utils.NotifCheck(notif, new string[] { "Yes.", "The string is Base64.", "3" }, "isBase64Success");
-                        return "Yes";
-                    } else {
-                        Utils.NotifCheck(notif, new string[] { "No.", "The string is not Base64.", "3" }, "isBase64Success");
-                        return "No";
-                    }
-                }
+                function: IsBase64.IsBase64Main
             );
 
             FormattableCommand ascii85 = new(
@@ -1958,51 +1891,10 @@ Word count: {args[1..].Length}";
                     string text = string.Join(" ", args[1..]).ToLower();
                     if (Utils.IndexTest(args)) { return null; }
 
-                    Func<string, bool, bool, string> toMorse = (string text, bool copy, bool notif) => {
-                        List<string> morseConverted = new();
-
-                        foreach (char t in text) {
-                            if (Dictionaries.MorseToTextDict.ContainsKey(t.ToString())) {
-                                morseConverted.Add(Dictionaries.MorseToTextDict[t.ToString()]);
-                                morseConverted.Add(" ");
-                            } else {
-                                morseConverted.Add(t.ToString());
-                            }
-                        }
-
-                        Utils.CopyCheck(copy, string.Join("", morseConverted));
-                        Utils.NotifCheck(
-                            notif,
-                            new string[] { "Success!", "Message copied to clipboard.", "3" },
-                            "morseSuccess"
-                        ); return string.Join("", morseConverted);
-                    };
-
-                    Func<string, bool, bool, string> toText = (string morse, bool copy, bool notif) => {
-                        List<string> text_converted = new();
-                        Dictionary<string, string> morseToText = Utils.InvertKeyAndValue(Dictionaries.MorseToTextDict);
-                        string[] text_array = morse.Split(" ");
-
-                        foreach (string m in text_array) {
-                            if (morseToText.ContainsKey(m.ToString())) {
-                                text_converted.Add(morseToText[m.ToString()]);
-                            } else {
-                                text_converted.Add(m.ToString());
-                            }
-                        }
-
-                        Utils.CopyCheck(copy, string.Join("", text_converted));
-                        Utils.NotifCheck(
-                            notif,
-                            new string[] { "Success!", $"The message was: {string.Join("", text_converted)}", "7" },
-                            "morseSuccess"
-                        ); return string.Join("", text_converted);
-                    };
-
                     if (Utils.FormatValid("-./ ", text)) {
-                        return toText(text, copy, notif);
+                        return Morse.toText(text, copy, notif);
                     } else {
-                        return toMorse(text, copy, notif);
+                        return Morse.toMorse(text, copy, notif);
                     }
                 },
                 aliases: new string[] { "morsecode" },
@@ -2551,10 +2443,12 @@ Word count: {args[1..].Length}";
                         }
                     }
 
-                    Utils.CopyCheck(copy, string.Join(" ", pigLatin));
+                    string result = string.Join(" ", pigLatin);
+
+                    Utils.CopyCheck(copy, result);
                     Utils.NotifCheck(
                         notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "piglatinSuccess"
-                    ); return string.Join(" ", pigLatin);;
+                    ); return result;
                 }
             );
         }
