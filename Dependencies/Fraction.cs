@@ -244,6 +244,52 @@ namespace utilities_cs {
                         "fractionError"
                     ); return null;
                 }
+            } else if (mode == "check") {
+                Regex fractionRegex = new(@"^if (?<numerator>-?\d+)\/(?<denominator>-?\d+) is (?<check>\w+)$");
+                Regex mixedFractionRegex = new(
+                    @"^if (?<wholenum>-?\d+) (?<numerator>-?\d+)\/(?<denominator>-?\d+) is (?<check>\w+)$"
+                );
+
+                string input = string.Join(" ", args[2..]);
+                if (fractionRegex.IsMatch(input)) {
+                    Fraction fc = new(
+                        fractionRegex.Match(input).Groups["numerator"]!.Value
+                        + "/"
+                        + fractionRegex.Match(input).Groups["denominator"]!.Value
+                    );
+
+                    string check = fractionRegex.Match(input).Groups["check"].Value;
+                    if (check == "proper" | check == "improper") {
+                        bool result =
+                            check == "proper" ? fc.IsProper()
+                            : check == "improper" ? fc.IsImproper()
+                            : false; //* should never happen
+
+                        Utils.CopyCheck(copy, result.ToString());
+                        Utils.NotifCheck(
+                            notif, new string[] { "Success!", $"The answer is: {result}", "4" }, "fractionSuccess"
+                        ); return result.ToString();
+                    } else {
+                        Utils.NotifCheck(
+                            true,
+                            new string[] { "Huh.", "It seems you did not input a valid checking mode.", "3" },
+                            "fractionError"
+                        ); return null;
+                    }
+                } else if (mixedFractionRegex.IsMatch(input)) {
+                    Utils.NotifCheck(
+                        true,
+                        new string[] {
+                            "Huh.", "It seems this mode does not support Mixed Fractions.", "3"
+                        }, "fractionError"
+                    ); return null;
+                } else {
+                    Utils.NotifCheck(
+                        true,
+                        new string[] { "Huh.", "It seems you did not follow the syntax correctly.", "3" },
+                        "fractionError"
+                    ); return null;
+                }
             } else {
                 Utils.NotifCheck(
                     true, new string[] { "Huh.", "It seems that is not a valid mode.", "3" }, "fractionError"
@@ -288,9 +334,9 @@ namespace utilities_cs {
 
         public bool IsImproper() { return this.Denominator < this.Numerator; }
 
-        public static bool IsLike(Fraction fc1, Fraction fc2) { return fc1.Denominator == fc2.Denominator; }
+        public static bool AreLike(Fraction fc1, Fraction fc2) { return fc1.Denominator == fc2.Denominator; }
 
-        public static bool IsUnlike(Fraction fc1, Fraction fc2) { return fc1.Denominator != fc2.Denominator; }
+        public static bool AreUnlike(Fraction fc1, Fraction fc2) { return fc1.Denominator != fc2.Denominator; }
 
         public static Fraction? Operation(Fraction fc1, Fraction fc2, string operation, bool simplify = true) {
             if (operation == "add") {
