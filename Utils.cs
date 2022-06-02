@@ -172,6 +172,8 @@ namespace utilities_cs {
         /// <param name="input">The string which is to be searched for integers.</param>
         /// <returns>A list of all BigIntegers that were captured by the Regex.</returns>
         public static List<System.Numerics.BigInteger> RegexFindAllInts(string input) {
+            input = input.Replace(",", "");
+            
             List<System.Numerics.BigInteger> BigInts = new();
             System.Text.RegularExpressions.Regex re =
                 new System.Text.RegularExpressions.Regex(@"(?<num>-?\d+)+");
@@ -187,6 +189,26 @@ namespace utilities_cs {
             }
 
             return BigInts;
+        }
+
+        /// <summary>
+        /// Formats every character of a string to a value in a dictionary.
+        /// </summary>
+        /// <param name="input">The input string to be formatted.</param>
+        /// <param name="dict">The dictionary to use for the keys and values.</param>
+        /// <returns>A formatted string.</returns>
+        public static string TextFormatter(string input, Dictionary<string, string> dict) {
+            List<string> converted = new();
+
+            foreach (char i in input) {
+                if (dict.ContainsKey(i.ToString())) {
+                    converted.Add(dict[i.ToString()]);
+                } else {
+                    converted.Add(i.ToString());
+                }
+            }
+
+            return string.Join("", converted);
         }
 
         /// <summary>

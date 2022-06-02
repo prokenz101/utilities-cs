@@ -873,25 +873,13 @@ Opening Wiki anyway.", "3" },
                 function: (string[] args, bool copy, bool notif) => {
                     if (Utils.IndexTest(args)) { return null; }
 
-                    string text = string.Join(" ", args[1..]);
-                    List<string> converted = new();
-
-                    foreach (char b in text) {
-                        var replaced = Dictionaries.BubbleDict.GetValueOrDefault(b.ToString(), "");
-                        if (replaced != "") {
-                            converted.Add(replaced!);
-                        } else {
-                            converted.Add(b.ToString());
-                        }
-                    }
-
-                    var answer = string.Join("", converted);
-                    Utils.CopyCheck(copy, answer);
+                    string result = Utils.TextFormatter(string.Join(" ", args[1..]), Dictionaries.BubbleDict);
+                    Utils.CopyCheck(copy, result);
                     Utils.NotifCheck(
                         notif,
                         new string[] { "Success!", "Message copied to clipboard.", "3" },
                         "bubbletextSuccess"
-                    ); return answer;
+                    ); return result;
                 },
                 aliases: new string[] { "bubble" },
                 useInAllCommand: true,
@@ -971,25 +959,14 @@ Opening Wiki anyway.", "3" },
                 function: (string[] args, bool copy, bool notif) => {
                     if (Utils.IndexTest(args)) { return null; }
 
-                    string text = string.Join(" ", args[1..]);
-                    List<string> converted = new();
+                    string result = Utils.TextFormatter(string.Join(" ", args[1..]), Dictionaries.CreepyDict);
 
-                    foreach (char cr in text) {
-                        var replaced = Dictionaries.CreepyDict.GetValueOrDefault(cr.ToString(), "");
-                        if (replaced != "") {
-                            converted.Add(replaced!);
-                        } else {
-                            converted.Add(cr.ToString());
-                        }
-                    }
-
-                    var answer = string.Join("", converted);
-                    Utils.CopyCheck(copy, answer);
+                    Utils.CopyCheck(copy, result);
                     Utils.NotifCheck(
                         notif,
                         new string[] { "Success!", "Message copied to clipboard.", "3" },
                         "creepySuccess"
-                    ); return answer;
+                    ); return result;
                 },
                 useInAllCommand: true,
                 allCommandMode: "fancy"
@@ -1000,18 +977,7 @@ Opening Wiki anyway.", "3" },
                 function: (string[] args, bool copy, bool notif) => {
                     if (Utils.IndexTest(args)) { return null; }
 
-                    string text = string.Join(" ", args[1..]);
-                    List<string> converted = new();
-
-                    foreach (char i in text) {
-                        if (Dictionaries.WingdingsDict.ContainsKey(i.ToString())) {
-                            converted.Add(Dictionaries.WingdingsDict[i.ToString()]);
-                        } else {
-                            converted.Add(i.ToString());
-                        }
-                    }
-
-                    string result = string.Join("", converted);
+                    string result = Utils.TextFormatter(string.Join(" ", args[1..]), Dictionaries.WingdingsDict);
 
                     Utils.CopyCheck(copy, result);
                     Utils.NotifCheck(
@@ -1030,22 +996,11 @@ Opening Wiki anyway.", "3" },
                 function: (string[] args, bool copy, bool notif) => {
                     if (Utils.IndexTest(args)) { return null; }
 
-                    string text = string.Join(" ", args[1..]);
-                    List<string> converted = new();
+                    string result = Utils.TextFormatter(string.Join(" ", args[1..]), Dictionaries.ExponentDict);
 
-                    foreach (char e in text) {
-                        var replaced = Dictionaries.ExponentDict.GetValueOrDefault(e.ToString(), "");
-                        if (replaced != "") {
-                            converted.Add(replaced!);
-                        } else {
-                            converted.Add(e.ToString());
-                        }
-                    }
-
-                    var answer = string.Join("", converted);
-                    Utils.CopyCheck(copy, answer);
+                    Utils.CopyCheck(copy, result);
                     Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "epSuccess");
-                    return answer;
+                    return result;
                 },
                 aliases: new string[] { "ep" },
                 useInAllCommand: true,
@@ -1271,23 +1226,12 @@ Opening Wiki anyway.", "3" },
                 function: (string[] args, bool copy, bool notif) => {
                     if (Utils.IndexTest(args)) { return null; }
 
-                    string text = string.Join(" ", args[1..]);
-                    List<string> converted = new();
-
-                    foreach (char c in text) {
-                        var replaced = Dictionaries.CursiveDict.GetValueOrDefault(c.ToString(), "");
-                        if (replaced != "") {
-                            converted.Add(replaced!);
-                        } else {
-                            converted.Add(c.ToString());
-                        }
-                    }
-
-                    var answer = string.Join("", converted);
-                    Utils.CopyCheck(copy, answer);
+                    string result = Utils.TextFormatter(string.Join(" ", args[1..]), Dictionaries.CursiveDict);
+                    
+                    Utils.CopyCheck(copy, result);
                     Utils.NotifCheck(
                         notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "cursiveSuccess"
-                    ); return answer;
+                    ); return result;
                 },
                 useInAllCommand: true,
                 allCommandMode: "fancy"
@@ -1298,23 +1242,11 @@ Opening Wiki anyway.", "3" },
                 function: (string[] args, bool copy, bool notif) => {
                     if (Utils.IndexTest(args)) { return null; }
 
-                    string text = string.Join(" ", args[1..]);
-                    List<string> converted = new();
-
-                    foreach (char d in text) {
-                        var replaced = Dictionaries.DoublestruckDict.GetValueOrDefault(d.ToString(), "");
-                        if (replaced != "") {
-                            converted.Add(replaced!);
-                        } else {
-                            converted.Add(d.ToString());
-                        }
-                    }
-
-                    var answer = string.Join("", converted);
-                    Utils.CopyCheck(copy, answer);
+                    string result = Utils.TextFormatter(string.Join(" ", args[1..]), Dictionaries.DoublestruckDict);
+                    Utils.CopyCheck(copy, result);
                     Utils.NotifCheck(
                         notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "doublestruckSuccess"
-                    ); return answer;
+                    ); return result;
                 },
                 aliases: new string[] { "dbs" },
                 useInAllCommand: true,
@@ -1355,22 +1287,11 @@ Opening Wiki anyway.", "3" },
                 function: (string[] args, bool copy, bool notif) => {
                     if (Utils.IndexTest(args)) { return null; }
 
-                    string text = string.Join(" ", args[1..]);
-                    text = text.ToUpper();
                     Dictionary<string, string> leetChar = new() {
                         { "E", "3" }, { "I", "1" }, { "O", "0" }, { "A", "4" }, { "S", "5" }
                     };
-                    List<string> converted = new();
 
-                    foreach (char i in text) {
-                        if (leetChar.ContainsKey(i.ToString())) {
-                            converted.Add(leetChar[i.ToString()]);
-                        } else {
-                            converted.Add(i.ToString());
-                        }
-                    }
-
-                    string result = string.Join("", converted);
+                    string result = Utils.TextFormatter(string.Join(" ", args[1..]).ToUpper(), leetChar);
 
                     Utils.CopyCheck(copy, result);
                     Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "leetSuccess");
@@ -1502,6 +1423,8 @@ Opening Wiki anyway.", "3" },
             FormattableCommand factors = new(
                 commandName: "factors",
                 function: (string[] args, bool copy, bool notif) => {
+                    if (Utils.IndexTest(args)) { return null; }
+
                     Func<System.Numerics.BigInteger, List<System.Numerics.BigInteger>> findFactors =
                         (System.Numerics.BigInteger num) => {
                             List<System.Numerics.BigInteger> factors = new();
@@ -1514,8 +1437,6 @@ Opening Wiki anyway.", "3" },
 
                             return factors;
                         };
-
-                    if (Utils.IndexTest(args)) { return null; }
 
                     System.Numerics.BigInteger num = System.Numerics.BigInteger.Parse(args[1]);
                     List<System.Numerics.BigInteger> factors = findFactors(num);
@@ -1825,7 +1746,7 @@ Word count: {args[1..].Length}";
                     string text = string.Join(" ", args[1..]);
 
                     System.Text.RegularExpressions.Regex re =
-                        new(@"[""'](?<old>.+)[""'] to [""'](?<new>.+|)[""'] in [""'](?<text>.+)[""']");
+                        new(@"[""'](?<old>.+)[""'] with [""'](?<new>.+|)[""'] in [""'](?<text>.+)[""']");
 
                     if (re.IsMatch(text)) {
                         var match = re.Match(text);
@@ -1906,8 +1827,7 @@ Word count: {args[1..].Length}";
                 function: (string[] args, bool copy, bool notif) => {
                     if (Utils.IndexTest(args)) { return null; }
 
-                    string text = string.Join(" ", args[1..]);
-                    string lowerText = text.ToLower();
+                    string lowerText = string.Join(" ", args[1..]).ToLower();
                     Utils.CopyCheck(copy, lowerText);
                     Utils.NotifCheck(
                         notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "lowercaseSuccess"
@@ -1921,19 +1841,8 @@ Word count: {args[1..].Length}";
                 function: (string[] args, bool copy, bool notif) => {
                     if (Utils.IndexTest(args)) { return null; }
 
-                    string text = string.Join(" ", args[1..]);
-                    List<string> converted = new();
+                    var answer = Utils.TextFormatter(string.Join(" ", args[1..]), Dictionaries.MathItalicDict);
 
-                    foreach (char d in text) {
-                        var replaced = Dictionaries.MathItalicDict.GetValueOrDefault(d.ToString(), "");
-                        if (replaced != "") {
-                            converted.Add(replaced!);
-                        } else {
-                            converted.Add(d.ToString());
-                        }
-                    }
-
-                    var answer = string.Join("", converted);
                     Utils.CopyCheck(copy, answer);
                     Utils.NotifCheck(
                         notif,
@@ -1973,24 +1882,24 @@ Word count: {args[1..].Length}";
                     };
 
                     Func<string, bool, bool, string> toText = (string morse, bool copy, bool notif) => {
-                        List<string> text_converted = new();
+                        List<string> convertedText = new();
                         Dictionary<string, string> morseToText = Utils.InvertKeyAndValue(Dictionaries.MorseToTextDict);
-                        string[] text_array = morse.Split(" ");
+                        string[] textArray = morse.Split(" ");
 
-                        foreach (string m in text_array) {
+                        foreach (string m in textArray) {
                             if (morseToText.ContainsKey(m.ToString())) {
-                                text_converted.Add(morseToText[m.ToString()]);
+                                convertedText.Add(morseToText[m.ToString()]);
                             } else {
-                                text_converted.Add(m.ToString());
+                                convertedText.Add(m.ToString());
                             }
                         }
 
-                        Utils.CopyCheck(copy, string.Join("", text_converted));
+                        Utils.CopyCheck(copy, string.Join("", convertedText));
                         Utils.NotifCheck(
                             notif,
-                            new string[] { "Success!", $"The message was: {string.Join("", text_converted)}", "7" },
+                            new string[] { "Success!", $"The message was: {string.Join("", convertedText)}", "7" },
                             "morseSuccess"
-                        ); return string.Join("", text_converted);
+                        ); return string.Join("", convertedText);
                     };
 
                     if (Utils.FormatValid("-./ ", text)) {
@@ -2194,10 +2103,8 @@ Word count: {args[1..].Length}";
                                     "Huh.",
                                     "Unfortunately the minimum value cannot be higher than the max value.",
                                     "5"
-                                },
-                                "randintError"
-                            );
-                            return null;
+                                }, "randintError"
+                            ); return null;
                         }
 
                         Random rand = new Random();
@@ -2214,10 +2121,8 @@ Word count: {args[1..].Length}";
                                 "Are you sure those were numbers?",
                                 "Something went wrong while getting the numbers from the parameters you inputted.",
                                 "4"
-                            },
-                            "randintError"
-                        );
-                        return null;
+                            }, "randintError"
+                        ); return null;
                     }
                 },
                 aliases: new string[] { "randnum" }
@@ -2250,6 +2155,7 @@ Word count: {args[1..].Length}";
                     string text = string.Join(" ", args[1..]);
                     List<string> converted = new();
                     char currentCase = 'u';
+
                     foreach (char i in text) {
                         string iStr = i.ToString();
                         if (currentCase == 'u') {
@@ -2397,6 +2303,7 @@ Word count: {args[1..].Length}";
                         converted.Add(i.ToString());
                         converted.Add(" ");
                     }
+
                     string answer = string.Join("", converted);
                     Utils.CopyCheck(copy, answer);
                     Utils.NotifCheck(
@@ -2417,6 +2324,7 @@ Word count: {args[1..].Length}";
                     foreach (char i in text) {
                         converted.Add($"||{i}");
                     }
+
                     string answer = $"{string.Join("||", converted)}||";
                     Utils.CopyCheck(copy, answer);
                     Utils.NotifCheck(
