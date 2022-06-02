@@ -47,8 +47,7 @@ namespace utilities_cs {
                     true,
                     new string[] {
                         "Welp.", "It seems utilities couldn't understand what command you were trying to use.", "4"
-                    },
-                    "executeCommandError"
+                    }, "executeCommandError"
                 ); return null;
             }
         }
