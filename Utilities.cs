@@ -56,10 +56,10 @@
         /// <summary>
         /// Constructor for the application context.
         /// </summary>
-        public UtilitiesAppContext(bool debug = false) {
+        public UtilitiesAppContext() {
             //* making keyboard hook for ctrl + f8
             HookManager.AddHook(
-                "utilities",
+                "utilities-cs-ctrlF8",
                 new ModifierKeys[] { ModifierKeys.Control },
                 Keys.F8,
                 async () => {
@@ -72,7 +72,7 @@
                     Thread.Sleep(hotkeyDelay);
                     if (pressEscape) { SendKeys.Send("{ESC}"); }
                     string[] args = Clipboard.GetText().Split(" ");
-                    if (!debug) { await Task.Run(() => Utilities(args)); } else { Utilities(args); }
+                    await Task.Run(() => Utilities(args));
                 },
                 onFail: () => {
                     Utils.NotifCheck(
@@ -81,10 +81,8 @@
                             "Something went wrong.",
                             @"Are you opening multiple instances of utilities-cs?",
                             "6"
-                        },
-                        "utilitiesHotkeyError"
-                    );
-                    Exit();
+                        }, "utilitiesHotkeyError"
+                    ); Exit();
                 }
             );
 
