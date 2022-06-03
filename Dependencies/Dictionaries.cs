@@ -96,7 +96,7 @@ namespace utilities_cs {
             { "cedille C", "Ç" },
             { "3164", "ㅤ" },
             { "hangul filler", "ㅤ" },
-            { "divison", "÷" },
+            { "division", "÷" },
             { "divide", "÷" },
             { "multi", "×" },
             { "!=", "≠" },
