@@ -573,6 +573,9 @@ Opening Wiki anyway.", "3" },
                                     if (toastArgsArraySplitByEqualsSigns[0] == "dismiss") {
                                         Microsoft.Toolkit.Uwp.Notifications.
                                             ToastNotificationManagerCompat.History.Remove("reminder");
+
+                                        Microsoft.Toolkit.Uwp.Notifications.
+                                            ToastNotificationManagerCompat.OnActivated -= delegate { };
                                     }
                                 };
                         }
