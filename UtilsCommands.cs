@@ -140,8 +140,8 @@ namespace utilities_cs {
         /// <param name="commandName">The commandName for the FormattableCommand.</param>
         /// <param name="function">The function for the FormattableCommand.</param>
         /// <param name="aliases">The aliases for the FormattableCommand.</param>
-        /// <param name="useInAllCommand">The useInAllCommand for the FormattableCommand.</param>
-        /// <param name="allCommandMode">The allCommandMode for the FormattableCommand.</param>
+        /// <param name="useInAllCommand">Denotes whether the command should be included in the all command.</param>
+        /// <param name="allCommandMode">The mode for the all command that the command is to be included in.</param>
         public FormattableCommand(
             string commandName,
             Func<string[], bool, bool, string?> function,
@@ -152,6 +152,7 @@ namespace utilities_cs {
             //* setting all attributes for instance
             CommandName = commandName; Function = function; Aliases = aliases;
             UseInAllCommand = useInAllCommand; AllCommandMode = allCommandMode;
+
             if (aliases != null) {
                 FCommands.Add(commandName, function);
                 foreach (string alias in aliases) { FCommands.Add(alias, function); }
