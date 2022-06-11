@@ -220,11 +220,13 @@ namespace utilities_cs {
             List<FormattableCommand> methodsSupportedByAll = new();
 
             if (FormattableCommands != null) {
-                FormattableCommands.ForEach(i => {
-                    if (i.UseInAllCommand && i.AllCommandMode == mode) {
-                        methodsSupportedByAll.Add(i);
+                FormattableCommands.ForEach(
+                    i => {
+                        if (i.UseInAllCommand && i.AllCommandMode == mode) {
+                            methodsSupportedByAll.Add(i);
+                        }
                     }
-                });
+                );
             }
 
             return methodsSupportedByAll;
@@ -490,20 +492,18 @@ Opening Wiki anyway.", "3" },
                 function: (string[] args) => {
                     string text = string.Join(" ", args[1..]);
 
-                    Dictionary<
-                        System.Text.RegularExpressions.Match,
-                        System.Text.RegularExpressions.GroupCollection
-                    >? matchToGroups = Utils.RegexFind(
-                        text,
-                        @"(?<time>\d+)(?<unit>h|m|s)(?<text> .*)?",
-                        useIsMatch: true,
-                        () => {
-                            Utils.NotifCheck(
-                                true,
-                                new string[] { "Huh.", "It seems the parameters were not given properly.", "3" },
-                                "remindCommandError"
-                            );
-                        }
+                    Dictionary<System.Text.RegularExpressions.Match, System.Text.RegularExpressions.GroupCollection>?
+                        matchToGroups = Utils.RegexFind(
+                            text,
+                            @"(?<time>\d+)(?<unit>h|m|s)(?<text> .*)?",
+                            useIsMatch: true,
+                            () => {
+                                Utils.NotifCheck(
+                                    true,
+                                    new string[] { "Huh.", "It seems the parameters were not given properly.", "3" },
+                                    "remindCommandError"
+                                );
+                            }
                     );
 
                     if (matchToGroups != null) {
@@ -844,15 +844,14 @@ Opening Wiki anyway.", "3" },
                         try {
                             string[] textList = text.Split(" ");
 
-                            var chars = from split in textList
-                                        select ((char)Convert.ToInt32(split, 2)).ToString();
+                            var chars = from split in textList select ((char)Convert.ToInt32(split, 2)).ToString();
+
+                            Utils.CopyCheck(copy, string.Join("", chars));
                             Utils.NotifCheck(
                                 notif,
                                 new string[] { "Success!", $"The message was: {string.Join("", chars)}", "10" },
                                 "binarySuccess"
-                            );
-                            Utils.CopyCheck(copy, string.Join("", chars));
-                            return string.Join("", chars);
+                            ); return string.Join("", chars);
                         } catch {
                             Utils.NotifCheck(
                                 true,
@@ -1226,7 +1225,7 @@ Opening Wiki anyway.", "3" },
                     if (Utils.IndexTest(args)) { return null; }
 
                     string result = Utils.TextFormatter(string.Join(" ", args[1..]), Dictionaries.CursiveDict);
-                    
+
                     Utils.CopyCheck(copy, result);
                     Utils.NotifCheck(
                         notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "cursiveSuccess"
