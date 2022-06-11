@@ -185,7 +185,7 @@ They cannot both be true at the same time."
         public static string ListAllSettings() {
             List<string> settings = new();
             foreach (var i in defaultSettings.GetType().GetProperties()) {
-                settings.Add(i.Name);
+                settings.Add($"{i.Name}: {i.GetValue(UtilitiesAppContext.currentSettings)}");
             }
 
             string allSettings = string.Join("\n", settings);
