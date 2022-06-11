@@ -628,6 +628,25 @@ Opening Wiki anyway.", "3" },
                 commandName: "translate",
                 function: Translate.TranslateMain
             );
+
+            RegularCommand getcommandcount = new(
+                commandName: "getcommandcount",
+                function: (string[] args) => {
+                    int regularCommandsCount = RegularCommand.RegularCommands.Count;
+                    int formattableCommandsCount = FormattableCommand.FormattableCommands.Count;
+
+                    Utils.NotifCheck(
+                        true,
+                        new string[] {
+                            $"Total Commands: {regularCommandsCount + formattableCommandsCount}",
+                            $@"RegularCommands Count: {regularCommandsCount}
+FormattableCommands Count: {formattableCommandsCount}",
+                            "5"
+                        }, "getcommandcountSuccess"
+                    );
+                },
+                aliases: new string[] { "totalcommandcount", "get-commandcount" }
+            );
         }
 
         /// <summary>
