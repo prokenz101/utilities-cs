@@ -11,7 +11,7 @@ namespace utilities_cs {
     /// http://www.codinghorror.com/blog/archives/000410.html
     /// </remarks>
     class Ascii85 {
-        public static string? Ascii85Main(string[] args, bool copy, bool notif) {
+        public static string? Base85Main(string[] args, bool copy, bool notif) {
             if (Utils.IndexTest(args)) { return null; }
 
             string mode = args[1];

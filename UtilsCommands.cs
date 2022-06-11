@@ -775,10 +775,10 @@ Opening Wiki anyway.", "3" },
                 }
             );
 
-            FormattableCommand ascii85 = new(
-                commandName: "ascii85",
-                function: Ascii85.Ascii85Main,
-                aliases: new string[] { "base85", "b85" }
+            FormattableCommand base85 = new(
+                commandName: "base85",
+                function: Ascii85.Base85Main,
+                aliases: new string[] { "ascii85", "b85" }
             );
 
             FormattableCommand urlencode = new(
