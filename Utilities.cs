@@ -1,10 +1,21 @@
 ﻿namespace utilities_cs {
     class Program {
+        public const string Version = "v1.12";
+        public const BuildMode buildMode = BuildMode.FrameworkDependent;
+
         [STAThread]
         /// <summary>
         /// The main starting point of the program.
         /// </summary>
         static void Main(string[] args) {
+            RegisterCommands.RegisterAllRCommands();
+            RegisterCommands.RegisterAllFCommands();
+
+#if UTILITIES_DEBUG
+            //* debug mode, only used for specific times
+            string? copied_text = UtilitiesAppContext.Utilities(args);
+            if (copied_text != null) { Console.WriteLine(copied_text); }
+#else
             Utils.NotifCheck(
                 true,
                 new string[] {
@@ -14,14 +25,8 @@
                 }, "utilities-csOpen"
             );
 
-            RegisterCommands.RegisterAllRCommands();
-            RegisterCommands.RegisterAllFCommands();
+            CheckForUpdates();
 
-#if UTILITIES_DEBUG
-            //* debug mode, only used for specific times
-            string? copied_text = UtilitiesAppContext.Utilities(args);
-            if (copied_text != null) { Console.WriteLine(copied_text); }
-#else
             Application.EnableVisualStyles();
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.SetCompatibleTextRenderingDefault(false);
@@ -32,6 +37,20 @@
 
             Application.Run(app);
 #endif
+        }
+
+        public enum BuildMode {
+            FrameworkDependent,
+            SelfContained
+        }
+
+        async static void CheckForUpdates() {
+            await Task.Run(
+                () => {
+                    Thread.Sleep(4000);
+                    Update.Check(alertEvenIfUpdateIsNotRequired: false);
+                }
+            );
         }
     }
 
