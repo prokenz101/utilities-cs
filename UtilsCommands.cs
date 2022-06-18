@@ -395,6 +395,24 @@ namespace utilities_cs {
                 function: Format.Formatter
             );
 
+            RegularCommand update = new(
+                commandName: "update",
+                function: (string[] args) => {
+                    if (Utils.IndexTest(args)) { return; }
+
+                    if (args[1] == "check") {
+                        Update.Check();
+                    } else {
+                        Utils.NotifCheck(
+                            true,
+                            new string[] { "Huh.", "It seems that is not a valid mode.", "3" },
+                            "updateError"
+                        );
+                    }
+                },
+                aliases: new string[] { "updates" }
+            );
+
             RegularCommand exit = new(
                 commandName: "exit",
                 function: (string[] args) => {
