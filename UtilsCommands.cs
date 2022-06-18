@@ -369,6 +369,11 @@ namespace utilities_cs {
                 Send.SendMain
             );
 
+            RegularCommand spam = new(
+                commandName: "spam",
+                Spam.SpamMain
+            );
+
             RegularCommand settings = new(
                 commandName: "settings",
                 function: SettingsModification.SettingsMain
