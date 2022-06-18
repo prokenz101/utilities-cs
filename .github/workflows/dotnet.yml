@@ -20,7 +20,7 @@ jobs:
     - name: Publish project as framework-dependent
       run: dotnet publish -c Release --self-contained false
     - name: Rename output file (framework-dependent)
-      run: mv D:\a\utilities-cs\utilities-cs\bin\Release\net6.0-windows10.0.17763.0\win-x64\publish\utilities-cs.exe D:\a\utilities-cs\utilities-cs\bin\Release\net6.0-windows10.0.17763.0\win-x64\publish\utilities-cs-framework-dependent.exe
+      run: mv D:\a\utilities-cs\utilities-cs\bin\Release\net6.0-windows10.0.17763.0\win-x64\publish\utilities-cs.exe D:\a\utilities-cs\utilities-cs\bin\Release\net6.0-windows10.0.17763.0\win-x64\publish\utilities-cs-fd.exe
     - uses: actions/upload-artifact@v3.0.0
       with:
         name: framework-dependent
@@ -28,7 +28,7 @@ jobs:
     - name: Publish project as self-contained
       run: dotnet publish -c Release --self-contained true
     - name: Rename output file
-      run: mv D:\a\utilities-cs\utilities-cs\bin\Release\net6.0-windows10.0.17763.0\win-x64\publish\utilities-cs.exe D:\a\utilities-cs\utilities-cs\bin\Release\net6.0-windows10.0.17763.0\win-x64\publish\utilities-cs-self-contained.exe
+      run: mv D:\a\utilities-cs\utilities-cs\bin\Release\net6.0-windows10.0.17763.0\win-x64\publish\utilities-cs.exe D:\a\utilities-cs\utilities-cs\bin\Release\net6.0-windows10.0.17763.0\win-x64\publish\utilities-cs-sc.exe
     - uses: actions/upload-artifact@v3.0.0
       with:
         name: self-contained
