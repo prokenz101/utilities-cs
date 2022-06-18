@@ -580,7 +580,7 @@ Opening Wiki anyway.", "3" },
                             customReminderToast.AddButton(
                                 new Microsoft.Toolkit.Uwp.Notifications.ToastButton()
                                     .SetContent("Dismiss")
-                                    .AddArgument("dismiss", "dismiss")
+                                    .AddArgument("remind", "dismiss")
                                     .SetBackgroundActivation()
                             );
 
@@ -600,19 +600,6 @@ Opening Wiki anyway.", "3" },
                             ); Task.Delay(timeSeconds).Wait();
 
                             Utils.NotifCheck(customReminderToast, "reminder", clearToast: false);
-
-                            Microsoft.Toolkit.Uwp.Notifications.ToastNotificationManagerCompat.OnActivated +=
-                                toastArgs => {
-                                    string[] toastArgsArraySplitByEqualsSigns = toastArgs.Argument.Split("=");
-
-                                    if (toastArgsArraySplitByEqualsSigns[0] == "dismiss") {
-                                        Microsoft.Toolkit.Uwp.Notifications.
-                                            ToastNotificationManagerCompat.History.Remove("reminder");
-
-                                        Microsoft.Toolkit.Uwp.Notifications.
-                                            ToastNotificationManagerCompat.OnActivated -= delegate { };
-                                    }
-                                };
                         }
                     }
                 },
