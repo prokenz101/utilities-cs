@@ -887,7 +887,6 @@ FormattableCommands Count: {formattableCommandsCount}",
                     } else {
                         try {
                             string[] textList = text.Split(" ");
-
                             var chars = from split in textList select ((char)Convert.ToInt32(split, 2)).ToString();
 
                             Utils.CopyCheck(copy, string.Join("", chars));
@@ -988,8 +987,7 @@ FormattableCommands Count: {formattableCommandsCount}",
                                 "Welp.",
                                 "It seems that utilities could not understand what word you were trying to copypaste.",
                                 "3"
-                            },
-                            "copypasteError"
+                            }, "copypasteError"
                         ); return null;
                     }
                 },
