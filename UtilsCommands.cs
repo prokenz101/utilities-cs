@@ -584,6 +584,17 @@ Opening Wiki anyway.", "3" },
                                     .SetBackgroundActivation()
                             );
 
+                            if (timeSeconds > 10000) {
+                                Utils.NotifCheck(
+                                    true,
+                                    new string[] {
+                                        "New reminder added.",
+                                        $"A reminder will come in {timeSeconds / 1000} seconds.",
+                                        "4"
+                                    }, "remindCommandInfo"
+                                );
+                            }
+
                             customReminderToast.SetToastScenario(
                                 Microsoft.Toolkit.Uwp.Notifications.ToastScenario.Alarm
                             ); Task.Delay(timeSeconds).Wait();
