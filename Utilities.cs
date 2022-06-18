@@ -35,6 +35,29 @@
                 app.Exit();
             };
 
+            Microsoft.Toolkit.Uwp.Notifications.ToastNotificationManagerCompat.OnActivated += toastArgs => {
+                string key = toastArgs.Argument.Split("=")[0];
+                string value = toastArgs.Argument.Split("=")[1];
+                List<KeyValuePair<string, object>>? userInput =
+                    toastArgs.UserInput.Count > 0 ? toastArgs.UserInput.ToList()
+                    : null;
+
+                switch (key) {
+                    case "update":
+                        Update.HandleOnActivatedToast(value);
+                        break;
+
+                    case "remind":
+                        if (value == "dismiss") {
+                            Microsoft.Toolkit.Uwp.Notifications.ToastNotificationManagerCompat.History.Remove("reminder");
+                        } break;
+
+                    case "spam":
+                        Spam.HandleOnActivatedToast(value, userInput);
+                        break;
+                }
+            };
+
             Application.Run(app);
 #endif
         }
