@@ -25,11 +25,3 @@ jobs:
       with:
         name: framework-dependent
         path: D:\a\utilities-cs\utilities-cs\bin\Release\net6.0-windows10.0.17763.0\win-x64\publish\utilities-cs-framework-dependent.exe
-    - name: Publish project as self-contained
-      run: dotnet publish -c Release --self-contained true
-    - name: Rename output file
-      run: mv D:\a\utilities-cs\utilities-cs\bin\Release\net6.0-windows10.0.17763.0\win-x64\publish\utilities-cs.exe D:\a\utilities-cs\utilities-cs\bin\Release\net6.0-windows10.0.17763.0\win-x64\publish\utilities-cs-sc.exe
-    - uses: actions/upload-artifact@v3.0.0
-      with:
-        name: self-contained
-        path: D:\a\utilities-cs\utilities-cs\bin\Release\net6.0-windows10.0.17763.0\win-x64\publish\utilities-cs-self-contained.exe 
