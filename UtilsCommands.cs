@@ -31,7 +31,9 @@ namespace utilities_cs {
         /// <param name="copy">Controls whether the function is willing to copy text to the clipboard.</param>
         /// <param name="notif">Controls whether the function is willing to send a notification.</param>
         /// <returns>A string of the output of the command. This can also be null.</returns>
-        public static string? ExecuteCommand(string cmd, string[] args, bool copy = true, bool notif = true) {
+        public static string? ExecuteCommand(string[] args, bool copy = true, bool notif = true) {
+            string cmd = args[0].ToLower();
+            
             if (FCommands.ContainsKey(cmd)) {
                 string? output = FCommands[cmd].Invoke(args, copy, notif);
                 if (output != null) { return output; } else { return null; }
@@ -1414,7 +1416,7 @@ FormattableCommands Count: {formattableCommandsCount}",
                     char[] textAsCharArray = string.Join(" ", args[1..]).ToCharArray();
 
                     // checks if textAsCharArray is than the permutationsCalculationLimit
-                    int limit = UtilitiesAppContext.currentSettings.permutationsCalculationLimit;
+                    int limit = UtilitiesAppContext.CurrentSettings.PermutationsCalculationLimit;
 
                     if (textAsCharArray.Length <= limit) {
                         Permutations permutation = new();

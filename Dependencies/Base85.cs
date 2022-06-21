@@ -27,7 +27,7 @@ namespace utilities_cs {
                             encoded = encoded.Remove(encoded.Length - 2)[2..];
                         }
 
-                        if (UtilitiesAppContext.currentSettings.escapeBase85OutputText) {
+                        if (UtilitiesAppContext.CurrentSettings.EscapeBase85OutputText) {
                             string? escapedBase85 = FormattableCommand.FindAndExecute("escape", new string[] { "escape", encoded }, false, false);
                             if (escapedBase85 != null) {
                                 Utils.CopyCheck(copy, escapedBase85);

@@ -1,22 +1,17 @@
 namespace utilities_cs {
     public class SettingsModification {
         public static SettingsJSON defaultSettings = new SettingsJSON {
-            disableNotifications = false,
-            disableClipboardManipulation = false,
-            permutationsCalculationLimit = 6,
-            escapeBase85OutputText = true,
-            copyingHotkeyDelay = 25,
-            autoPaste = false,
-            pressEscape = true,
-            allCommandHideNames = false
+            DisableNotifications = false,
+            DisableClipboardManipulation = false,
+            PermutationsCalculationLimit = 6,
+            EscapeBase85OutputText = true,
+            CopyingHotkeyDelay = 25,
+            AutoPaste = false,
+            PressEscape = true,
+            AllCommandHideNames = false
         };
 
-        public static string utilitiesCsFolder = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-            "utilities-cs"
-        );
-
-        public static string settingsJsonPath = Path.Combine(utilitiesCsFolder, "settings.json");
+        public static string settingsJsonPath = Path.Combine(Program.UtilitiesCsFolder, "settings.json");
 
         public static void SettingsMain(string[] args) {
             string mode = args[1];
@@ -40,7 +35,7 @@ namespace utilities_cs {
                     break;
 
                 case "reset":
-                    SettingsModification.CreateDirAndJson();
+                    SettingsModification.CreateDirectoryAndJson();
                     Utils.NotifCheck(
                         true,
                         new string[] { "Reset.", "All settings have been reset to default.", "4" },
@@ -66,8 +61,8 @@ namespace utilities_cs {
 
                 case "refresh":
                     if (
-                        SettingsModification.GetSettings().disableClipboardManipulation
-                        && SettingsModification.GetSettings().autoPaste
+                        SettingsModification.GetSettings().DisableClipboardManipulation
+                        && SettingsModification.GetSettings().AutoPaste
                     ) {
                         Utils.NotifCheck(
                             true,
@@ -79,7 +74,7 @@ They cannot both be true at the same time."
                             "settingsError"
                         ); break;
                     } else {
-                        UtilitiesAppContext.currentSettings = SettingsModification.GetSettings();
+                        UtilitiesAppContext.CurrentSettings = SettingsModification.GetSettings();
                         Utils.NotifCheck(
                             true,
                             new string[] { "Refreshed.", "Settings have been refreshed.", "3" },
@@ -102,7 +97,7 @@ They cannot both be true at the same time."
                 SettingsJSON settings = System.Text.Json.JsonSerializer.Deserialize<SettingsJSON>(jsonString)!;
                 return settings;
             } catch {
-                CreateDirAndJson();
+                CreateDirectoryAndJson();
                 Thread.Sleep(500);
                 return GetSettings();
             }
@@ -123,49 +118,55 @@ They cannot both be true at the same time."
 
             switch (setting.ToLower()) {
                 case "disablenotifications":
-                    currentSettings.disableNotifications = Convert.ToBoolean(ConvertToBoolOrInt("bool", value));
+                    currentSettings.DisableNotifications = Convert.ToBoolean(ConvertToBoolOrInt("bool", value));
                     break;
+
                 case "disableclipboardmanipulation":
-                    if (!currentSettings.autoPaste) {
-                        currentSettings.disableClipboardManipulation = Convert.ToBoolean(ConvertToBoolOrInt("bool", value));
+                    if (!currentSettings.AutoPaste) {
+                        currentSettings.DisableClipboardManipulation = Convert.ToBoolean(ConvertToBoolOrInt("bool", value));
                     } else {
                         mutuallyExclusive.Invoke();
                         return;
-                    }
-                    break;
+                    } break;
+
                 case "permutationscalculationlimit":
-                    currentSettings.permutationsCalculationLimit = int.Parse(ConvertToBoolOrInt("int", value)!.ToString()!);
+                    currentSettings.PermutationsCalculationLimit = int.Parse(ConvertToBoolOrInt("int", value)!.ToString()!);
                     break;
+
                 case "escapebase85outputtext":
-                    currentSettings.escapeBase85OutputText = Convert.ToBoolean(ConvertToBoolOrInt("bool", value));
+                    currentSettings.EscapeBase85OutputText = Convert.ToBoolean(ConvertToBoolOrInt("bool", value));
                     break;
+
                 case "copyinghotkeydelay":
-                    currentSettings.copyingHotkeyDelay = int.Parse(ConvertToBoolOrInt("int", value)!.ToString()!);
+                    currentSettings.CopyingHotkeyDelay = int.Parse(ConvertToBoolOrInt("int", value)!.ToString()!);
                     break;
+
                 case "autopaste":
-                    if (!currentSettings.disableClipboardManipulation) {
-                        currentSettings.autoPaste = Convert.ToBoolean(ConvertToBoolOrInt("bool", value));
+                    if (!currentSettings.DisableClipboardManipulation) {
+                        currentSettings.AutoPaste = Convert.ToBoolean(ConvertToBoolOrInt("bool", value));
                     } else {
                         mutuallyExclusive.Invoke();
                         return;
-                    }
-                    break;
+                    } break;
+
                 case "pressescape":
-                    currentSettings.pressEscape = Convert.ToBoolean(ConvertToBoolOrInt("bool", value));
+                    currentSettings.PressEscape = Convert.ToBoolean(ConvertToBoolOrInt("bool", value));
                     break;
+
                 case "allcommandhidenames":
-                    currentSettings.allCommandHideNames = Convert.ToBoolean(ConvertToBoolOrInt("bool", value));
+                    currentSettings.AllCommandHideNames = Convert.ToBoolean(ConvertToBoolOrInt("bool", value));
                     break;
+
             }
 
             string jsonString = System.Text.Json.JsonSerializer.Serialize<SettingsJSON>(currentSettings);
             try {
                 File.WriteAllText(settingsJsonPath, jsonString);
             } catch (DirectoryNotFoundException) {
-                CreateDirAndJson();
+                CreateDirectoryAndJson();
             }
 
-            UtilitiesAppContext.currentSettings = SettingsModification.GetSettings();
+            UtilitiesAppContext.CurrentSettings = SettingsModification.GetSettings();
             Utils.NotifCheck(
                 true,
                 new string[] { "Modified.", $"'{setting}' has been changed to {value}.", "4" },
@@ -185,19 +186,19 @@ They cannot both be true at the same time."
         public static string ListAllSettings() {
             List<string> settings = new();
             foreach (var i in defaultSettings.GetType().GetProperties()) {
-                settings.Add($"{i.Name}: {i.GetValue(UtilitiesAppContext.currentSettings)}");
+                settings.Add($"{i.Name}: {i.GetValue(UtilitiesAppContext.CurrentSettings)}");
             }
 
             string allSettings = string.Join("\n", settings);
             return allSettings;
         }
 
-        public static void CreateDirAndJson() {
+        public static void CreateDirectoryAndJson() {
             string jsonString = System.Text.Json.JsonSerializer.Serialize<SettingsJSON>(defaultSettings);
-            Directory.CreateDirectory(SettingsModification.utilitiesCsFolder);
+            Directory.CreateDirectory(Program.UtilitiesCsFolder);
             File.WriteAllText(settingsJsonPath, jsonString);
 
-            UtilitiesAppContext.currentSettings = SettingsModification.GetSettings();
+            UtilitiesAppContext.CurrentSettings = SettingsModification.GetSettings();
         }
 
         static object? ConvertToBoolOrInt(string boolOrInt, string value) {
@@ -220,13 +221,13 @@ They cannot both be true at the same time."
     }
 
     public class SettingsJSON {
-        public bool disableNotifications { get; set; }
-        public bool disableClipboardManipulation { get; set; }
-        public int permutationsCalculationLimit { get; set; }
-        public bool escapeBase85OutputText { get; set; }
-        public int copyingHotkeyDelay { get; set; }
-        public bool autoPaste { get; set; }
-        public bool pressEscape { get; set; }
-        public bool allCommandHideNames { get; set; }
+        public bool DisableNotifications { get; set; }
+        public bool DisableClipboardManipulation { get; set; }
+        public int PermutationsCalculationLimit { get; set; }
+        public bool EscapeBase85OutputText { get; set; }
+        public int CopyingHotkeyDelay { get; set; }
+        public bool AutoPaste { get; set; }
+        public bool PressEscape { get; set; }
+        public bool AllCommandHideNames { get; set; }
     }
 }

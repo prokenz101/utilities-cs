@@ -21,7 +21,7 @@ namespace utilities_cs {
             }
         }
         static string? returnCategory(string[] args, string category, bool copy, bool notif) {
-            bool shouldShowNames = UtilitiesAppContext.currentSettings.allCommandHideNames;
+            bool shouldShowNames = UtilitiesAppContext.CurrentSettings.AllCommandHideNames;
 
             var buildCommandDictionary = (List<FormattableCommand> commands) => (
                     from command in commands

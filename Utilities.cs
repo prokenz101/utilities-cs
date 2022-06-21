@@ -43,18 +43,14 @@
                     : null;
 
                 switch (key) {
-                    case "update":
-                        Update.HandleOnActivatedToast(value);
-                        break;
+                    case "update": Update.HandleOnActivatedToast(value); break;
+
+                    case "spam": Spam.HandleOnActivatedToast(value, userInput); break;
 
                     case "remind":
                         if (value == "dismiss") {
                             Microsoft.Toolkit.Uwp.Notifications.ToastNotificationManagerCompat.History.Remove("reminder");
                         } break;
-
-                    case "spam":
-                        Spam.HandleOnActivatedToast(value, userInput);
-                        break;
                 }
             };
 
@@ -84,16 +80,16 @@
         /// <param name="args">The arguments for the command being run.</param>
         /// <returns>Returns null or a string of the output of the command.</returns>
         public static string? Utilities(string[] args) {
-            var cmd = args[0].ToLower();
-            string? output = Command.ExecuteCommand(cmd, args);
+            string? output = Command.ExecuteCommand(args);
             if (output != null) { return output; } else { return null; }
         }
+
         private NotifyIcon trayIcon;
 
         /// <summary>
         /// Current settings of the program.
         /// </summary>
-        public static SettingsJSON currentSettings = SettingsModification.GetSettings();
+        public static SettingsJSON CurrentSettings = SettingsModification.GetSettings();
 
         /// <summary>
         /// Constructor for the application context.
@@ -105,8 +101,8 @@
                 new ModifierKeys[] { ModifierKeys.Control },
                 Keys.F8,
                 async () => {
-                    int hotkeyDelay = currentSettings.copyingHotkeyDelay;
-                    bool pressEscape = currentSettings.pressEscape;
+                    int hotkeyDelay = CurrentSettings.CopyingHotkeyDelay;
+                    bool pressEscape = CurrentSettings.PressEscape;
 
                     SendKeys.Send("^a");
                     Thread.Sleep(hotkeyDelay);

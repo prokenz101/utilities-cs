@@ -102,13 +102,13 @@ namespace utilities_cs {
         /// <param name="copy">Boolean that is usually true and checks if the function wants to copy something.</param>
         /// <param name="toCopy">The string that is to be copied to the clipboard if copy is true.</param>
         public static void CopyCheck(bool copy, string toCopy) {
-            if (copy && !UtilitiesAppContext.currentSettings.disableClipboardManipulation) {
+            if (copy && !UtilitiesAppContext.CurrentSettings.DisableClipboardManipulation) {
                 WindowsClipboard.SetText(toCopy);
             }
 
             if (
-                UtilitiesAppContext.currentSettings.autoPaste
-                && !UtilitiesAppContext.currentSettings.disableClipboardManipulation
+                UtilitiesAppContext.CurrentSettings.AutoPaste
+                && !UtilitiesAppContext.CurrentSettings.DisableClipboardManipulation
             ) {
                 Thread.Sleep(100);
                 SendKeys.SendWait("^v");
@@ -127,7 +127,7 @@ namespace utilities_cs {
             string tag,
             bool bypassLengthLimit = false
         ) {
-            bool settingsDisallowed = UtilitiesAppContext.currentSettings.disableNotifications;
+            bool settingsDisallowed = UtilitiesAppContext.CurrentSettings.DisableNotifications;
 
             if (notif && !settingsDisallowed) {
                 Notification(
@@ -153,7 +153,7 @@ namespace utilities_cs {
             bool clearToast = true,
             int toastDuration = 1
         ) {
-            bool settingsDisallowed = UtilitiesAppContext.currentSettings.disableNotifications;
+            bool settingsDisallowed = UtilitiesAppContext.CurrentSettings.DisableNotifications;
 
             if (customToast != null && !settingsDisallowed) {
                 await Task.Run(() => customToast.Show());
