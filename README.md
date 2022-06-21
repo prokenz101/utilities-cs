@@ -1,5 +1,5 @@
 # utilities-cs
-Utilities is a program that has several uses, most of them may not appeal to you for this is mostly used by me. There are commands like `cursive` that can convert text to cursive, commands like `commaseperator` that adds commas in between numbers like 487377 ⭢ 487,377 etc and several others. Using utilities is very memory based, you must remember name and syntax of a command (although there is a [Wiki](https://github.com/prokenz101/utilities-cs/wiki/Utilities-Wiki)) incase you needed it).
+Utilities is a program that has several uses, most of them may not appeal to you for this is mostly used by me. There are commands like `cursive` that can convert text to cursive, commands like `commaseperator` that adds commas in between numbers like 487377 ⭢ 487,377 etc and several others. Using utilities is very memory based, you must remember name and syntax of a command (although there is a [Wiki](https://github.com/prokenz101/utilities-cs/wiki/Utilities-Wiki) incase you needed it).
 
 **Remember, this is intended for windows only. Go away OS X users, and sorry Linux users.**
 
