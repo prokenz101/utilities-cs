@@ -2,6 +2,10 @@
     class Program {
         public const string Version = "v1.12";
         public const BuildMode buildMode = BuildMode.FrameworkDependent;
+        public static string UtilitiesCsFolder = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            "utilities-cs"
+        );
 
         [STAThread]
         /// <summary>
