@@ -11,7 +11,7 @@ namespace utilities_cs {
             AllCommandHideNames = false
         };
 
-        public static string settingsJsonPath = Path.Combine(Program.UtilitiesCsFolder, "settings.json");
+        static string settingsJsonPath = Path.Combine(Program.UtilitiesCsFolder, "settings.json");
 
         public static void SettingsMain(string[] args) {
             string mode = args[1];
@@ -49,8 +49,7 @@ namespace utilities_cs {
                         true,
                         new string[] { "Success!", "The settings have been copied to your clipboard.", "3" },
                         "settingsCopy"
-                    );
-                    break;
+                    ); break;
 
                 case "open":
                     Utils.NotifCheck(
@@ -70,8 +69,7 @@ namespace utilities_cs {
                                 "Hey!",
                                 @"disableClipboardManipulation and autoPaste are mutually exclusive.
 They cannot both be true at the same time."
-                            },
-                            "settingsError"
+                            }, "settingsError"
                         ); break;
                     } else {
                         UtilitiesAppContext.CurrentSettings = SettingsModification.GetSettings();
@@ -111,8 +109,7 @@ They cannot both be true at the same time."
                         "You can't do that unfortunately.",
                         @"'disableClipboardManipulation' and 'autoPaste' are mutually exclusive.",
                         "7"
-                    },
-                    "settingsError"
+                    }, "settingsError"
                 );
             };
 

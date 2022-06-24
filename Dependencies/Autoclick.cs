@@ -7,15 +7,14 @@ namespace utilities_cs {
             Thread.Sleep(100);
 
             CommandLine.Parser.Default.ParseArguments<AutoclickOptions>(args[1..])
-                .WithParsed(opts => AutoclickOptions.handleSuccessfulParse(opts))
+                .WithParsed(opts => AutoclickOptions.HandleSuccessfulParse(opts))
                 .WithNotParsed(errs => Utils.NotifCheck(
                     true,
                     new string[] {
                         "Huh.",
                         "Perhaps the parameters were not inputted correctly.",
                         "4"
-                    },
-                    "autoclickError"
+                    }, "autoclickError"
                 )
             );
         }
@@ -33,7 +32,7 @@ namespace utilities_cs {
             }
         }
 
-        public static void performAutoclick(int interval, MouseOperations.MouseEventFlags mouseButton, int count) {
+        public static void PerformAutoclick(int interval, MouseOperations.MouseEventFlags mouseButton, int count) {
             //* tokens
             var autoclickTokenSource = new CancellationTokenSource();
             var autoclickToken = autoclickTokenSource.Token;
@@ -72,8 +71,7 @@ namespace utilities_cs {
                         }
 
                     } catch (OperationCanceledException) { return; }
-                },
-                autoclickToken
+                }, autoclickToken
             );
 
             //* Stop hotkey (Ctrl + F7)
@@ -105,9 +103,9 @@ namespace utilities_cs {
         [Option('c', "count", Default = int.MaxValue)]
         public int count { get; set; }
 
-        public static void handleSuccessfulParse(AutoclickOptions opts) {
+        public static void HandleSuccessfulParse(AutoclickOptions opts) {
             if (opts.mouseButton == "left" | opts.mouseButton == "right" | opts.mouseButton == "middle") {
-                Autoclick.performAutoclick(
+                Autoclick.PerformAutoclick(
                     opts.interval,
                     (MouseOperations.MouseEventFlags)Autoclick.stringToMouseEventFlags(opts.mouseButton!)!,
                     opts.count
@@ -119,8 +117,7 @@ namespace utilities_cs {
                         "Hey!",
                         "The mousebutton can only be \"left\", \"right\" or \"middle\".",
                         "4"
-                    },
-                    "autoclickError"
+                    }, "autoclickError"
                 );
             }
         }
@@ -150,13 +147,9 @@ namespace utilities_cs {
         [DllImport("user32.dll")]
         private static extern void mouse_event(int dwFlags, int dx, int dy, int dwData, int dwExtraInfo);
 
-        public static void SetCursorPosition(int x, int y) {
-            SetCursorPos(x, y);
-        }
+        public static void SetCursorPosition(int x, int y) { SetCursorPos(x, y); }
 
-        public static void SetCursorPosition(MousePoint point) {
-            SetCursorPos(point.X, point.Y);
-        }
+        public static void SetCursorPosition(MousePoint point) { SetCursorPos(point.X, point.Y); }
 
         public static MousePoint GetCursorPosition() {
             MousePoint currentMousePoint;
@@ -167,14 +160,7 @@ namespace utilities_cs {
 
         public static void MouseEvent(MouseEventFlags value) {
             MousePoint position = GetCursorPosition();
-
-            mouse_event
-                ((int)value,
-                 position.X,
-                 position.Y,
-                 0,
-                 0)
-                ;
+            mouse_event((int)value, position.X, position.Y, 0, 0);
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -182,10 +168,7 @@ namespace utilities_cs {
             public int X;
             public int Y;
 
-            public MousePoint(int x, int y) {
-                X = x;
-                Y = y;
-            }
+            public MousePoint(int x, int y) { X = x; Y = y; }
         }
     }
 }

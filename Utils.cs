@@ -9,12 +9,12 @@ namespace utilities_cs {
         /// <param name="toastDuration">The amount of time that the toast will stay on screen.</param>
         /// <param name="bypassLengthLimit">Whether or not to bypass the length limit of the notification.</param>
         public async static void Notification(
-                string title,
-                string subtitle,
-                string tag,
-                int toastDuration = 1,
-                bool bypassLengthLimit = false
-            ) {
+            string title,
+            string subtitle,
+            string tag,
+            int toastDuration = 1,
+            bool bypassLengthLimit = false
+        ) {
 
             string[] notifTooLong = new string[] {
                 "This notification was too long.",
@@ -23,25 +23,23 @@ namespace utilities_cs {
 
             //* Check if title and subtitle are too long
             if (title.Length > 54 && !bypassLengthLimit) {
-                title = notifTooLong[0];
-                subtitle = notifTooLong[1];
-                toastDuration = 5;
+                title = notifTooLong[0]; subtitle = notifTooLong[1]; toastDuration = 5;
             } else if (subtitle.Length > 108 && !bypassLengthLimit) {
-                title = notifTooLong[0];
-                subtitle = notifTooLong[1];
-                toastDuration = 5;
+                title = notifTooLong[0]; subtitle = notifTooLong[1]; toastDuration = 5;
             }
 
-            await Task.Run(() => {
-                new Microsoft.Toolkit.Uwp.Notifications.ToastContentBuilder()
-                    .AddText(title)
-                    .AddText(subtitle)
-                    .Show(toast => { toast.Tag = tag; });
+            await Task.Run(
+                () => {
+                    new Microsoft.Toolkit.Uwp.Notifications.ToastContentBuilder()
+                        .AddText(title)
+                        .AddText(subtitle)
+                        .Show(toast => { toast.Tag = tag; });
 
-                Task.Delay((toastDuration + 1) * 1000).Wait();
-                Microsoft.Toolkit.Uwp.Notifications.
-                    ToastNotificationManagerCompat.History.Remove(tag);
-            });
+                    Task.Delay((toastDuration + 1) * 1000).Wait();
+                    Microsoft.Toolkit.Uwp.Notifications.
+                        ToastNotificationManagerCompat.History.Remove(tag);
+                }
+            );
         }
 
         /// <summary>
@@ -70,12 +68,12 @@ namespace utilities_cs {
         /// <summary>
         /// Checks if a string has only a certain set of characters.
         /// </summary>
-        /// <param name="allowable_char">Set of characters that are allowed in the string.</param>
+        /// <param name="allowableChar">Set of characters that are allowed in the string.</param>
         /// <param name="text">The text that is being checked.</param>
         /// <returns>A bool that will be true if the text matches the format and false if it doesn't.</returns>
-        public static bool FormatValid(string allowable_char, string text) {
+        public static bool FormatValid(string allowableChar, string text) {
             foreach (char c in text) {
-                if (!allowable_char.Contains(c.ToString()))
+                if (!allowableChar.Contains(c.ToString()))
                     return false;
             }
             return true;
@@ -87,12 +85,10 @@ namespace utilities_cs {
         /// <param name="dict">The dictionary that is inverted.</param>
         /// <returns>A dictionary with all keys and values inverted.</returns>
         public static Dictionary<string, string> InvertKeyAndValue(Dictionary<string, string> dict) {
-            Dictionary<string, string> final_dict = new();
-            foreach (var key in dict.Keys) {
-                final_dict[dict[key]] = key;
-            }
+            Dictionary<string, string> finalDict = new();
+            foreach (var key in dict.Keys) { finalDict[dict[key]] = key; }
 
-            return final_dict;
+            return finalDict;
         }
 
         /// <summary>
@@ -109,10 +105,7 @@ namespace utilities_cs {
             if (
                 UtilitiesAppContext.CurrentSettings.AutoPaste
                 && !UtilitiesAppContext.CurrentSettings.DisableClipboardManipulation
-            ) {
-                Thread.Sleep(100);
-                SendKeys.SendWait("^v");
-            }
+            ) { Thread.Sleep(100); SendKeys.SendWait("^v"); }
         }
 
         /// <summary>
@@ -173,7 +166,7 @@ namespace utilities_cs {
         /// <returns>A list of all BigIntegers that were captured by the Regex.</returns>
         public static List<System.Numerics.BigInteger> RegexFindAllInts(string input) {
             input = input.Replace(",", "");
-            
+
             List<System.Numerics.BigInteger> BigInts = new();
             System.Text.RegularExpressions.Regex re =
                 new System.Text.RegularExpressions.Regex(@"(?<num>-?\d+)+");
@@ -222,54 +215,30 @@ namespace utilities_cs {
         /// this should only be used for expressions which are designed to have only one match.
         /// </param>
         /// <returns>A dictionary of all the matches which point to their groups.</returns>
-        public static Dictionary<
-            System.Text.RegularExpressions.Match,
-            System.Text.RegularExpressions.GroupCollection
-        >? RegexFind(
-                string input,
-                string expression,
-                bool useIsMatch = false,
-                Action? ifNotMatch = null
-            ) {
+        public static Dictionary<System.Text.RegularExpressions.Match, System.Text.RegularExpressions.GroupCollection>? RegexFind(
+            string input,
+            string expression,
+            bool useIsMatch = false,
+            Action? ifNotMatch = null
+        ) {
 
-            List<
-                Dictionary<
-                    System.Text.RegularExpressions.Match,
-                    System.Text.RegularExpressions.GroupCollection
-                >
-            > matchesAndGroups = new();
-
-            System.Text.RegularExpressions.Regex re =
-                new System.Text.RegularExpressions.Regex(expression);
+            List<Dictionary<System.Text.RegularExpressions.Match, System.Text.RegularExpressions.GroupCollection>> matchesAndGroups = new();
+            System.Text.RegularExpressions.Regex re = new(expression);
 
             Action matched = () => {
-                foreach (
-                    System.Text.RegularExpressions.Match? match in re.Matches(input)
-                ) {
+                foreach (System.Text.RegularExpressions.Match? match in re.Matches(input)) {
                     if (match != null) {
-                        Dictionary<
-                            System.Text.RegularExpressions.Match,
-                            System.Text.RegularExpressions.GroupCollection
-                        > matchToGroups = new() { { match, match.Groups } };
+                        Dictionary<System.Text.RegularExpressions.Match, System.Text.RegularExpressions.GroupCollection> matchToGroups =
+                            new() { { match, match.Groups } };
                         matchesAndGroups.Add(matchToGroups);
                     }
                 }
             };
 
             if (!useIsMatch) {
-                if (re.Matches(input).Count >= 1) {
-                    matched.Invoke();
-                } else {
-                    ifNotMatch?.Invoke();
-                    return null;
-                }
+                if (re.Matches(input).Count >= 1) { matched.Invoke(); } else { ifNotMatch?.Invoke(); return null; }
             } else if (useIsMatch) {
-                if (re.IsMatch(input)) {
-                    matched.Invoke();
-                } else {
-                    ifNotMatch?.Invoke();
-                    return null;
-                }
+                if (re.IsMatch(input)) { matched.Invoke(); } else { ifNotMatch?.Invoke(); return null; }
             }
 
             return matchesAndGroups[0];
@@ -322,31 +291,20 @@ namespace utilities_cs {
                 var bytes = (text.Length + 1) * 2;
                 hGlobal = System.Runtime.InteropServices.Marshal.AllocHGlobal(bytes);
 
-                if (hGlobal == default) {
-                    ThrowWin32();
-                }
-
+                if (hGlobal == default) { ThrowWin32(); }
                 var target = GlobalLock(hGlobal);
 
-                if (target == default) {
-                    ThrowWin32();
-                }
+                if (target == default) { ThrowWin32(); }
 
                 try {
                     System.Runtime.InteropServices.Marshal.Copy(text.ToCharArray(), 0, target, text.Length);
-                } finally {
-                    GlobalUnlock(target);
-                }
+                } finally { GlobalUnlock(target); }
 
-                if (SetClipboardData(cfUnicodeText, hGlobal) == default) {
-                    ThrowWin32();
-                }
+                if (SetClipboardData(cfUnicodeText, hGlobal) == default) { ThrowWin32(); }
 
                 hGlobal = default;
             } finally {
-                if (hGlobal != default) {
-                    System.Runtime.InteropServices.Marshal.FreeHGlobal(hGlobal);
-                }
+                if (hGlobal != default) { System.Runtime.InteropServices.Marshal.FreeHGlobal(hGlobal); }
 
                 CloseClipboard();
             }
@@ -354,16 +312,8 @@ namespace utilities_cs {
 
         public static void OpenClipboard() {
             var num = 10;
-            while (true) {
-                if (OpenClipboard(default)) {
-                    break;
-                }
-                if (--num == 0) {
-                    ThrowWin32();
-                }
 
-                Thread.Sleep(100);
-            }
+            while (true) { if (OpenClipboard(default)) { break; } if (--num == 0) { ThrowWin32(); } Thread.Sleep(100); }
         }
 
         const uint cfUnicodeText = 13;

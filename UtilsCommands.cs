@@ -33,7 +33,7 @@ namespace utilities_cs {
         /// <returns>A string of the output of the command. This can also be null.</returns>
         public static string? ExecuteCommand(string[] args, bool copy = true, bool notif = true) {
             string cmd = args[0].ToLower();
-            
+
             if (FCommands.ContainsKey(cmd)) {
                 string? output = FCommands[cmd].Invoke(args, copy, notif);
                 if (output != null) { return output; } else { return null; }
@@ -83,9 +83,9 @@ namespace utilities_cs {
                 } else {
                     return null;
                 }
-            } else {
-                return null;
             }
+
+            return null;
         }
 
         /// <summary>
@@ -158,9 +158,7 @@ namespace utilities_cs {
             if (aliases != null) {
                 FCommands.Add(commandName, function);
                 foreach (string alias in aliases) { FCommands.Add(alias, function); }
-            } else {
-                FCommands.Add(commandName, function);
-            }
+            } else { FCommands.Add(commandName, function); }
 
             FormattableCommands.Add(this);
         }
@@ -175,10 +173,7 @@ namespace utilities_cs {
         public string? Execute(string[] args, bool copy, bool notif) {
             if (this.Function != null) {
                 string? output = this.Function.Invoke(args, copy, notif);
-                if (output != null) {
-                    Console.WriteLine(output);
-                    return output;
-                }
+                if (output != null) { Console.WriteLine(output); return output; }
             }
 
             return null;
@@ -259,9 +254,7 @@ namespace utilities_cs {
                 if (i.CommandName == cmd) {
                     return i;
                 } else if (i.Aliases != null) {
-                    if (i.Aliases.Any(x => x == cmd)) {
-                        return i;
-                    }
+                    if (i.Aliases.Any(x => x == cmd)) { return i; }
                 }
             }
 
@@ -273,13 +266,7 @@ namespace utilities_cs {
         /// </summary>
         /// <param name="cmd">The name of the command.</param>
         /// <returns>True if the command exists, else false.</returns>
-        public static bool FCommandExists(string cmd) {
-            if (FCommands.ContainsKey(cmd)) {
-                return true;
-            } else {
-                return false;
-            }
-        }
+        public static bool FCommandExists(string cmd) { return FCommands.ContainsKey(cmd); }
     }
 
     /// <summary>
@@ -294,11 +281,7 @@ namespace utilities_cs {
         /// <param name="commandName">The name of the regular command.</param>
         /// <param name="function">The function to be run.</param>
         /// <param name="aliases">The aliases for the command.</param>
-        public RegularCommand(
-            string commandName,
-            Action<string[]> function,
-            string[]? aliases = null
-        ) {
+        public RegularCommand(string commandName, Action<string[]> function, string[]? aliases = null) {
             //* setting all attributes for instance
             CommandName = commandName.ToLower(); Function = function; Aliases = aliases;
             if (aliases != null) {
@@ -347,9 +330,7 @@ namespace utilities_cs {
         /// <param name="args">The command arguments to be used when executing the command.</param>
         //! Mostly unused method. Only used for testing purposes.
         public void Execute(string[] args) {
-            if (this.Function != null) {
-                this.Function.Invoke(args);
-            }
+            this.Function?.Invoke(args);
         }
     }
 
@@ -394,7 +375,7 @@ namespace utilities_cs {
 
             RegularCommand format = new(
                 commandName: "format",
-                function: Format.Formatter
+                function: Format.FormatMain
             );
 
             RegularCommand update = new(
@@ -473,28 +454,23 @@ Opening Wiki anyway.", "3" },
                 function: (string[] args) => {
                     string text = string.Join(" ", args[1..]);
 
-                    Dictionary<
-                        System.Text.RegularExpressions.Match,
-                        System.Text.RegularExpressions.GroupCollection
-                    >? matchToGroups = Utils.RegexFind(
-                        text,
-                        @"[""'](?<title>.*?)[""'],? [""'](?<subtitle>.*?)[""'],? (?<duration>\d+)",
-                        useIsMatch: true,
-                        () => {
-                            Utils.NotifCheck(
-                                true,
-                                new string[] { "Huh.", "The parameters were not inputted properly.", "3" },
-                                "notificationCommandError"
-                            );
-                        }
-                    );
+                    Dictionary<System.Text.RegularExpressions.Match, System.Text.RegularExpressions.GroupCollection>? matchToGroups =
+                        Utils.RegexFind(
+                            text,
+                            @"[""'](?<title>.*?)[""'],? [""'](?<subtitle>.*?)[""'],? (?<duration>\d+)",
+                            useIsMatch: true,
+                            () => {
+                                Utils.NotifCheck(
+                                    true,
+                                    new string[] { "Huh.", "The parameters were not inputted properly.", "3" },
+                                    "notificationCommandError"
+                                );
+                            }
+                        );
 
                     if (matchToGroups != null) {
                         foreach (
-                            KeyValuePair<
-                                System.Text.RegularExpressions.Match,
-                                System.Text.RegularExpressions.GroupCollection
-                            > kvp in matchToGroups
+                            KeyValuePair<System.Text.RegularExpressions.Match, System.Text.RegularExpressions.GroupCollection> kvp in matchToGroups
                         ) {
                             System.Text.RegularExpressions.GroupCollection groups = kvp.Value;
 
@@ -518,8 +494,8 @@ Opening Wiki anyway.", "3" },
                 function: (string[] args) => {
                     string text = string.Join(" ", args[1..]);
 
-                    Dictionary<System.Text.RegularExpressions.Match, System.Text.RegularExpressions.GroupCollection>?
-                        matchToGroups = Utils.RegexFind(
+                    Dictionary<System.Text.RegularExpressions.Match, System.Text.RegularExpressions.GroupCollection>? matchToGroups =
+                        Utils.RegexFind(
                             text,
                             @"(?<time>\d+)(?<unit>h|m|s)(?<text> .*)?",
                             useIsMatch: true,
@@ -530,7 +506,7 @@ Opening Wiki anyway.", "3" },
                                     "remindCommandError"
                                 );
                             }
-                    );
+                        );
 
                     if (matchToGroups != null) {
                         List<int> timeEnumerable = new();
@@ -743,14 +719,6 @@ FormattableCommands Count: {formattableCommandsCount}",
                 function: (string[] args, bool copy, bool notif) => {
                     if (Utils.IndexTest(args)) { return null; }
 
-                    Func<string, string> Base64Encode = (string plainText) => {
-                        return Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(plainText));
-                    };
-
-                    Func<string, string> Base64Decode = (string base64EncodedData) => {
-                        return System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(base64EncodedData));
-                    };
-
                     Func<string, bool> isBase64 = (string s) => {
                         s = s.Trim();
                         bool isB64 = (s.Length % 4 == 0) && System.Text.RegularExpressions.Regex.IsMatch(
@@ -762,7 +730,7 @@ FormattableCommands Count: {formattableCommandsCount}",
                     string text = string.Join(" ", args[1..]);
                     if (isBase64(text)) {
                         try {
-                            string ans = Base64Decode(text);
+                            string ans = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(text));
                             Utils.CopyCheck(copy, ans);
                             Utils.NotifCheck(
                                 notif,
@@ -777,7 +745,7 @@ FormattableCommands Count: {formattableCommandsCount}",
                             ); return null;
                         }
                     } else {
-                        string ans = Base64Encode(text);
+                        string ans = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(text));
                         Utils.CopyCheck(copy, ans);
                         Utils.NotifCheck(
                             notif,

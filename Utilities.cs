@@ -7,16 +7,16 @@
             "utilities-cs"
         );
 
-        [STAThread]
         /// <summary>
         /// The main starting point of the program.
         /// </summary>
+        [STAThread]
         static void Main(string[] args) {
             RegisterCommands.RegisterAllRCommands();
             RegisterCommands.RegisterAllFCommands();
 
 #if UTILITIES_DEBUG
-            //* debug mode, only used for specific times
+            //* Debug Mode
             string? copied_text = UtilitiesAppContext.Utilities(args);
             if (copied_text != null) { Console.WriteLine(copied_text); }
 #else
@@ -34,10 +34,9 @@
             Application.EnableVisualStyles();
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.SetCompatibleTextRenderingDefault(false);
+            
             var app = new UtilitiesAppContext();
-            Application.ApplicationExit += delegate {
-                app.Exit();
-            };
+            Application.ApplicationExit += delegate { app.Exit(); };
 
             Microsoft.Toolkit.Uwp.Notifications.ToastNotificationManagerCompat.OnActivated += toastArgs => {
                 string key = toastArgs.Argument.Split("=")[0];
@@ -54,7 +53,8 @@
                     case "remind":
                         if (value == "dismiss") {
                             Microsoft.Toolkit.Uwp.Notifications.ToastNotificationManagerCompat.History.Remove("reminder");
-                        } break;
+                        }
+                        break;
                 }
             };
 
@@ -122,7 +122,7 @@
                         new string[] {
                             "Something went wrong.",
                             @"Are you opening multiple instances of utilities-cs?",
-                            "6"
+                            "4"
                         }, "utilitiesHotkeyError"
                     ); Exit();
                 }

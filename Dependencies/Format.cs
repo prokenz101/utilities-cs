@@ -1,6 +1,6 @@
 namespace utilities_cs {
     public static class Format {
-        public static void Formatter(string[] args) {
+        public static void FormatMain(string[] args) {
             string text = string.Join(" ", args[1..]);
             if (Utils.IndexTest(args)) { return; }
 
@@ -30,17 +30,15 @@ namespace utilities_cs {
                             new string[] { "Huh.", "Perhaps that was not a real command.", "4" },
                             "formatError"
                         ); formatDict[cmd] = output;
-                    } else {
-                        formatDict[cmd] = output;
-                    }
+                    } else { formatDict[cmd] = output; }
                 }
             }
 
-            Utils.CopyCheck(true, ReplaceKeyInString(formatDict, text));
+            Utils.CopyCheck(true, replaceKeyInString(formatDict, text));
             Utils.NotifCheck(true, new string[] { "Success!", "Message copied to clipboard.", "3" }, "formatSuccess");
         }
 
-        public static string ReplaceKeyInString(Dictionary<string, string> dictionary, string inputString) {
+        static string replaceKeyInString(Dictionary<string, string> dictionary, string inputString) {
             var regex = new System.Text.RegularExpressions.Regex("{(.*?)}");
             var matches = regex.Matches(inputString);
             foreach (System.Text.RegularExpressions.Match? match in matches) {
