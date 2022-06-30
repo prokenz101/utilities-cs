@@ -93,7 +93,6 @@ namespace utilities_cs {
 
         /// <summary>
         /// Checks if the function being called is willing to copy something to the clipboard.
-        /// Primarily used because of Format.
         /// </summary>
         /// <param name="copy">Boolean that is usually true and checks if the function wants to copy something.</param>
         /// <param name="toCopy">The string that is to be copied to the clipboard if copy is true.</param>
@@ -110,7 +109,6 @@ namespace utilities_cs {
 
         /// <summary>
         /// Checks if the function being called is willing to send a notification.
-        /// Primarily used because of Format.
         /// </summary>
         /// <param name="notif">Boolean that is usually true and checks if notification is gonna be sent.</param>
         /// <param name="notifContent">The content for the notification, if it notif is true.</param>

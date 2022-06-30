@@ -34,7 +34,7 @@
             Application.EnableVisualStyles();
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.SetCompatibleTextRenderingDefault(false);
-            
+
             var app = new UtilitiesAppContext();
             Application.ApplicationExit += delegate { app.Exit(); };
 
@@ -53,8 +53,7 @@
                     case "remind":
                         if (value == "dismiss") {
                             Microsoft.Toolkit.Uwp.Notifications.ToastNotificationManagerCompat.History.Remove("reminder");
-                        }
-                        break;
+                        } break;
                 }
             };
 

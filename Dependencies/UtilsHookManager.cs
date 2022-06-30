@@ -58,12 +58,14 @@ namespace utilities_cs {
         /// <summary>Unregisters a specific hook using the ID.</summary>
         /// <param name="id">The ID of the hook that is going to be unregistered.</param>
         public static void UnregisterHook(string id) {
-            keyboardHooks[id].Dispose();
-            keyboardHooks.Remove(id);
+            if (keyboardHooks.ContainsKey(id)) {
+                keyboardHooks[id].Dispose();
+                keyboardHooks.Remove(id);
+            }
         }
     }
 
-    # nullable disable
+#nullable disable
 
     public sealed class KeyboardHook : IDisposable {
         //* Registers a hot key with Windows.

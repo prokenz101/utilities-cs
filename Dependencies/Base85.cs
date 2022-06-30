@@ -284,6 +284,5 @@ namespace utilities_cs {
                 sb.Append('\n');
             }
         }
-
     }
 }

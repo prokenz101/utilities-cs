@@ -24,7 +24,7 @@ namespace utilities_cs {
         /// </summary>
         public static Dictionary<string, Action<string[]>> RCommands = new();
         /// <summary>
-        /// Executes a command in either the rCommands dictionary or the fCommands dictionary.
+        /// Executes a command in either the RCommands dictionary or the FCommands dictionary.
         /// </summary>
         /// <param name="cmd">The name of the command to be excuted.</param>
         /// <param name="args">The command arguments to be used when executing the command.</param>

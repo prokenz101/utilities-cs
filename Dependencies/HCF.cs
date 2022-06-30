@@ -3,9 +3,7 @@ using System.Numerics;
 namespace utilities_cs {
     public class HCF {
         public static string? HCFMain(string[] args, bool copy, bool notif) {
-            if (Utils.IndexTest(args)) {
-                return null;
-            }
+            if (Utils.IndexTest(args)) { return null; }
 
             string text = string.Join(" ", args);
             List<BigInteger> nums = new();
@@ -18,6 +16,7 @@ namespace utilities_cs {
                         nums.ToArray<BigInteger>(),
                         nums.ToArray().Length
                     );
+
                     Utils.CopyCheck(copy, answer.ToString());
                     Utils.NotifCheck(
                         notif, new string[] { "Success!", $"The answer was {answer}.", "5" }, "hcfSuccess"
@@ -50,8 +49,7 @@ namespace utilities_cs {
         public static System.Numerics.BigInteger FindHCF(
             System.Numerics.BigInteger a, System.Numerics.BigInteger b
         ) {
-            if (a == 0)
-                return b;
+            if (a == 0) { return b; }
             return FindHCF(b % a, a);
         }
 
