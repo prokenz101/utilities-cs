@@ -3,10 +3,61 @@ using Microsoft.Toolkit.Uwp.Notifications;
 namespace utilities_cs {
     public class Spam {
         public static List<object> data = new List<object>();
+        public static Dictionary<string, SpamConfiguration> spamConfigs = new();
         static CancellationTokenSource spamTokenSource = new CancellationTokenSource();
         static CancellationToken spamToken = spamTokenSource.Token;
 
         public static void SpamMain(string[] args) {
+            if (args.Length > 1 && args[1].ToLower() == "run") {
+                if (Utils.IndexTest(args, argscount: 2)) { return; }
+
+                if (spamConfigs.ContainsKey(string.Join(" ", args[2..]))) {
+                    var spamConfiguration = spamConfigs[string.Join(" ", args[2..])];
+
+                    Thread.Sleep(2000);
+                    PerformSpam(
+                        spamConfiguration.Text,
+                        spamConfiguration.Count,
+                        spamConfiguration.Interval,
+                        spamConfiguration.TypingSpeed,
+                        spamConfiguration.PressEnter
+                    );
+                } return;
+
+            } else if (args.Length > 1 && args[1].ToLower() == "list") {
+                if (spamConfigs.Count > 0) {
+                    string finalString = "";
+
+                    foreach (KeyValuePair<string, SpamConfiguration> kvp in spamConfigs) {
+                        finalString += $"\"{kvp.Key}\"\n";
+                        finalString += $"Text: {kvp.Value.Text}\n";
+                        finalString += $"Count: {kvp.Value.Count}\n";
+                        finalString += $"Interval: {kvp.Value.Interval}\n";
+                        finalString += $"TypingSpeed: {kvp.Value.TypingSpeed}\n";
+                        finalString += $"PressEnter: {kvp.Value.PressEnter}\n";
+                    }
+
+                    Utils.CopyCheck(true, finalString);
+                    Utils.NotifCheck(
+                        true,
+                        new string[] {
+                            "Success!",
+                            "The currently saved spam configurations were copied to your clipboard.",
+                            "3"
+                        }, "spamSuccess"
+                    );
+                } else {
+                    Utils.NotifCheck(
+                        true,
+                        new string[] {
+                            "Huh.",
+                            "There are no currently saved spam configurations.",
+                            "4"
+                        }, "spamError"
+                    );
+                }             
+            }
+            
             /*
             ! Variables for Spam
             * Text (string)
@@ -151,8 +202,46 @@ This will be the delay in milliseconds in between each key press.")
                 )
 
                 .AddButton(new ToastButton()
+                    .SetContent("Save this Config")
+                    .AddArgument("spam", "saveConfig")
+                    .SetBackgroundActivation()
+                )
+
+                .AddButton(new ToastButton()
                     .SetContent("Cancel")
                     .AddArgument("spam", "cancel")
+                    .SetBackgroundActivation()
+                );
+
+            ToastContentBuilder spamConfigName = new ToastContentBuilder()
+                .AddText("What would you like to call this Spam Configuration?")
+                .AddInputTextBox("saveConfigNameInputBox", "Enter any string value...")
+
+                .AddButton(new ToastButton()
+                    .SetContent("Save")
+                    .AddArgument("spam", "saveConfigName")
+                )
+
+                .AddButton(new ToastButton()
+                    .SetContent("Cancel")
+                    .AddArgument("spam", "cancel")
+                    .SetBackgroundActivation()
+                );
+
+            ToastContentBuilder successfullySavedConfig = new ToastContentBuilder()
+                .AddText("Success!")
+                .AddText($@"The save config was saved.
+You can now run it using ""spam run <configName>""")
+
+                .AddButton(new ToastButton()
+                    .SetContent("Run now")
+                    .AddArgument("spam", "runSpamConfigNow")
+                    .SetBackgroundActivation()
+                )
+
+                .AddButton(new ToastButton()
+                    .SetContent("Dismiss")
+                    .AddArgument("spam", "dismiss")
                     .SetBackgroundActivation()
                 );
 
@@ -174,12 +263,25 @@ This will be the delay in milliseconds in between each key press.")
                 );
             };
 
+            if (value == "notifClicked") {
+                new ToastContentBuilder()
+                    .AddText("Huh.")
+                    .AddText(@"It seems you clicked on the notification without hitting a button or inputting anything.
+This means that the spam config will be aborted.").Show(toast => toast.Tag = "spam");
+                return;
+            }
+
             switch (value) {
                 case "init":
                     getText.Show(toast => toast.Tag = "spam");
                     break;
 
                 case "cancel":
+                    ToastNotificationManagerCompat.History.Remove("spam");
+                    data.Clear();
+                    break;
+
+                case "dismiss":
                     ToastNotificationManagerCompat.History.Remove("spam");
                     data.Clear();
                     break;
@@ -262,8 +364,52 @@ This will be the delay in milliseconds in between each key press.")
                         ); break;
                     }
 
+                case "runSpamConfigNow":
+                    Thread.Sleep(2000);
+
+                    try {
+                        string text = data[0].ToString()!;
+                        int count = int.Parse(data[1].ToString()!);
+                        int interval = int.Parse(data[2].ToString()!);
+                        int typingSpeed = int.Parse(data[3].ToString()!);
+                        bool pressEnter = bool.Parse(data[4].ToString()!);
+
+                        PerformSpam(text, count, interval, typingSpeed, pressEnter);
+                        break;
+
+                    } catch (NullReferenceException) {
+                        Utils.NotifCheck(
+                            true,
+                            new string[] {
+                                "Something went wrong.",
+                                "An exception occured while trying to start spamming.",
+                                "4"
+                            }, "spamError"
+                        ); break;
+                    }
+
+                case "saveConfig":
+                    spamConfigName.Show(toast => toast.Tag = "spam");
+                    break;
+
+                case "saveConfigName":
+                    if (userInput != null && userInput.Count > 0) {
+                        if (userInput[0].Value.ToString() != null) {
+                            SpamJSONManager.SaveConfiguration(
+                                userInput[0].Value.ToString()!, //* name
+                                data[0].ToString()!, //* text
+                                int.Parse(data[1].ToString()!), //* count
+                                int.Parse(data[2].ToString()!), //* interval
+                                int.Parse(data[3].ToString()!), //* typingSpeed
+                                bool.Parse(data[4].ToString()!) //* pressEnter
+                            );
+
+                            successfullySavedConfig.Show(toast => toast.Tag = "spam");
+                        }
+                    }
+                    break;
+
                 case "stopSpam":
-                    HookManager.UnregisterHook("spam");
                     spamTokenSource.Cancel();
                     spamTokenSource.Dispose();
                     break;
@@ -298,16 +444,13 @@ This will be the delay in milliseconds in between each key press.")
 
                         throw new OperationCanceledException();
                     } catch (OperationCanceledException) {
-                        HookManager.UnregisterHook("spam");
                         ToastNotificationManagerCompat.History.Remove("stopSpam");
                         Utils.NotifCheck(
                             true,
                             new string[] { "Stopped Spam.", "The spammer was stopped.", "3" },
                             "spamComplete"
-                        );
-                        return;
+                        ); return;
                     } catch {
-                        HookManager.UnregisterHook("spam");
                         Utils.NotifCheck(
                             true,
                             new string[] {
@@ -318,33 +461,10 @@ This will be the delay in milliseconds in between each key press.")
                 }, spamToken
             );
 
-            bool errored = false;
-
-            HookManager.AddHook(
-                "spam",
-                new ModifierKeys[] { ModifierKeys.Control },
-                Keys.F7,
-                onPressed: () => {
-                    spamTokenSource.Cancel();
-                    spamTokenSource.Dispose();
-                    HookManager.UnregisterHook("spam");
-                },
-                onFail: () => {
-                    errored = true;
-                    Utils.NotifCheck(
-                        true,
-                        new string[] { "Huh.", "Perhaps you already have a spammer running.", "3" },
-                        "spamError"
-                    );
-                }
-            );
-
-            if (errored) { return; }
-
             ToastContentBuilder stopSpamToast = new ToastContentBuilder() //* Toast to stop the spammer
                 .AddText("Stop the spammer?")
                 .AddText(@"Clicking on the Stop button will stop the spammer.
-You can also press Ctrl + F7 but the hotkey may not register every time.")
+Please make sure you do not get rid of this notification.")
                 .SetToastScenario(ToastScenario.Reminder)
 
                 .AddButton(new ToastButton()
@@ -357,5 +477,35 @@ You can also press Ctrl + F7 but the hotkey may not register every time.")
 
             spamTask.Start();
         }
+    }
+
+    public class SpamJSONManager {
+        public static void SaveConfiguration(
+            string name,
+            string text,
+            int count,
+            int interval,
+            int typingSpeed,
+            bool pressEnter
+        ) {
+            Spam.spamConfigs.Add(
+                name,
+                new SpamConfiguration {
+                    Text = text,
+                    Count = count,
+                    Interval = interval,
+                    TypingSpeed = typingSpeed,
+                    PressEnter = pressEnter
+                }
+            );
+        }
+    }
+
+    public class SpamConfiguration {
+        public string Text { get; set; } = "";
+        public int Count { get; set; }
+        public int Interval { get; set; }
+        public int TypingSpeed { get; set; }
+        public bool PressEnter { get; set; }
     }
 }
