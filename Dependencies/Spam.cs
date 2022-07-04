@@ -45,7 +45,7 @@ namespace utilities_cs {
                             "The currently saved spam configurations were copied to your clipboard.",
                             "3"
                         }, "spamSuccess"
-                    );
+                    ); return;
                 } else {
                     Utils.NotifCheck(
                         true,
@@ -54,10 +54,10 @@ namespace utilities_cs {
                             "There are no currently saved spam configurations.",
                             "4"
                         }, "spamError"
-                    );
-                }             
+                    ); return;
+                }
             }
-            
+
             /*
             ! Variables for Spam
             * Text (string)
@@ -417,6 +417,8 @@ This means that the spam config will be aborted.").Show(toast => toast.Tag = "sp
         }
 
         public static async void PerformSpam(string text, int count, int interval, int typingSpeed, bool pressEnter) {
+            data.Clear();
+            
             Task spamTask = new Task(
                 () => {
                     try {
