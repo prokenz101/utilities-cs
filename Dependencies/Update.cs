@@ -8,12 +8,16 @@ namespace utilities_cs {
 
         public static void Check(bool alertEvenIfUpdateIsNotRequired = true) {
             try {
-                var latestRelease = client.Repository.Release.GetLatest("prokenz101", "utilities-cs");
-
                 var currentVersion = Program.Version[3..];
-                var latestVersion = latestRelease.Result.TagName[3..];
 
-                if (int.Parse(latestVersion) > int.Parse(currentVersion)) {
+                Task<Release>? latestRelease = client.Repository.Release.GetLatest("prokenz101", "utilities-cs");
+
+                string? latestVersion;
+                try {
+                    latestVersion = latestRelease.Result.TagName[3..];
+                } catch { throw new ApiException(); }
+
+                if (double.Parse(latestVersion) > double.Parse(currentVersion)) {
                     ToastContentBuilder toast = new ToastContentBuilder()
                         .AddText("There is a new version of utilities-cs available!")
                         .AddText($@"Your version: v1.{currentVersion}
@@ -38,7 +42,7 @@ Latest version: v1.{latestVersion}")
 
                     Utils.NotifCheck(toast, "updateInstall", clearToast: false, 4);
 
-                } else if (int.Parse(latestVersion) == int.Parse(currentVersion)) {
+                } else if (double.Parse(latestVersion) == double.Parse(currentVersion)) {
                     if (alertEvenIfUpdateIsNotRequired) {
                         Utils.NotifCheck(
                             true,
@@ -61,6 +65,17 @@ Latest version: v1.{latestVersion}")
                         );
                     }
                 }
+            } catch (ApiException) {
+                if (alertEvenIfUpdateIsNotRequired) {
+                    Utils.NotifCheck(
+                        true,
+                        new string[] {
+                            "Unable to get information from the server.",
+                            "This (could) be because you are not connected to the internet.",
+                            "4"
+                        }, "updateAPIError"
+                    );
+                }
             } catch {
                 if (alertEvenIfUpdateIsNotRequired) {
                     Utils.NotifCheck(
@@ -76,22 +91,42 @@ Latest version: v1.{latestVersion}")
         }
 
         public static void InstallLatestVersion() {
-            var latestRelease = client.Repository.Release.GetLatest("prokenz101", "utilities-cs");
-            var assets = latestRelease.Result.Assets;
+            try {
+                var latestRelease = client.Repository.Release.GetLatest("prokenz101", "utilities-cs");
+                var assets = latestRelease.Result.Assets;
 
-            string downloadURL = "";
+                string downloadURL = "";
 
-            foreach (var x in assets) {
-                if (x.Name.Contains("fd") && Program.buildMode == Program.BuildMode.FrameworkDependent) {
-                    downloadURL = x.BrowserDownloadUrl; //* framework-dependent
-                    break;
-                } else if (x.Name.Contains("sc") && Program.buildMode == Program.BuildMode.SelfContained) {
-                    downloadURL = x.BrowserDownloadUrl; //* self-contained
-                    break;
+                foreach (var x in assets) {
+                    if (x.Name.Contains("fd") && Program.buildMode == Program.BuildMode.FrameworkDependent) {
+                        downloadURL = x.BrowserDownloadUrl; //* framework-dependent
+                        break;
+                    } else if (x.Name.Contains("sc") && Program.buildMode == Program.BuildMode.SelfContained) {
+                        downloadURL = x.BrowserDownloadUrl; //* self-contained
+                        break;
+                    }
                 }
-            }
 
-            Process.Start(new ProcessStartInfo("cmd", $"/c start {downloadURL}") { CreateNoWindow = true });
+                Process.Start(new ProcessStartInfo("cmd", $"/c start {downloadURL}") { CreateNoWindow = true });
+            } catch (ApiException) {
+                Utils.NotifCheck(
+                    true,
+                    new string[] {
+                        "Unable to get information from the server.",
+                        "This (could) be because you are not connected to the internet.",
+                        "4"
+                    }, "updateAPIError"
+                );
+            } catch {
+                Utils.NotifCheck(
+                    true,
+                    new string[] {
+                        "Something went wrong.",
+                        "An exception occured whilst trying to check for updates.",
+                        "4"
+                    }, "updateError"
+                );
+            }
         }
 
         public static void HandleOnActivatedToast(string value) {
@@ -101,11 +136,13 @@ Latest version: v1.{latestVersion}")
                     Utils.NotifCheck(
                         true,
                         new string[] {
-                            "Installing the latest version.",
-                            "Opening download link in your browser.",
-                            "3"
+                                "Installing the latest version.",
+                                "Opening download link in your browser.",
+                                "3"
                         }, "updateInstalling"
-                    ); Update.InstallLatestVersion(); break;
+                    );
+
+                    Update.InstallLatestVersion(); break;
 
                 case "cancel":
                     ToastNotificationManagerCompat.History.Remove("updateInstall"); break;

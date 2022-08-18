@@ -1,6 +1,6 @@
 ﻿namespace utilities_cs {
     class Program {
-        public const string Version = "v1.12";
+        public const string Version = "v1.12.2";
         public const BuildMode buildMode = BuildMode.FrameworkDependent;
         public static string UtilitiesCsFolder = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
@@ -36,7 +36,10 @@
             Application.SetCompatibleTextRenderingDefault(false);
 
             var app = new UtilitiesAppContext();
-            Application.ApplicationExit += delegate { app.Exit(); };
+            Application.ApplicationExit += delegate {
+                Microsoft.Toolkit.Uwp.Notifications.ToastNotificationManagerCompat.History.Clear();
+                app.Exit();
+            };
 
             Microsoft.Toolkit.Uwp.Notifications.ToastNotificationManagerCompat.OnActivated += toastArgs => {
                 string key = toastArgs.Argument.Split("=")[0];
