@@ -7,55 +7,100 @@ namespace utilities_cs {
         static CancellationTokenSource spamTokenSource = new CancellationTokenSource();
         static CancellationToken spamToken = spamTokenSource.Token;
 
+        static void clearData() { data.Clear(); }
+
         public static void SpamMain(string[] args) {
-            if (args.Length > 1 && args[1].ToLower() == "run") {
-                if (Utils.IndexTest(args, argscount: 2)) { return; }
+            try {
+                if (args.Length > 1 && args[1].ToLower() == "run") {
+                    if (Utils.IndexTest(args, argscount: 2)) { return; }
 
-                if (spamConfigs.ContainsKey(string.Join(" ", args[2..]))) {
-                    var spamConfiguration = spamConfigs[string.Join(" ", args[2..])];
+                    if (spamConfigs.ContainsKey(string.Join(" ", args[2..]))) {
+                        var spamConfiguration = spamConfigs[string.Join(" ", args[2..])];
 
-                    Thread.Sleep(2000);
-                    PerformSpam(
-                        spamConfiguration.Text,
-                        spamConfiguration.Count,
-                        spamConfiguration.Interval,
-                        spamConfiguration.TypingSpeed,
-                        spamConfiguration.PressEnter
-                    );
-                } return;
-
-            } else if (args.Length > 1 && args[1].ToLower() == "list") {
-                if (spamConfigs.Count > 0) {
-                    string finalString = "";
-
-                    foreach (KeyValuePair<string, SpamConfiguration> kvp in spamConfigs) {
-                        finalString += $"\"{kvp.Key}\"\n";
-                        finalString += $"Text: {kvp.Value.Text}\n";
-                        finalString += $"Count: {kvp.Value.Count}\n";
-                        finalString += $"Interval: {kvp.Value.Interval}\n";
-                        finalString += $"TypingSpeed: {kvp.Value.TypingSpeed}\n";
-                        finalString += $"PressEnter: {kvp.Value.PressEnter}\n";
+                        Thread.Sleep(1000);
+                        PerformSpam(
+                            spamConfiguration.Text,
+                            spamConfiguration.Count,
+                            spamConfiguration.Interval,
+                            spamConfiguration.TypingSpeed,
+                            spamConfiguration.PressEnter
+                        );
+                    } else {
+                        Utils.NotifCheck(
+                            true,
+                            new string[] {
+                                "Huh.",
+                                "It seems that spam configuration does not exist.",
+                                "4"
+                            }, "spamConfigNotFoundError"
+                        );
                     }
 
-                    Utils.CopyCheck(true, finalString);
-                    Utils.NotifCheck(
-                        true,
-                        new string[] {
-                            "Success!",
-                            "The currently saved spam configurations were copied to your clipboard.",
-                            "3"
-                        }, "spamSuccess"
-                    ); return;
-                } else {
-                    Utils.NotifCheck(
-                        true,
-                        new string[] {
-                            "Huh.",
-                            "There are no currently saved spam configurations.",
-                            "4"
-                        }, "spamError"
-                    ); return;
+                    return;
+
+                } else if (args.Length > 1 && args[1].ToLower() == "list") {
+                    if (spamConfigs.Count > 0) {
+                        string finalString = "";
+
+                        foreach (KeyValuePair<string, SpamConfiguration> kvp in spamConfigs) {
+                            finalString += $"\"{kvp.Key}\"\n";
+                            finalString += $"Text: {kvp.Value.Text}\n";
+                            finalString += $"Count: {(kvp.Value.Count == int.MaxValue ? "infinite" : kvp.Value.Count)}\n";
+                            finalString += $"Interval: {kvp.Value.Interval}\n";
+                            finalString += $"TypingSpeed: {kvp.Value.TypingSpeed}\n";
+                            finalString += $"PressEnter: {kvp.Value.PressEnter}\n";
+                            finalString += "\n";
+                        }
+
+                        Utils.CopyCheck(true, finalString);
+                        Utils.NotifCheck(
+                            true,
+                            new string[] {
+                                "Success!",
+                                "The currently saved spam configurations were copied to your clipboard.",
+                                "3"
+                            }, "spamSuccess"
+                        ); return;
+                    } else if (args.Length > 1 && args[1].ToLower() == "clear") {
+                        if (spamConfigs.Count > 0) {
+                            spamConfigs.Clear();
+
+                            Utils.NotifCheck(
+                                true,
+                                new string[] {
+                                    "Success!",
+                                    "Cleared all currently registered spam configurations.",
+                                    "3"
+                                }, "spamClearSuccess"
+                            ); return;
+                        } else {
+                            Utils.NotifCheck(
+                                true,
+                                new string[] {
+                                    "Huh.",
+                                    "It seems there are no registered spam configurations to clear.",
+                                    "3"
+                                }, "spamClearError"
+                            ); return;
+                        }
+                    } else {
+                        Utils.NotifCheck(
+                            true,
+                            new string[] {
+                                "Huh.",
+                                "There are no currently saved spam configurations.",
+                                "4"
+                            }, "spamError"
+                        ); return;
+                    }
                 }
+            } catch {
+                Utils.NotifCheck(
+                    true,
+                    new string[] {
+                        "Something went wrong.", "An exception occured while trying to run this command.", "4"
+                    }, "spamRunError"
+                ); return;
             }
 
             /*
@@ -278,12 +323,12 @@ This means that the spam config will be aborted.").Show(toast => toast.Tag = "sp
 
                 case "cancel":
                     ToastNotificationManagerCompat.History.Remove("spam");
-                    data.Clear();
+                    clearData();
                     break;
 
                 case "dismiss":
                     ToastNotificationManagerCompat.History.Remove("spam");
-                    data.Clear();
+                    clearData();
                     break;
 
                 case "getTextContinue":
@@ -308,7 +353,7 @@ This means that the spam config will be aborted.").Show(toast => toast.Tag = "sp
 
                         getInterval.Show(toast => toast.Tag = "spam");
                         break;
-                    } catch (FormatException) { formatExceptionNotification(); break; }
+                    } catch (FormatException) { formatExceptionNotification(); clearData(); break; }
 
                 case "getIntervalContinue":
                     try {
@@ -318,7 +363,7 @@ This means that the spam config will be aborted.").Show(toast => toast.Tag = "sp
 
                         getTypingSpeed.Show(toast => toast.Tag = "spam");
                         break;
-                    } catch (FormatException) { formatExceptionNotification(); break; }
+                    } catch (FormatException) { formatExceptionNotification(); clearData(); break; }
 
                 case "getTypingSpeedContinue":
                     try {
@@ -328,7 +373,7 @@ This means that the spam config will be aborted.").Show(toast => toast.Tag = "sp
 
                         getPressEnter.Show(toast => toast.Tag = "spam");
                         break;
-                    } catch (FormatException) { formatExceptionNotification(); break; }
+                    } catch (FormatException) { formatExceptionNotification(); clearData(); break; }
 
                 case "getPressEnterYes":
                     data.Add(true);
@@ -351,6 +396,7 @@ This means that the spam config will be aborted.").Show(toast => toast.Tag = "sp
                         bool pressEnter = bool.Parse(data[4].ToString()!);
 
                         PerformSpam(text, count, interval, typingSpeed, pressEnter);
+                        clearData();
                         break;
 
                     } catch (NullReferenceException) {
@@ -361,7 +407,7 @@ This means that the spam config will be aborted.").Show(toast => toast.Tag = "sp
                                 "An exception occured while trying to start spamming.",
                                 "4"
                             }, "spamError"
-                        ); break;
+                        ); clearData(); break;
                     }
 
                 case "runSpamConfigNow":
@@ -375,6 +421,7 @@ This means that the spam config will be aborted.").Show(toast => toast.Tag = "sp
                         bool pressEnter = bool.Parse(data[4].ToString()!);
 
                         PerformSpam(text, count, interval, typingSpeed, pressEnter);
+                        clearData();
                         break;
 
                     } catch (NullReferenceException) {
@@ -385,7 +432,7 @@ This means that the spam config will be aborted.").Show(toast => toast.Tag = "sp
                                 "An exception occured while trying to start spamming.",
                                 "4"
                             }, "spamError"
-                        ); break;
+                        ); clearData(); break;
                     }
 
                 case "saveConfig":
@@ -397,7 +444,7 @@ This means that the spam config will be aborted.").Show(toast => toast.Tag = "sp
                         if (userInput[0].Value.ToString() != null) {
                             SpamJSONManager.SaveConfiguration(
                                 userInput[0].Value.ToString()!, //* name
-                                data[0].ToString()!, //* text
+                                data[0].ToString()!,            //* text
                                 int.Parse(data[1].ToString()!), //* count
                                 int.Parse(data[2].ToString()!), //* interval
                                 int.Parse(data[3].ToString()!), //* typingSpeed
@@ -407,18 +454,24 @@ This means that the spam config will be aborted.").Show(toast => toast.Tag = "sp
                             successfullySavedConfig.Show(toast => toast.Tag = "spam");
                         }
                     }
+
                     break;
 
                 case "stopSpam":
                     spamTokenSource.Cancel();
                     spamTokenSource.Dispose();
+                    clearData();
                     break;
             }
         }
 
-        public static async void PerformSpam(string text, int count, int interval, int typingSpeed, bool pressEnter) {
-            data.Clear();
-            
+        public async static void PerformSpam(string text, int count, int interval, int typingSpeed, bool pressEnter) {
+
+            spamTokenSource = new();
+            spamToken = spamTokenSource.Token;
+
+            clearData();
+
             Task spamTask = new Task(
                 () => {
                     try {
@@ -451,14 +504,14 @@ This means that the spam config will be aborted.").Show(toast => toast.Tag = "sp
                             true,
                             new string[] { "Stopped Spam.", "The spammer was stopped.", "3" },
                             "spamComplete"
-                        ); return;
+                        ); clearData(); return;
                     } catch {
                         Utils.NotifCheck(
                             true,
                             new string[] {
                                 "Huh.", "Something went wrong while spamming.", "3"
                             }, "spamError"
-                        ); return;
+                        ); clearData(); return;
                     }
                 }, spamToken
             );
