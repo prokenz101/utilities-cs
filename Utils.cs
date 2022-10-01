@@ -271,6 +271,18 @@ namespace utilities_cs {
                 return num;
             }
         }
+
+        public static string BulkReplace(string text, string chars, string replacementChars) {
+            List<string> charsList = chars.Split(" ").ToList<string>();
+            List<string> replacementCharsList = replacementChars.Split(" ").ToList<string>();
+            string result = text;
+            
+            foreach (string i in charsList) {
+                result = result.Replace(i, replacementCharsList[charsList.IndexOf(i)]);
+            }
+
+            return result;
+        }
     }
     /// <summary>
     /// Primary class for modifying and manipulating the windows clipboard.

@@ -694,14 +694,11 @@ FormattableCommands Count: {formattableCommandsCount}",
                     if (Utils.IndexTest(args)) { return null; }
 
                     string text = string.Join(" ", args[1..]);
-                    string ans = text
-                        .Replace("\\", "\\")
-                        .Replace("\"", "\\\"")
-                        .Replace("'", "\\'")
-                        .Replace("_", "\\_")
-                        .Replace("`", "\\`")
-                        .Replace("*", "\\*")
-                        .Replace(">", "\\>");
+                    string ans = Utils.BulkReplace(
+                        text,
+                        "! @ # $ % ^ & * ( ) _ + , . / ; ' [ ] < > ? : \" { } ` ~ \\",
+                        "\\" + string.Join(" \\", "! @ # $ % ^ & * ( ) _ + , . / ; ' [ ] < > ? : \" { } ` ~ \\".Split(" "))
+                    );
 
                     Utils.CopyCheck(copy, ans);
                     Utils.NotifCheck(
