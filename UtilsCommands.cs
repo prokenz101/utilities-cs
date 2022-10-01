@@ -1313,7 +1313,95 @@ FormattableCommands Count: {formattableCommandsCount}",
 
             FormattableCommand pi = new(
                 commandName: "pi",
-                function: PiDigits.PiMain
+                function: (string[] args, bool copy, bool notif) => {
+                    if (Utils.IndexTest(args)) { return null; }
+
+                    try {
+                        int digits = int.Parse(args[1]);
+
+                        Func<System.Numerics.BigInteger, string> calculatePi = (System.Numerics.BigInteger digits) => {
+                            digits++;
+
+                            uint[] x = new uint[(int)digits * 10 / 3 + 2];
+                            uint[] r = new uint[(int)digits * 10 / 3 + 2];
+
+                            uint[] pi = new uint[(int)digits];
+
+                            for (int j = 0; j < x.Length; j++) { x[j] = 20; }
+
+                            for (int i = 0; i < digits; i++) {
+                                uint carry = 0;
+                                for (int j = 0; j < x.Length; j++) {
+                                    uint num = (uint)(x.Length - j - 1);
+                                    uint dem = num * 2 + 1;
+
+                                    x[j] += carry;
+
+                                    uint q = x[j] / dem;
+                                    r[j] = x[j] % dem;
+
+                                    carry = q * num;
+                                }
+
+
+                                pi[i] = (x[x.Length - 1] / 10);
+
+
+                                r[x.Length - 1] = x[x.Length - 1] % 10; ;
+
+                                for (int j = 0; j < x.Length; j++) { x[j] = r[j] * 10; }
+                            }
+
+                            var result = "";
+                            uint c = 0;
+
+                            for (int i = pi.Length - 1; i >= 0; i--) {
+                                pi[i] += c;
+                                c = pi[i] / 10;
+
+                                result = (pi[i] % 10).ToString() + result;
+                            }
+
+                            return result;
+                        };
+
+                        string result;
+
+                        if (digits <= 0) {
+                            Utils.NotifCheck(
+                                true,
+                                new string[] {
+                                    "That's an invalid number of digits.",
+                                    "Cannot have a negative or zero amount of pi digits.", "3"
+                                }, "piError"
+                            ); return null;
+                        } else if (digits <= 1000) {
+                            result = "3." + PiDigits.piDigits[0..digits];
+                        } else {
+                            result = "3." + calculatePi(digits)[1..];
+                        }
+
+                        Utils.CopyCheck(copy, result);
+                        Utils.NotifCheck(
+                            notif, new string[] { "Success!", $"The result is: {result}", "4" }, "piSuccess"
+                        ); return result;
+
+                    } catch (FormatException) {
+                        Utils.NotifCheck(
+                            true,
+                            new string[] {
+                                "Something went wrong.", "Perhaps the number you inputted was not a real number.", "5"
+                            }, "piError"
+                        ); return null;
+                    } catch {
+                        Utils.NotifCheck(
+                            true,
+                            new string[] {
+                                "Something went wrong.", "An exception has occured.", "4"
+                            }, "piError"
+                        ); return null;
+                    }
+                }
             );
 
             FormattableCommand lorem = new(
