@@ -454,23 +454,25 @@ Opening Wiki anyway.", "3" },
                 function: (string[] args) => {
                     string text = string.Join(" ", args[1..]);
 
-                    Dictionary<System.Text.RegularExpressions.Match, System.Text.RegularExpressions.GroupCollection>? matchToGroups =
-                        Utils.RegexFind(
-                            text,
-                            @"[""'](?<title>.*?)[""'],? [""'](?<subtitle>.*?)[""'],? (?<duration>\d+)",
-                            useIsMatch: true,
-                            () => {
-                                Utils.NotifCheck(
-                                    true,
-                                    new string[] { "Huh.", "The parameters were not inputted properly.", "3" },
-                                    "notificationCommandError"
-                                );
-                            }
-                        );
+                    Dictionary<System.Text.RegularExpressions.Match, System.Text.RegularExpressions.GroupCollection>?
+                        matchToGroups =
+                            Utils.RegexFind(
+                                text,
+                                @"[""'](?<title>.*?)[""'],? [""'](?<subtitle>.*?)[""'],? (?<duration>\d+)",
+                                useIsMatch: true,
+                                () => {
+                                    Utils.NotifCheck(
+                                        true,
+                                        new string[] { "Huh.", "The parameters were not inputted properly.", "3" },
+                                        "notificationCommandError"
+                                    );
+                                }
+                            );
 
                     if (matchToGroups != null) {
                         foreach (
-                            KeyValuePair<System.Text.RegularExpressions.Match, System.Text.RegularExpressions.GroupCollection> kvp in matchToGroups
+                            KeyValuePair<System.Text.RegularExpressions.Match, System.Text.RegularExpressions.GroupCollection>
+                                kvp in matchToGroups
                         ) {
                             System.Text.RegularExpressions.GroupCollection groups = kvp.Value;
 
