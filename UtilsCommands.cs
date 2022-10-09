@@ -1016,6 +1016,23 @@ FormattableCommands Count: {formattableCommandsCount}",
                 allCommandMode: "fancy"
             );
 
+            FormattableCommand subscript = new(
+                commandName: "subscript",
+                function: (string[] args, bool copy, bool notif) => {
+                    if (Utils.IndexTest(args)) { return null; }
+
+                    string result = Utils.TextFormatter(string.Join(" ", args[1..]).ToLower(), Dictionaries.SubscriptDict);
+
+                    Utils.CopyCheck(copy, result);
+                    Utils.NotifCheck(
+                        notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "subscriptSuccess"
+                    ); return result;
+                },
+                aliases: new string[] { "sub" },
+                useInAllCommand: true,
+                allCommandMode: "fancy"
+            );
+
             FormattableCommand factorial = new(
                 commandName: "factorial",
                 function: (string[] args, bool copy, bool notif) => {
