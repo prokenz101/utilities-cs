@@ -119,6 +119,11 @@ namespace utilities_cs {
             { "->", "⭢" },
             { "<<-", "↞" },
             { "->>", "↠" },
+            { "pi", "π" },
+            { "G", "6.673 × 10⁻¹¹ Nm² × kg⁻²" },
+            { "golden ratio", "1.618033988749" }, //* First 12 digits after the decimal point
+            { "c", "299,792,458 m/s" },
+            { "speed of light", "299,792,458 m/s" },
             { "int16maxvalue", Int16.MaxValue.ToString() },
             { "int32maxvalue", Int32.MaxValue.ToString() },
             { "int64maxvalue", Int64.MaxValue.ToString() }
