@@ -8,20 +8,20 @@ Check out the [wiki](https://github.com/prokenz101/utilities-cs/wiki/Utilities-W
 <br />
 
 ## Installation Approaches
-### Recommended: With Microsoft PowerToys & .NET6
+### Recommended: With Microsoft PowerToys & .NET 8
 
 - Download [Microsoft PowerToys](https://github.com/microsoft/powertoys/releases).
 - Scroll to the latest release and download `PowerToys Setup-1234-x64.exe`.
 - Run the installer to install PowerToys and .NET if needed.
 - Download `utilities-cs-fd.exe` from the utilities-cs releases.
 
-### Without PowerToys, With .NET6 Installed
+### Without PowerToys, With .NET 8 Installed
 
 - Check for .NET by running `dotnet --list-runtimes` in Command Prompt.
-- Ensure "Microsoft.NetCoreApp 6.0" is listed. If not, install [.NET](https://dot.net).
+- Ensure "Microsoft.NetCoreApp 8.0.x" is listed. If not, install [.NET](https://dot.net).
 - Download `utilities-cs-fd.exe` from the utilities-cs releases.
 
-### Without PowerToys and .NET6
+### Without PowerToys and .NET 8
 
 Alternatively, download the self-contained version `utilities-cs-sc.exe` from the utilities-cs releases (note: this version is larger and significantly slower at runtime).
 
