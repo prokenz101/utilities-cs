@@ -5,28 +5,9 @@ namespace utilities_cs {
         public static void ForceMain(string[] args) {
             string commandName = args[1];
 
-            //* check if command exists
-            if (FormattableCommand.FCommandExists(commandName)) {
-                //* check if command is already forced
-                if (Force.AreAnyForced()) {
-                    if (Force.IsSpecificCmdForced(commandName)) {
-                        Utils.NotifCheck(
-                            true,
-                            new string[] { "Huh.", "It seems that command has already been forced.", "4" },
-                            "forceError"
-                        ); return;
-                    } else {
-                        Utils.NotifCheck(
-                            true,
-                            new string[] { "Huh.", "A command has already been forced.", "3" },
-                            "forceError"
-                        ); return;
-                    }
-                } else {
-                    //* enable command
-                    Force.ForceCommand(commandName);
-                    Utils.NotifCheck(true, new string[] { "Success!", "That command has been forced.", "3" }, "forceSuccess");
-                }
+            if (FormattableCommand.FormattableCommandExists(commandName)) {
+                Force.ForceCommand(commandName);
+                Utils.NotifCheck(true, ["Success!", "That command has been forced.", "3"], "forceSuccess");
             } else {
                 Utils.NotifCheck(true, new string[] { "Huh.", "That command does not exist.", "3" }, "forceError");
             }
