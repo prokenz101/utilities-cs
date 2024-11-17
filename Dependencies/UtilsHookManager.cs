@@ -67,7 +67,7 @@ namespace utilities_cs {
 
 #nullable disable
 
-    public sealed class KeyboardHook : IDisposable {
+    public sealed partial class KeyboardHook : IDisposable {
         //* Registers a hot key with Windows.
         [System.Runtime.InteropServices.DllImport("user32.dll")]
         private static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
@@ -78,8 +78,8 @@ namespace utilities_cs {
         /// <summary>
         /// Represents the window that is used internally to get the messages.
         /// </summary>
-        private class Window : NativeWindow, IDisposable {
-            private static int WM_HOTKEY = 0x0312;
+        private partial class Window : NativeWindow, IDisposable {
+            private static readonly int WM_HOTKEY = 0x0312;
 
             public Window() {
                 //* create the handle for the window.
@@ -100,8 +100,7 @@ namespace utilities_cs {
                     ModifierKeys modifier = (ModifierKeys)((int)m.LParam & 0xFFFF);
 
                     //* invoke the event to notify the parent.
-                    if (KeyPressed != null)
-                        KeyPressed(this, new KeyPressedEventArgs(modifier, key));
+                    KeyPressed?.Invoke(this, new KeyPressedEventArgs(modifier, key));
                 }
             }
 
@@ -122,8 +121,7 @@ namespace utilities_cs {
         public KeyboardHook() {
             //* register the event of the inner native window.
             _window.KeyPressed += delegate (object sender, KeyPressedEventArgs args) {
-                if (KeyPressed != null)
-                    KeyPressed(this, args);
+                KeyPressed?.Invoke(this, args);
             };
         }
 
@@ -134,11 +132,11 @@ namespace utilities_cs {
         /// <param name="key">The key itself that is associated with the hot key.</param>
         public void RegisterHotKey(ModifierKeys modifier, Keys key) {
             //* increment the counter.
-            _currentId = _currentId + 1;
+            _currentId++;
 
             //* register the hot key.
             if (!RegisterHotKey(_window.Handle, _currentId, (uint)modifier, (uint)key))
-                throw new InvalidOperationException("Couldn’t register the hot key.");
+                throw new InvalidOperationException("Couldn't register the hot key.");
         }
 
         /// <summary>
@@ -165,8 +163,8 @@ namespace utilities_cs {
     /// Event Args for the event that is fired after the hot key has been pressed.
     /// </summary>
     public class KeyPressedEventArgs : EventArgs {
-        private ModifierKeys _modifier;
-        private Keys _key;
+        private readonly ModifierKeys _modifier;
+        private readonly Keys _key;
 
         internal KeyPressedEventArgs(ModifierKeys modifier, Keys key) {
             _modifier = modifier;
