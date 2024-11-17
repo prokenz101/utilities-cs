@@ -7,7 +7,7 @@ namespace utilities_cs {
         static CancellationTokenSource spamTokenSource = new CancellationTokenSource();
         static CancellationToken spamToken = spamTokenSource.Token;
 
-        static void clearData() { data.Clear(); }
+        static void ClearData() { data.Clear(); }
 
         public static void SpamMain(string[] args) {
             try {
@@ -32,13 +32,13 @@ namespace utilities_cs {
                                 "Huh.",
                                 "It seems that spam configuration does not exist.",
                                 "4"
-                            }, "spamConfigNotFoundError"
+                            ], "spamConfigNotFoundError"
                         );
                     }
 
                     return;
 
-                } else if (args.Length > 1 && args[1].ToLower() == "list") {
+                } else if (args.Length > 1 && string.Equals(args[1], "list")) {
                     if (spamConfigs.Count > 0) {
                         string finalString = "";
 
@@ -55,23 +55,23 @@ namespace utilities_cs {
                         Utils.CopyCheck(true, finalString);
                         Utils.NotifCheck(
                             true,
-                            new string[] {
+                            [
                                 "Success!",
                                 "The currently saved spam configurations were copied to your clipboard.",
                                 "3"
-                            }, "spamSuccess"
+                            ], "spamSuccess"
                         ); return;
-                    } else if (args.Length > 1 && args[1].ToLower() == "clear") {
+                    } else if (args.Length > 1 && string.Equals(args[1], "clear")) {
                         if (spamConfigs.Count > 0) {
                             spamConfigs.Clear();
 
                             Utils.NotifCheck(
                                 true,
-                                new string[] {
+                                [
                                     "Success!",
                                     "Cleared all currently registered spam configurations.",
                                     "3"
-                                }, "spamClearSuccess"
+                                ], "spamClearSuccess"
                             ); return;
                         } else {
                             Utils.NotifCheck(
@@ -80,7 +80,7 @@ namespace utilities_cs {
                                     "Huh.",
                                     "It seems there are no registered spam configurations to clear.",
                                     "3"
-                                }, "spamClearError"
+                                ], "spamClearError"
                             ); return;
                         }
                     } else {
@@ -90,7 +90,7 @@ namespace utilities_cs {
                                 "Huh.",
                                 "There are no currently saved spam configurations.",
                                 "4"
-                            }, "spamError"
+                            ], "spamError"
                         ); return;
                     }
                 }
@@ -299,14 +299,15 @@ You can now run it using ""spam run <configName>""")
                 * data[4] = pressEnter (bool)
             */
 
-            Action formatExceptionNotification = () => {
+            static void formatExceptionNotification()
+            {
                 Utils.NotifCheck(
                     true,
                     new string[] {
                         "Huh.", "Perhaps the number you inputted was not a number.", "3"
                     }, "spamError"
                 );
-            };
+            }
 
             if (value == "notifClicked") {
                 new ToastContentBuilder()
@@ -323,12 +324,12 @@ This means that the spam config will be aborted.").Show(toast => toast.Tag = "sp
 
                 case "cancel":
                     ToastNotificationManagerCompat.History.Remove("spam");
-                    clearData();
+                    ClearData();
                     break;
 
                 case "dismiss":
                     ToastNotificationManagerCompat.History.Remove("spam");
-                    clearData();
+                    ClearData();
                     break;
 
                 case "getTextContinue":
@@ -344,7 +345,7 @@ This means that the spam config will be aborted.").Show(toast => toast.Tag = "sp
                 case "getCountContinue":
                     try {
                         if (userInput != null && userInput.Count > 0) {
-                            if (userInput[0].Value.ToString()!.ToLower() == "infinite") {
+                            if (string.Equals(userInput[0].Value.ToString()!, "infinite")) {
                                 data.Add(int.MaxValue);
                             } else {
                                 data.Add(int.Parse(userInput[0].Value.ToString()!));
@@ -353,7 +354,7 @@ This means that the spam config will be aborted.").Show(toast => toast.Tag = "sp
 
                         getInterval.Show(toast => toast.Tag = "spam");
                         break;
-                    } catch (FormatException) { formatExceptionNotification(); clearData(); break; }
+                    } catch (FormatException) { formatExceptionNotification(); ClearData(); break; }
 
                 case "getIntervalContinue":
                     try {
@@ -363,7 +364,7 @@ This means that the spam config will be aborted.").Show(toast => toast.Tag = "sp
 
                         getTypingSpeed.Show(toast => toast.Tag = "spam");
                         break;
-                    } catch (FormatException) { formatExceptionNotification(); clearData(); break; }
+                    } catch (FormatException) { formatExceptionNotification(); ClearData(); break; }
 
                 case "getTypingSpeedContinue":
                     try {
@@ -373,7 +374,7 @@ This means that the spam config will be aborted.").Show(toast => toast.Tag = "sp
 
                         getPressEnter.Show(toast => toast.Tag = "spam");
                         break;
-                    } catch (FormatException) { formatExceptionNotification(); clearData(); break; }
+                    } catch (FormatException) { formatExceptionNotification(); ClearData(); break; }
 
                 case "getPressEnterYes":
                     data.Add(true);
@@ -396,7 +397,7 @@ This means that the spam config will be aborted.").Show(toast => toast.Tag = "sp
                         bool pressEnter = bool.Parse(data[4].ToString()!);
 
                         PerformSpam(text, count, interval, typingSpeed, pressEnter);
-                        clearData();
+                        ClearData();
                         break;
 
                     } catch (NullReferenceException) {
@@ -406,8 +407,8 @@ This means that the spam config will be aborted.").Show(toast => toast.Tag = "sp
                                 "Something went wrong.",
                                 "An exception occured while trying to start spamming.",
                                 "4"
-                            }, "spamError"
-                        ); clearData(); break;
+                            ], "spamError"
+                        ); ClearData(); break;
                     }
 
                 case "runSpamConfigNow":
@@ -421,7 +422,7 @@ This means that the spam config will be aborted.").Show(toast => toast.Tag = "sp
                         bool pressEnter = bool.Parse(data[4].ToString()!);
 
                         PerformSpam(text, count, interval, typingSpeed, pressEnter);
-                        clearData();
+                        ClearData();
                         break;
 
                     } catch (NullReferenceException) {
@@ -431,8 +432,8 @@ This means that the spam config will be aborted.").Show(toast => toast.Tag = "sp
                                 "Something went wrong.",
                                 "An exception occured while trying to start spamming.",
                                 "4"
-                            }, "spamError"
-                        ); clearData(); break;
+                            ], "spamError"
+                        ); ClearData(); break;
                     }
 
                 case "saveConfig":
@@ -460,7 +461,7 @@ This means that the spam config will be aborted.").Show(toast => toast.Tag = "sp
                 case "stopSpam":
                     spamTokenSource.Cancel();
                     spamTokenSource.Dispose();
-                    clearData();
+                    ClearData();
                     break;
             }
         }
@@ -470,9 +471,9 @@ This means that the spam config will be aborted.").Show(toast => toast.Tag = "sp
             spamTokenSource = new();
             spamToken = spamTokenSource.Token;
 
-            clearData();
+            ClearData();
 
-            Task spamTask = new Task(
+            Task spamTask = new(
                 () => {
                     try {
                         Action performSpam = () => {
@@ -502,9 +503,9 @@ This means that the spam config will be aborted.").Show(toast => toast.Tag = "sp
                         ToastNotificationManagerCompat.History.Remove("stopSpam");
                         Utils.NotifCheck(
                             true,
-                            new string[] { "Stopped Spam.", "The spammer was stopped.", "3" },
+                            ["Stopped Spam.", "The spammer was stopped.", "3"],
                             "spamComplete"
-                        ); clearData(); return;
+                        ); ClearData(); return;
                     } catch {
                         Utils.NotifCheck(
                             true,
