@@ -9,7 +9,7 @@ namespace utilities_cs {
             string? all = returnCategory(args[1..], category, copy, notif);
             if (all != null) {
                 Utils.CopyCheck(copy, all);
-                Utils.NotifCheck(notif, new string[] { "Success!", "Text copied to clipboard.", "2" }, "allSuccess");
+                Utils.NotifCheck(notif, ["Success!", "Text copied to clipboard.", "2"], "allSuccess");
                 return all;
             } else {
                 Utils.NotifCheck(
@@ -80,7 +80,6 @@ namespace utilities_cs {
                     return null;
 
             }
-
 
             return string.Join("\n", converted);
         }
