@@ -1,3 +1,5 @@
+using System.Text.RegularExpressions;
+
 namespace utilities_cs {
     /// <summary>
     /// The base class of all command-classes for all commands in utilities-cs.
@@ -331,7 +333,20 @@ namespace utilities_cs {
     /// <summary>
     /// The class containing all methods that are used for registering commands to the dictionaries.
     /// </summary>
-    public class RegisterCommands {
+    public partial class RegisterCommands {
+
+        [GeneratedRegex(@"(?<root>-?\d+\.\d+|-?\d+)(?:st|nd|rd|th) root of (?<num>-?\d+\.\d+|-?\d+)")]
+        private static partial Regex RootRegex();
+
+        [GeneratedRegex(@"[""'](?<old>.+)[""'] with [""'](?<new>.+|)[""'] in [""'](?<text>.+)[""']")]
+        private static partial Regex ReplaceRegex();
+
+        [GeneratedRegex(@"(?<percent>-?\d+\.\d+|-?\d+)% of (?<number>-?\d+\.\d+|-?\d+)")]
+        private static partial Regex FindNumberFromPercentageRegex();
+
+        [GeneratedRegex(@"get (?<num1>-?\d+\.\d+|-?\d+) and (?<num2>-?\d+\.\d+|-?\d+)")]
+        private static partial Regex FindPercentageFromNumbersRegex();
+
         /// <summary>
         /// The method that registers all regular commands.
         /// </summary>
@@ -1123,11 +1138,10 @@ FormattableCommands Count: {formattableCommandsCount}",
                 function: (string[] args, bool copy, bool notif) => {
                     if (args[1] == "calc" | args[1] == "calculator") {
                         string text = string.Join(" ", args[2..]);
-                        System.Text.RegularExpressions.Regex regex =
-                            new(@"(?<root>-?\d+\.\d+|-?\d+)(?:st|nd|rd|th) root of (?<num>-?\d+\.\d+|-?\d+)");
+                        var re = RootRegex();
 
-                        if (regex.IsMatch(text)) {
-                            var match = regex.Match(text);
+                        if (re.IsMatch(text)) {
+                            var match = re.Match(text);
                             try {
                                 double root = Convert.ToDouble(match.Groups["root"].Value);
                                 double num = Convert.ToDouble(match.Groups["num"].Value);
@@ -1844,9 +1858,7 @@ Word count: {args[1..].Length}";
                     if (Utils.IndexTest(args)) { return null; }
 
                     string text = string.Join(" ", args[1..]);
-
-                    System.Text.RegularExpressions.Regex re =
-                        new(@"[""'](?<old>.+)[""'] with [""'](?<new>.+|)[""'] in [""'](?<text>.+)[""']");
+                    var re = ReplaceRegex();
 
                     if (re.IsMatch(text)) {
                         var match = re.Match(text);
@@ -2084,10 +2096,8 @@ Word count: {args[1..].Length}";
 
                     string text = string.Join(" ", args[1..]);
                     //* making regex
-                    System.Text.RegularExpressions.Regex findNumberFromPercentage =
-                        new(@"(?<percent>-?\d+\.\d+|-?\d+)% of (?<number>-?\d+\.\d+|-?\d+)");
-                    System.Text.RegularExpressions.Regex findPercentageFromNumbers =
-                        new(@"get (?<num1>-?\d+\.\d+|-?\d+) and (?<num2>-?\d+\.\d+|-?\d+)");
+                    var findNumberFromPercentage = FindNumberFromPercentageRegex();
+                    var findPercentageFromNumbers = FindPercentageFromNumbersRegex();
 
                     if (findNumberFromPercentage.IsMatch(text)) {
                         System.Text.RegularExpressions.MatchCollection matches =
