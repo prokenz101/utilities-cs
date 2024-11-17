@@ -43,49 +43,49 @@ namespace utilities_cs {
                             "settingsReset"
                         ); break;
 
-                case "reset":
-                    SettingsModification.CreateDirectoryAndJson();
-                    Utils.NotifCheck(
-                        true,
-                        new string[] { "Reset.", "All settings have been reset to default.", "4" },
-                        "settingsReset"
-                    ); break;
-
-                case "list":
-                    string settings = SettingsModification.ListAllSettings();
-                    Utils.CopyCheck(true, settings);
-                    Utils.NotifCheck(
-                        true,
-                        new string[] { "Success!", "The settings have been copied to your clipboard.", "3" },
-                        "settingsCopy"
-                    ); break;
-
-                case "open":
-                    Utils.NotifCheck(
-                        true,
-                        new string[] { "Opening settings file.", "Opening in your default editor.", "3" },
-                        "settingsOpen"
-                    ); SettingsModification.OpenSettingsJSON(); break;
-
-                case "refresh":
-                    if (
-                        SettingsModification.GetSettings().DisableClipboardManipulation
-                        && SettingsModification.GetSettings().AutoPaste
-                    ) {
+                    case "list":
+                        string settings = ListAllSettings();
+                        Utils.CopyCheck(true, settings);
                         Utils.NotifCheck(
                             true,
-                            new string[] {
-                                "Hey!",
-                                @"disableClipboardManipulation and autoPaste are mutually exclusive.
-They cannot both be true at the same time."
-                            }, "settingsError"
+                            ["Success!", "The settings have been copied to your clipboard.", "3"],
+                            "settingsCopy"
                         ); break;
-                    } else {
-                        UtilitiesAppContext.CurrentSettings = SettingsModification.GetSettings();
+
+                    case "open":
                         Utils.NotifCheck(
                             true,
-                            new string[] { "Refreshed.", "Settings have been refreshed.", "3" },
-                            "settingsRefresh"
+                            ["Opening settings file.", "Opening in your default editor.", "3"],
+                            "settingsOpen"
+                        ); OpenSettingsJSON(); break;
+
+                    case "refresh":
+                        if (
+                            GetSettings().DisableClipboardManipulation
+                            && GetSettings().AutoPaste
+                        ) {
+                            Utils.NotifCheck(
+                                true,
+                                [
+                                    "Exception",
+                                    @"disableClipboardManipulation and autoPaste are mutually exclusive.
+They cannot both be true at the same time."
+                                ], "settingsError"
+                            ); break;
+                        } else {
+                            UtilitiesAppContext.CurrentSettings = GetSettings();
+                            Utils.NotifCheck(
+                                true,
+                                ["Refreshed.", "Settings have been refreshed.", "3"],
+                                "settingsRefresh"
+                            ); break;
+                        }
+
+                    default:
+                        Utils.NotifCheck(
+                            true,
+                            ["Exception", "Invalid mode given, try 'help' for more info.", "3"],
+                            "settingsError"
                         ); break;
                     }
 
@@ -175,7 +175,7 @@ They cannot both be true at the same time."
             UtilitiesAppContext.CurrentSettings = SettingsModification.GetSettings();
             Utils.NotifCheck(
                 true,
-                new string[] { "Modified.", $"'{setting}' has been changed to {value}.", "4" },
+                ["Modified.", $"'{setting}' has been changed to {value}.", "4"],
                 "settingsModifiedSuccess"
             );
         }
@@ -190,7 +190,7 @@ They cannot both be true at the same time."
         }
 
         public static string ListAllSettings() {
-            List<string> settings = new();
+            List<string> settings = [];
             foreach (var i in defaultSettings.GetType().GetProperties()) {
                 settings.Add($"{i.Name}: {i.GetValue(UtilitiesAppContext.CurrentSettings)}");
             }
