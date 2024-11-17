@@ -19,7 +19,7 @@ namespace utilities_cs {
                 //* disable command
                 Utils.NotifCheck(
                     true,
-                    new string[] { "Success!", $"The {Force.forced!.CommandName} command has been un-forced.", "3" },
+                    ["Success!", $"The {Force.forced!.CommandName} command has been un-forced.", "3"],
                     "unforceSuccess"
                 ); Force.UnForceCommand();
             } else {
@@ -31,7 +31,7 @@ namespace utilities_cs {
 
         public static bool AreAnyForced() { return forced != null; }
 
-        public static bool IsSpecificCmdForced(string cmdName) { return forced!.CommandName == cmdName; }
+        public static bool IsSpecificCommandForced(string cmdName) { return forced!.CommandName == cmdName; }
 
         public static void UnForceCommand() { forced = null; }
     }
