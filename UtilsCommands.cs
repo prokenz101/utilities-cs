@@ -17,12 +17,12 @@ namespace utilities_cs {
         /// <summary>
         /// A dictionary of command names to methods (For FormattableCommands).
         /// </summary>
-        public static Dictionary<string, Func<string[], bool, bool, string?>> FCommands = new();
+        public static Dictionary<string, Func<string[], bool, bool, string?>> FCommands = [];
 
         /// <summary>
         /// A dictionary of command names to methods (For RegularCommands).
         /// </summary>
-        public static Dictionary<string, Action<string[]>> RCommands = new();
+        public static Dictionary<string, Action<string[]>> RCommands = [];
         /// <summary>
         /// Executes a command in either the RCommands dictionary or the FCommands dictionary.
         /// </summary>
@@ -34,14 +34,14 @@ namespace utilities_cs {
         public static string? ExecuteCommand(string[] args, bool copy = true, bool notif = true) {
             string cmd = args[0].ToLower();
 
-            if (FCommands.ContainsKey(cmd)) {
-                string? output = FCommands[cmd].Invoke(args, copy, notif);
+            if (FCommands.TryGetValue(cmd, out var fcommand)) {
+                string? output = fcommand.Invoke(args, copy, notif);
                 if (output != null) { return output; } else { return null; }
-            } else if (RCommands.ContainsKey(cmd)) {
-                RCommands[cmd].Invoke(args);
+            } else if (RCommands.TryGetValue(cmd, out var rcommand)) {
+                rcommand.Invoke(args);
                 return null;
             } else if (Force.AreAnyForced()) {
-                args = Enumerable.Concat(new string[] { "cmd" }, args).ToArray<string>();
+                args = Enumerable.Concat(["cmd"], args).ToArray<string>();
                 string? output = Force.forced!.Function!.Invoke(args, copy, notif);
                 if (output != null) { return output; } else { return null; }
             } else {
@@ -75,11 +75,11 @@ namespace utilities_cs {
         /// <param name="commandName">The name of the command.</param>
         /// <returns>Returns the method of the formattable/regular command.</returns>
         public static object? GetMethod(string commandName) {
-            if (Command.Exists(commandName)) {
-                if (FCommands.ContainsKey(commandName)) {
-                    return FCommands[commandName];
-                } else if (RCommands.ContainsKey(commandName)) {
-                    return RCommands[commandName];
+            if (Exists(commandName)) {
+                if (FCommands.TryGetValue(commandName, out var fname)) {
+                    return fname;
+                } else if (RCommands.TryGetValue(commandName, out var rname)) {
+                    return rname;
                 } else {
                     return null;
                 }
@@ -94,14 +94,14 @@ namespace utilities_cs {
         /// <param name="commandName">The name of the command.</param>
         /// <returns>A list of all the aliases, or null if the command does not exist.</returns>
         public static List<string>? GetAliases(string commandName) {
-            if (FCommands.ContainsKey(commandName)) {
-                var aliases = FCommands.Where(kvp => kvp.Value == FCommands[commandName])
+            if (FCommands.TryGetValue(commandName, out var fname)) {
+                var aliases = FCommands.Where(kvp => kvp.Value == fname)
                     .Select(kvp => kvp.Key)
                     .ToList();
 
                 return aliases;
-            } else if (RCommands.ContainsKey(commandName)) {
-                var aliases = RCommands.Where(kvp => kvp.Value == RCommands[commandName])
+            } else if (RCommands.TryGetValue(commandName, out var rname)) {
+                var aliases = RCommands.Where(kvp => kvp.Value == rname)
                     .Select(kvp => kvp.Key)
                     .ToList();
 
@@ -134,7 +134,7 @@ namespace utilities_cs {
         /// <summary>
         /// List of all registered FormattableCommands.
         /// </summary>
-        public static List<FormattableCommand> FormattableCommands = new();
+        public static List<FormattableCommand> FormattableCommands = [];
 
         /// <summary>
         /// Initializes a new instance of a FormattableCommand.
@@ -171,8 +171,8 @@ namespace utilities_cs {
         /// <param name="notif">Controls whether the function is willing to send a notification.</param>
         //! Mostly unused method. Only used for testing purposes.
         public string? Execute(string[] args, bool copy, bool notif) {
-            if (this.Function != null) {
-                string? output = this.Function.Invoke(args, copy, notif);
+            if (Function != null) {
+                string? output = Function.Invoke(args, copy, notif);
                 if (output != null) { Console.WriteLine(output); return output; }
             }
 
@@ -184,8 +184,8 @@ namespace utilities_cs {
         /// </summary>
         /// <returns>A string with all currently registered Commands, seperated by newlines.</returns>
         public static string ListAllFCommands() {
-            List<string> fCommandsList = new();
-            foreach (KeyValuePair<string, Func<string[], bool, bool, string?>> i in Command.FCommands) {
+            List<string> fCommandsList = [];
+            foreach (KeyValuePair<string, Func<string[], bool, bool, string?>> i in FCommands) {
                 fCommandsList.Add(i.Key);
             }
 
@@ -201,8 +201,8 @@ namespace utilities_cs {
         /// <param name="notif">Controls whether the function is willing to send a notification.</param>
         /// <returns>The output of the method that is ran. Value can be null.</returns>
         public static string? FindAndExecute(string cmd, string[] args, bool copy, bool notif) {
-            if (FCommands.ContainsKey(cmd)) {
-                string? output = FCommands[cmd].Invoke(args, copy, notif);
+            if (FCommands.TryGetValue(cmd, out var fcommand)) {
+                string? output = fcommand.Invoke(args, copy, notif);
                 if (output != null) { return output; } else { return null; }
             } else {
                 return null;
@@ -215,17 +215,11 @@ namespace utilities_cs {
         /// <param name="mode">Mode for the command, fancy/encoding</param>
         /// <returns></returns>
         public static List<FormattableCommand> GetMethodsSupportedByAll(string mode) {
-            List<FormattableCommand> methodsSupportedByAll = new();
+            List<FormattableCommand> methodsSupportedByAll = [];
 
-            if (FormattableCommands != null) {
-                FormattableCommands.ForEach(
-                    i => {
-                        if (i.UseInAllCommand && i.AllCommandMode == mode) {
-                            methodsSupportedByAll.Add(i);
-                        }
-                    }
-                );
-            }
+            FormattableCommands?.ForEach(
+                i => { if (i.UseInAllCommand && i.AllCommandMode == mode) { methodsSupportedByAll.Add(i); } }
+            );
 
             return methodsSupportedByAll;
         }
@@ -236,8 +230,8 @@ namespace utilities_cs {
         /// <param name="cmd">The name of the command that is used to find the method and return it.</param>
         /// <returns>The method of that command name.</returns>
         public static Func<string[], bool, bool, string?>? GetFMethod(string cmd) {
-            if (FCommands.ContainsKey(cmd)) {
-                Func<string[], bool, bool, string?> func = FCommands[cmd];
+            if (FCommands.TryGetValue(cmd, out var fcommand)) {
+                Func<string[], bool, bool, string?> func = fcommand;
                 return func;
             } else {
                 return null;
@@ -266,7 +260,7 @@ namespace utilities_cs {
         /// </summary>
         /// <param name="cmd">The name of the command.</param>
         /// <returns>True if the command exists, else false.</returns>
-        public static bool FCommandExists(string cmd) { return FCommands.ContainsKey(cmd); }
+        public static bool FormattableCommandExists(string cmd) { return FCommands.ContainsKey(cmd); }
     }
 
     /// <summary>
@@ -274,7 +268,7 @@ namespace utilities_cs {
     /// </summary>
     public class RegularCommand : Command {
         public Action<string[]>? Function;
-        public static List<RegularCommand> RegularCommands = new();
+        public static List<RegularCommand> RegularCommands = [];
         /// <summary>
         /// Initializes a new instance of a RegularCommand.
         /// </summary>
@@ -299,7 +293,7 @@ namespace utilities_cs {
         /// </summary>
         /// <returns>A string with every RegularCommand, seperated by newlines.</returns>
         public static string ListAllRCommands() {
-            List<string> rCommandsList = new();
+            List<string> rCommandsList = [];
             foreach (KeyValuePair<string, Action<string[]>> i in Command.RCommands) {
                 rCommandsList.Add(i.Key);
             }
@@ -330,7 +324,7 @@ namespace utilities_cs {
         /// <param name="args">The command arguments to be used when executing the command.</param>
         //! Mostly unused method. Only used for testing purposes.
         public void Execute(string[] args) {
-            this.Function?.Invoke(args);
+            Function?.Invoke(args);
         }
     }
 
@@ -370,7 +364,7 @@ namespace utilities_cs {
             RegularCommand unforce = new(
                 commandName: "unforce",
                 function: Force.UnforceMain,
-                aliases: new string[] { "un-force" }
+                aliases: ["un-force"]
             );
 
             RegularCommand format = new(
@@ -393,7 +387,7 @@ namespace utilities_cs {
                         );
                     }
                 },
-                aliases: new string[] { "updates" }
+                aliases: ["updates"]
             );
 
             RegularCommand exit = new(
@@ -402,21 +396,21 @@ namespace utilities_cs {
                     HookManager.UnregisterAllHooks();
                     Application.Exit();
                 },
-                aliases: new string[] { "quit" }
+                aliases: ["quit"]
             );
 
             RegularCommand help = new(
                 commandName: "help",
                 function: (string[] args) => {
                     const string wikiLink = "https://github.com/prokenz101/utilities-cs/wiki/Utilities-Wiki";
-                    var process = new System.Diagnostics.ProcessStartInfo("cmd", $"/c start {wikiLink}");
-                    process.CreateNoWindow = true;
+                    var process = new System.Diagnostics.ProcessStartInfo("cmd", $"/c start {wikiLink}")
+                    { CreateNoWindow = true };
 
                     if (Utils.IndexTest(args, sendNotif: false)) {
                         System.Diagnostics.Process.Start(process);
                         Utils.NotifCheck(
                             true,
-                            new string[] { "Opening wiki...", "Opening wiki in your default browser.", "3" },
+                            ["Opening wiki...", "Opening wiki in your default browser.", "3"],
                             "wikiOpen"
                         ); return;
                     } else {
@@ -432,7 +426,7 @@ namespace utilities_cs {
                             process.Arguments = process.Arguments += $"#{commandName}";
                             Utils.NotifCheck(
                                 true,
-                                new string[] { "Opening wiki...", $"Opening wiki for \"{commandName}\"", "3" },
+                                ["Opening wiki...", $"Opening wiki for \"{commandName}\"", "3"],
                                 "wikiOpen"
                             ); System.Diagnostics.Process.Start(process);
                         } else {
@@ -482,13 +476,13 @@ Opening Wiki anyway.", "3" },
 
                             Utils.NotifCheck(
                                 true,
-                                new string[] { title, subtitle, duration.ToString() },
+                                [title, subtitle, duration.ToString()],
                                 "notificationCommandSuccess"
                             ); return;
                         }
                     }
                 },
-                aliases: new string[] { "notify", "notif" }
+                aliases: ["notify", "notif"]
             );
 
             RegularCommand remind = new(
@@ -511,9 +505,9 @@ Opening Wiki anyway.", "3" },
                         );
 
                     if (matchToGroups != null) {
-                        List<int> timeEnumerable = new();
-                        List<char> unitEnumerable = new();
-                        List<string> textEnumerable = new();
+                        List<int> timeEnumerable = [];
+                        List<char> unitEnumerable = [];
+                        List<string> textEnumerable = [];
 
                         foreach (
                             KeyValuePair<
@@ -539,7 +533,7 @@ Opening Wiki anyway.", "3" },
                         if (timeOptions.ContainsKey(unit)) {
                             int multiplier = int.Parse(timeOptions[unit][0]);
                             string word = timeOptions[unit][1].ToString();
-                            int timeSeconds = (time * 1000) * multiplier;
+                            int timeSeconds = time * 1000 * multiplier;
 
                             Microsoft.Toolkit.Uwp.Notifications.ToastContentBuilder customReminderToast =
                                 new Microsoft.Toolkit.Uwp.Notifications.ToastContentBuilder()
@@ -567,11 +561,11 @@ Opening Wiki anyway.", "3" },
                             if (timeSeconds > 10000) {
                                 Utils.NotifCheck(
                                     true,
-                                    new string[] {
+                                    [
                                         "New reminder added.",
                                         $"A reminder will come in {timeSeconds / 1000} seconds.",
                                         "4"
-                                    }, "remindCommandInfo"
+                                    ], "remindCommandInfo"
                                 );
                             }
 
@@ -583,7 +577,7 @@ Opening Wiki anyway.", "3" },
                         }
                     }
                 },
-                aliases: new string[] { "reminder" }
+                aliases: ["reminder"]
             );
 
             RegularCommand googleSearch = new(
@@ -610,7 +604,7 @@ Opening Wiki anyway.", "3" },
                         ) { CreateNoWindow = true }
                     );
                 },
-                aliases: new string[] { "yt" }
+                aliases: ["yt"]
             );
 
             RegularCommand imageSearch = new(
@@ -639,15 +633,15 @@ Opening Wiki anyway.", "3" },
 
                     Utils.NotifCheck(
                         true,
-                        new string[] {
+                        [
                             $"Total Commands: {regularCommandsCount + formattableCommandsCount}",
                             $@"RegularCommands Count: {regularCommandsCount}
 FormattableCommands Count: {formattableCommandsCount}",
                             "5"
-                        }, "getcommandcountSuccess"
+                        ], "getcommandcountSuccess"
                     );
                 },
-                aliases: new string[] { "totalcommandcount", "get-commandcount" }
+                aliases: ["totalcommandcount", "get-commandcount"]
             );
         }
 
@@ -674,18 +668,18 @@ FormattableCommands Count: {formattableCommandsCount}",
                         Utils.CopyCheck(copy, aliasesString);
                         Utils.NotifCheck(
                             notif,
-                            new string[] { "Success!", "The aliases were copied to your clipboard.", "3" },
+                            ["Success!", "The aliases were copied to your clipboard.", "3"],
                             "getAliasesSuccess"
                         ); return aliasesString;
                     } else {
                         Utils.NotifCheck(
                             false,
-                            new string[] { "No aliases found for command: " + cmd },
+                            ["No aliases found for command: " + cmd],
                             "getAliasesError"
                         ); return null;
                     }
                 },
-                aliases: new string[] { "getaliases", "getalias", "get-alias", "get-aliases" }
+                aliases: ["getaliases", "getalias", "get-alias", "get-aliases"]
             );
 
             FormattableCommand escape = new(
@@ -702,7 +696,7 @@ FormattableCommands Count: {formattableCommandsCount}",
 
                     Utils.CopyCheck(copy, ans);
                     Utils.NotifCheck(
-                        notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "escapeSuccess"
+                        notif, ["Success!", "Message copied to clipboard.", "3"], "escapeSuccess"
                     ); return ans;
                 }
             );
@@ -710,7 +704,7 @@ FormattableCommands Count: {formattableCommandsCount}",
             FormattableCommand base32 = new(
                 commandName: "base32",
                 function: Base32Convert.Base32ConvertMain,
-                aliases: new string[] { "b32" }
+                aliases: ["b32"]
             );
 
             FormattableCommand base64 = new(
@@ -733,13 +727,13 @@ FormattableCommands Count: {formattableCommandsCount}",
                             Utils.CopyCheck(copy, ans);
                             Utils.NotifCheck(
                                 notif,
-                                new string[] { "Success!", $"The message was: {ans}", "6" },
+                                ["Success!", $"The message was: {ans}", "6"],
                                 "base64Success"
                             ); return ans;
                         } catch {
                             Utils.NotifCheck(
                                 true,
-                                new string[] { "Huh.", "An exception occured when converting this text to Base64.", "4" },
+                                ["Exception", "Something went wrong while converting this text to Base64.", "4"],
                                 "base64Error"
                             ); return null;
                         }
@@ -748,12 +742,12 @@ FormattableCommands Count: {formattableCommandsCount}",
                         Utils.CopyCheck(copy, ans);
                         Utils.NotifCheck(
                             notif,
-                            new string[] { "Success!", "The message was copied to your clipboard.", "3" },
+                            ["Success!", "The message was copied to your clipboard.", "3"],
                             "base64Success"
                         ); return ans;
                     }
                 },
-                aliases: new string[] { "b64" },
+                aliases: ["b64"],
                 useInAllCommand: true,
                 allCommandMode: "encodings"
             );
@@ -776,10 +770,10 @@ FormattableCommands Count: {formattableCommandsCount}",
                     };
 
                     if (isBase64(text)) {
-                        Utils.NotifCheck(notif, new string[] { "Yes.", "The string is Base64.", "3" }, "isBase64Success");
+                        Utils.NotifCheck(notif, ["Yes.", "The string is Base64.", "3"], "isBase64Success");
                         return "Yes";
                     } else {
-                        Utils.NotifCheck(notif, new string[] { "No.", "The string is not Base64.", "3" }, "isBase64Success");
+                        Utils.NotifCheck(notif, ["No.", "The string is not Base64.", "3"], "isBase64Success");
                         return "No";
                     }
                 }
@@ -788,7 +782,7 @@ FormattableCommands Count: {formattableCommandsCount}",
             FormattableCommand base85 = new(
                 commandName: "base85",
                 function: Ascii85.Base85Main,
-                aliases: new string[] { "ascii85", "b85" }
+                aliases: ["ascii85", "b85"]
             );
 
             FormattableCommand urlencode = new(
@@ -802,7 +796,7 @@ FormattableCommands Count: {formattableCommandsCount}",
                     Utils.CopyCheck(copy, url);
                     Utils.NotifCheck(
                         notif,
-                        new string[] { "Success!", "The URL was copied to your clipboard.", "2" },
+                        ["Success!", "The URL was copied to your clipboard.", "2"],
                         "urlEncodeSuccess"
                     ); return url;
                 }
@@ -819,7 +813,7 @@ FormattableCommands Count: {formattableCommandsCount}",
                     Utils.CopyCheck(copy, url);
                     Utils.NotifCheck(
                         notif,
-                        new string[] { "Success!", "The URL was copied to your clipboard.", "2" },
+                        ["Success!", "The URL was copied to your clipboard.", "2"],
                         "urlDecodeSuccess"
                     ); return url;
                 }
@@ -836,7 +830,7 @@ FormattableCommands Count: {formattableCommandsCount}",
                             return encoding.GetBytes(str);
                         }
 
-                        string ToBinary(Byte[] data) {
+                        string ToBinary(byte[] data) {
                             return string.Join(
                                 " ",
                                 data.Select(
@@ -849,7 +843,7 @@ FormattableCommands Count: {formattableCommandsCount}",
                         Utils.CopyCheck(copy, ans);
                         Utils.NotifCheck(
                             notif,
-                            new string[] { "Success!", "Message copied to clipboard.", "3" },
+                            ["Success!", "Message copied to clipboard.", "3"],
                             "binarySuccess"
                         ); return ans;
 
@@ -861,19 +855,19 @@ FormattableCommands Count: {formattableCommandsCount}",
                             Utils.CopyCheck(copy, string.Join("", chars));
                             Utils.NotifCheck(
                                 notif,
-                                new string[] { "Success!", $"The message was: {string.Join("", chars)}", "10" },
+                                ["Success!", $"The message was: {string.Join("", chars)}", "10"],
                                 "binarySuccess"
                             ); return string.Join("", chars);
                         } catch {
                             Utils.NotifCheck(
                                 true,
-                                new string[] { "Huh.", @"Something went wrong with converting this binary.", "3" },
+                                ["Exception", @"Something went wrong while converting this text to binary.", "3"],
                                 "binaryError"
                             ); return null;
                         }
                     }
                 },
-                aliases: new string[] { "bin" },
+                aliases: ["bin"],
                 useInAllCommand: true,
                 allCommandMode: "encodings"
             );
@@ -887,11 +881,11 @@ FormattableCommands Count: {formattableCommandsCount}",
                     Utils.CopyCheck(copy, result);
                     Utils.NotifCheck(
                         notif,
-                        new string[] { "Success!", "Message copied to clipboard.", "3" },
+                        ["Success!", "Message copied to clipboard.", "3"],
                         "bubbletextSuccess"
                     ); return result;
                 },
-                aliases: new string[] { "bubble" },
+                aliases: ["bubble"],
                 useInAllCommand: true,
                 allCommandMode: "fancy"
             );
@@ -921,18 +915,18 @@ FormattableCommands Count: {formattableCommandsCount}",
                         Utils.CopyCheck(copy, result);
                         Utils.NotifCheck(
                             notif,
-                            new string[] { "Success!", "Message copied to clipboard.", "3" },
+                            ["Success!", "Message copied to clipboard.", "3"],
                             "commaseperatorSuccess"
                         ); return result;
                     } else {
                         Utils.NotifCheck(
                             true,
-                            new string[] { "Huh.", "It seems you did not input a proper number.", "2" },
+                            ["Exception", "Invalid input, try 'help' for more info.", "2"],
                             "commaseperatorError"
                         ); return null;
                     }
                 },
-                aliases: new string[] { "cms" }
+                aliases: ["cms"]
             );
 
             FormattableCommand copypaste = new(
@@ -942,11 +936,11 @@ FormattableCommands Count: {formattableCommandsCount}",
 
                     string text = string.Join(" ", args[1..]);
 
-                    if (Dictionaries.CopypasteDict.ContainsKey(text)) {
-                        Utils.CopyCheck(copy, Dictionaries.CopypasteDict[text]);
+                    if (Dictionaries.CopypasteDict.TryGetValue(text, out var val)) {
+                        Utils.CopyCheck(copy, val);
                         Utils.NotifCheck(
                             notif,
-                            new string[] { "Success!", "Message copied to clipboard.", "3" },
+                            ["Success!", "Message copied to clipboard.", "3"],
                             "copypasteSuccess"
                         ); return Dictionaries.CopypasteDict[text];
                     } else {
@@ -956,11 +950,11 @@ FormattableCommands Count: {formattableCommandsCount}",
                                 "Welp.",
                                 "It seems that utilities could not understand what word you were trying to copypaste.",
                                 "3"
-                            }, "copypasteError"
+                            ], "copypasteError"
                         ); return null;
                     }
                 },
-                aliases: new string[] { "cp" }
+                aliases: ["cp"]
             );
 
             FormattableCommand creepy = new(
@@ -973,7 +967,7 @@ FormattableCommands Count: {formattableCommandsCount}",
                     Utils.CopyCheck(copy, result);
                     Utils.NotifCheck(
                         notif,
-                        new string[] { "Success!", "Message copied to clipboard.", "3" },
+                        ["Success!", "Message copied to clipboard.", "3"],
                         "creepySuccess"
                     ); return result;
                 },
@@ -991,11 +985,11 @@ FormattableCommands Count: {formattableCommandsCount}",
                     Utils.CopyCheck(copy, result);
                     Utils.NotifCheck(
                         notif,
-                        new string[] { "Success!", "Message copied to clipboard.", "3" },
+                        ["Success!", "Message copied to clipboard.", "3"],
                         "wingdingsSuccess"
                     ); return result;
                 },
-                aliases: new string[] { "wd" },
+                aliases: ["wd"],
                 useInAllCommand: true,
                 allCommandMode: "fancy"
             );
@@ -1008,10 +1002,10 @@ FormattableCommands Count: {formattableCommandsCount}",
                     string result = Utils.TextFormatter(string.Join(" ", args[1..]), Dictionaries.ExponentDict);
 
                     Utils.CopyCheck(copy, result);
-                    Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "epSuccess");
+                    Utils.NotifCheck(notif, ["Success!", "Message copied to clipboard.", "3"], "epSuccess");
                     return result;
                 },
-                aliases: new string[] { "ep" },
+                aliases: ["ep"],
                 useInAllCommand: true,
                 allCommandMode: "fancy"
             );
@@ -1025,10 +1019,10 @@ FormattableCommands Count: {formattableCommandsCount}",
 
                     Utils.CopyCheck(copy, result);
                     Utils.NotifCheck(
-                        notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "subscriptSuccess"
+                        notif, ["Success!", "Message copied to clipboard.", "3"], "subscriptSuccess"
                     ); return result;
                 },
-                aliases: new string[] { "sub" },
+                aliases: ["sub"],
                 useInAllCommand: true,
                 allCommandMode: "fancy"
             );
@@ -1047,7 +1041,7 @@ FormattableCommands Count: {formattableCommandsCount}",
                         Utils.CopyCheck(copy, v.ToString());
                         Utils.NotifCheck(
                             notif,
-                            new string[] { v.ToString(), $"The factorial is: {v.ToString()}", "5" },
+                            [v.ToString(), $"The factorial is: {v.ToString()}", "5"],
                             "factorialSuccess"
                         ); return v.ToString();
                     } catch {
@@ -1101,9 +1095,9 @@ FormattableCommands Count: {formattableCommandsCount}",
                                 Utils.CopyCheck(copy, result.ToString());
                                 Utils.NotifCheck(
                                     notif,
-                                    new string[] {
+                                    [
                                       "Success!", "The result was copied to your clipboard.", "3"
-                                    }, "raiseSuccess"
+                                    ], "raiseSuccess"
                                 ); return result.ToString();
                             } catch (OverflowException) {
                                 Utils.NotifCheck(
@@ -1142,7 +1136,7 @@ FormattableCommands Count: {formattableCommandsCount}",
                                 Utils.CopyCheck(copy, answer.ToString());
                                 Utils.NotifCheck(
                                     notif,
-                                    new string[] { "Success!", "Number copied to clipboard.", "3" },
+                                    ["Success!", "Number copied to clipboard.", "3"],
                                     "rootSuccess"
                                 ); return answer.ToString();
                             } catch (FormatException) {
@@ -1169,19 +1163,19 @@ FormattableCommands Count: {formattableCommandsCount}",
                     } else if (args[1] == "get") {
                         try {
                             System.Numerics.BigInteger num = System.Numerics.BigInteger.Parse(args[2]);
-                            Action<string> notifAndCopy = (string result) => {
+                            void notifAndCopy(string result) {
                                 Utils.CopyCheck(copy, result);
                                 Utils.NotifCheck(
                                     notif,
-                                    new string[] { "Success!", "The root was copied to clipboard.", "3" },
+                                    ["Success!", "The root was copied to clipboard.", "3"],
                                     "rootSuccess"
                                 );
-                            };
+                            }
 
                             if (num == 2) { notifAndCopy("√"); return "√"; }
 
                             string? exp =
-                                exponent.Execute(new string[] { "exponent", num.ToString() }, false, false);
+                                exponent.Execute(["exponent", num.ToString()], false, false);
 
                             if (exp != null) {
                                 string result = $"{exp}√";
@@ -1190,21 +1184,21 @@ FormattableCommands Count: {formattableCommandsCount}",
                             } else {
                                 Utils.NotifCheck(
                                     true,
-                                    new string[] {
-                                        "Something went wrong.", "Are you sure that was a number?", "3"
-                                    }, "rootError"
+                                    [
+                                        "Exception", "Invalid input, try 'help' for more info.", "3"
+                                    ], "rootError"
                                 ); return null;
                             }
                         } catch (FormatException) {
                             Utils.NotifCheck(
                                 true,
-                                new string[] { "Huh.", "It seems you did not input a number.", "3" },
+                                ["Exception", "Invalid input, try 'help' for more info.", "3"],
                                 "rootError"
                             ); return null;
                         }
                     } else {
                         Utils.NotifCheck(
-                            true, new string[] { "Huh.", "It seems you did not input a proper mode.", "3" }, "rootError"
+                            true, ["Exception", "Invalid mode, try 'help' for more info.", "3"], "rootError"
                         ); return null;
                     }
                 }
@@ -1228,23 +1222,23 @@ FormattableCommands Count: {formattableCommandsCount}",
                     }
 
                     //* checking if there are commas in the number
-                    if (text.Contains(",")) {
+                    if (text.Contains(',')) {
                         text = text.Replace(",", string.Empty);
                     }
 
                     double num = Convert.ToDouble(text);
-                    string result = Math.Pow(num, ((double)1 / 3)).ToString();
+                    string result = Math.Pow(num, (double)1 / 3).ToString();
 
                     result = Utils.RoundIfNumberIsNearEnough(Convert.ToDouble(result)).ToString();
 
                     Utils.CopyCheck(copy, result);
                     Utils.NotifCheck(
                         notif,
-                        new string[] { "Success!", $"The answer is: {result}", "4" },
+                        ["Success!", $"The answer is: {result}", "4"],
                         "cuberootSuccess"
                     ); return result;
                 },
-                aliases: new string[] { "cbrt" }
+                aliases: ["cbrt"]
             );
 
             FormattableCommand cursive = new(
@@ -1256,7 +1250,7 @@ FormattableCommands Count: {formattableCommandsCount}",
 
                     Utils.CopyCheck(copy, result);
                     Utils.NotifCheck(
-                        notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "cursiveSuccess"
+                        notif, ["Success!", "Message copied to clipboard.", "3"], "cursiveSuccess"
                     ); return result;
                 },
                 useInAllCommand: true,
@@ -1271,10 +1265,10 @@ FormattableCommands Count: {formattableCommandsCount}",
                     string result = Utils.TextFormatter(string.Join(" ", args[1..]), Dictionaries.DoublestruckDict);
                     Utils.CopyCheck(copy, result);
                     Utils.NotifCheck(
-                        notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "doublestruckSuccess"
+                        notif, ["Success!", "Message copied to clipboard.", "3"], "doublestruckSuccess"
                     ); return result;
                 },
-                aliases: new string[] { "dbs" },
+                aliases: ["dbs"],
                 useInAllCommand: true,
                 allCommandMode: "fancy"
             );
@@ -1286,7 +1280,7 @@ FormattableCommands Count: {formattableCommandsCount}",
 
                     if (Utils.IndexTest(args)) { return null; }
 
-                    List<string> converted = new();
+                    List<string> converted = [];
 
                     foreach (char i in text) {
                         if (Utils.FormatValid(
@@ -1303,7 +1297,7 @@ FormattableCommands Count: {formattableCommandsCount}",
 
                     Utils.CopyCheck(copy, string.Join(" ", converted));
                     Utils.NotifCheck(
-                        notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "emojifySuccess"
+                        notif, ["Success!", "Message copied to clipboard.", "3"], "emojifySuccess"
                     ); return string.Join(" ", converted);
                 }
             );
@@ -1320,10 +1314,10 @@ FormattableCommands Count: {formattableCommandsCount}",
                     string result = Utils.TextFormatter(string.Join(" ", args[1..]).ToUpper(), leetChar);
 
                     Utils.CopyCheck(copy, result);
-                    Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "leetSuccess");
+                    Utils.NotifCheck(notif, ["Success!", "Message copied to clipboard.", "3"], "leetSuccess");
                     return result;
                 },
-                aliases: new string[] { "numberize", "numberise" },
+                aliases: ["numberize", "numberise"],
                 useInAllCommand: true,
                 allCommandMode: "fancy"
             );
@@ -1335,72 +1329,66 @@ FormattableCommands Count: {formattableCommandsCount}",
 
                     try {
                         int digits = int.Parse(args[1]);
-
-                        Func<System.Numerics.BigInteger, string> calculatePi = (System.Numerics.BigInteger digits) => {
-                            digits++;
-
-                            uint[] x = new uint[(int)digits * 10 / 3 + 2];
-                            uint[] r = new uint[(int)digits * 10 / 3 + 2];
-
-                            uint[] pi = new uint[(int)digits];
-
-                            for (int j = 0; j < x.Length; j++) { x[j] = 20; }
-
-                            for (int i = 0; i < digits; i++) {
-                                uint carry = 0;
-                                for (int j = 0; j < x.Length; j++) {
-                                    uint num = (uint)(x.Length - j - 1);
-                                    uint dem = num * 2 + 1;
-
-                                    x[j] += carry;
-
-                                    uint q = x[j] / dem;
-                                    r[j] = x[j] % dem;
-
-                                    carry = q * num;
-                                }
-
-
-                                pi[i] = (x[x.Length - 1] / 10);
-
-
-                                r[x.Length - 1] = x[x.Length - 1] % 10; ;
-
-                                for (int j = 0; j < x.Length; j++) { x[j] = r[j] * 10; }
-                            }
-
-                            var result = "";
-                            uint c = 0;
-
-                            for (int i = pi.Length - 1; i >= 0; i--) {
-                                pi[i] += c;
-                                c = pi[i] / 10;
-
-                                result = (pi[i] % 10).ToString() + result;
-                            }
-
-                            return result;
-                        };
-
                         string result;
 
                         if (digits <= 0) {
                             Utils.NotifCheck(
                                 true,
-                                new string[] {
-                                    "That's an invalid number of digits.",
+                                [
+                                    "Exception",
                                     "Cannot have a negative or zero amount of pi digits.", "3"
-                                }, "piError"
+                                ], "piError"
                             ); return null;
                         } else if (digits <= 1000) {
                             result = "3." + PiDigits.piDigits[0..digits];
                         } else {
-                            result = "3." + calculatePi(digits)[1..];
+                            string calculatePi(System.Numerics.BigInteger digits) {
+                                digits++;
+
+                                uint[] x = new uint[(int)digits * 10 / 3 + 2];
+                                uint[] r = new uint[(int)digits * 10 / 3 + 2];
+
+                                uint[] pi = new uint[(int)digits];
+
+                                pi[i] = (x[x.Length - 1] / 10);
+                                for (int j = 0; j < x.Length; j++) { x[j] = 20; }
+
+                                for (int i = 0; i < digits; i++) {
+                                    uint carry = 0;
+                                    for (int j = 0; j < x.Length; j++) {
+                                        uint num = (uint)(x.Length - j - 1);
+                                        uint dem = num * 2 + 1;
+
+                                        x[j] += carry;
+
+                                        uint q = x[j] / dem;
+                                        r[j] = x[j] % dem;
+
+                                        carry = q * num;
+                                    }
+
+                                    pi[i] = x[x.Length - 1] / 10;
+                                    r[x.Length - 1] = x[x.Length - 1] % 10; ;
+                                    for (int j = 0; j < x.Length; j++) { x[j] = r[j] * 10; }
+                                }
+
+                                var result = "";
+                                uint c = 0;
+
+                                for (int i = pi.Length - 1; i >= 0; i--) {
+                                    pi[i] += c;
+                                    c = pi[i] / 10;
+
+                                    result = (pi[i] % 10).ToString() + result;
+                                }
+
+                                return result;
+                            } result = "3." + calculatePi(digits)[1..];
                         }
 
                         Utils.CopyCheck(copy, result);
                         Utils.NotifCheck(
-                            notif, new string[] { "Success!", $"The result is: {result}", "4" }, "piSuccess"
+                            notif, ["Success!", $"The result is: {result}", "4"], "piSuccess"
                         ); return result;
 
                     } catch (FormatException) {
@@ -1424,7 +1412,7 @@ FormattableCommands Count: {formattableCommandsCount}",
             FormattableCommand lorem = new(
                 commandName: "lorem",
                 function: LoremIpsum.LoremMain,
-                aliases: new string[] { "loremipsum" }
+                aliases: ["loremipsum"]
             );
 
             FormattableCommand flip = new(
@@ -1433,7 +1421,7 @@ FormattableCommands Count: {formattableCommandsCount}",
                     if (Utils.IndexTest(args)) { return null; }
 
                     string text = string.Join(" ", args[1..]);
-                    List<string> converted = new();
+                    List<string> converted = [];
 
                     foreach (char f in text) {
                         var replaced = Dictionaries.FlipDict.GetValueOrDefault(f.ToString(), "");
@@ -1452,7 +1440,7 @@ FormattableCommands Count: {formattableCommandsCount}",
                         notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "flipSuccess"
                     ); return answer;
                 },
-                aliases: new string[] { "flipped", "upside-down" },
+                aliases: ["flipped", "upside-down"],
                 useInAllCommand: true,
                 allCommandMode: "fancy"
             );
@@ -1467,15 +1455,13 @@ FormattableCommands Count: {formattableCommandsCount}",
                     var random = new Random();
                     for (int i = chars.Length - 1; i > 0; i--) {
                         int r = random.Next(i + 1);
-                        var tmp = chars[i];
-                        chars[i] = chars[r];
-                        chars[r] = tmp;
+                        (chars[r], chars[i]) = (chars[i], chars[r]);
                     }
 
                     var answer = new string(chars);
                     Utils.CopyCheck(copy, answer);
                     Utils.NotifCheck(
-                        notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "shuffleSuccess"
+                        notif, ["Success!", "Message copied to clipboard.", "3"], "shuffleSuccess"
                     ); return answer;
                 }
             );
@@ -1487,7 +1473,7 @@ FormattableCommands Count: {formattableCommandsCount}",
 
                     char[] textAsCharArray = string.Join(" ", args[1..]).ToCharArray();
 
-                    // checks if textAsCharArray is than the permutationsCalculationLimit
+                    //* checks if textAsCharArray is than the permutationsCalculationLimit
                     int limit = UtilitiesAppContext.CurrentSettings.PermutationsCalculationLimit;
 
                     if (textAsCharArray.Length <= limit) {
@@ -1499,9 +1485,9 @@ FormattableCommands Count: {formattableCommandsCount}",
                         Utils.CopyCheck(copy, answer);
                         Utils.NotifCheck(
                             notif,
-                            new string[] {
+                            [
                                 "Success!", "The permutations were copied to your clipboard.", "3"
-                            }, "permutationsSuccess"
+                            ], "permutationsSuccess"
                         ); return answer;
                     } else {
                         Utils.NotifCheck(
@@ -1514,13 +1500,13 @@ FormattableCommands Count: {formattableCommandsCount}",
                         ); return null;
                     }
                 },
-                aliases: new string[] { "getpermutations", "get-permutations" }
+                aliases: ["getpermutations", "get-permutations"]
             );
 
             FormattableCommand fraction = new(
                 commandName: "fraction",
                 function: Fractions.FractionsMain,
-                aliases: new string[] { "fc" }
+                aliases: ["fc"]
             );
 
             FormattableCommand gzip = new(
@@ -1531,7 +1517,7 @@ FormattableCommands Count: {formattableCommandsCount}",
             FormattableCommand hcf = new(
                 commandName: "hcf",
                 function: HCF.HCFMain,
-                aliases: new string[] { "gcd" }
+                aliases: ["gcd"]
             );
 
             FormattableCommand factors = new(
@@ -1541,7 +1527,7 @@ FormattableCommands Count: {formattableCommandsCount}",
 
                     Func<System.Numerics.BigInteger, List<System.Numerics.BigInteger>> findFactors =
                         (System.Numerics.BigInteger num) => {
-                            List<System.Numerics.BigInteger> factors = new();
+                            List<System.Numerics.BigInteger> factors = [];
 
                             for (System.Numerics.BigInteger i = 1; i < num; i++) {
                                 if (num % i == 0) {
@@ -1558,10 +1544,10 @@ FormattableCommands Count: {formattableCommandsCount}",
                     string ans = string.Join(", ", factors);
                     Utils.CopyCheck(copy, ans);
                     Utils.NotifCheck(
-                        notif, new string[] { "Success!", $"The factors are: {ans}.", "5" }, "factorsSuccess"
+                        notif, ["Success!", $"The factors are: {ans}.", "5"], "factorsSuccess"
                     ); return ans;
                 },
-                aliases: new string[] { "factorise" }
+                aliases: ["factorise"]
             );
 
             FormattableCommand primefactors = new(
@@ -1572,7 +1558,7 @@ FormattableCommands Count: {formattableCommandsCount}",
                     try {
                         System.Numerics.BigInteger number = System.Numerics.BigInteger.Parse(args[1]);
 
-                        List<int> factors = new List<int>();
+                        List<int> factors = [];
                         int divisor = 2;
 
                         while (number > 1) {
@@ -1588,7 +1574,7 @@ FormattableCommands Count: {formattableCommandsCount}",
 
                         Utils.CopyCheck(copy, ans);
                         Utils.NotifCheck(
-                            true, new string[] { "Prime Factorization: ", ans, "5" }, "primeFactorsSuccess"
+                            true, ["Prime Factorization: ", ans, "5"], "primeFactorsSuccess"
                         ); return ans;
                     } catch (FormatException) {
                         Utils.NotifCheck(
@@ -1600,7 +1586,7 @@ FormattableCommands Count: {formattableCommandsCount}",
                         ); return null;
                     }
                 },
-                aliases: new string[] { "primefactorise" }
+                aliases: ["primefactorise"]
             );
 
             FormattableCommand average = new(
@@ -1618,23 +1604,23 @@ FormattableCommands Count: {formattableCommandsCount}",
                             sum += num;
                         }
 
-                        // find average of sum
+                        //* find average of sum
                         System.Numerics.BigInteger average = sum / nums.Count;
 
                         Utils.CopyCheck(copy, average.ToString());
                         Utils.NotifCheck(
-                            notif, new string[] { "Success!", $"The average was {average}", "5" }, "averageSuccess"
+                            notif, ["Success!", $"The average was {average}", "5"], "averageSuccess"
                         ); return average.ToString();
                     } else {
                         Utils.NotifCheck(
                             true,
-                            new string[] { "Something went wrong.", "You need to input at least two numbers.", "4" },
+                            ["Exception", "Invalid input, try 'help' for more info.", "4"],
                             "averageError"
                         );
                         return null;
                     }
                 },
-                aliases: new string[] { "avg" }
+                aliases: ["avg"]
             );
 
             FormattableCommand hexadecimal = new(
@@ -1643,16 +1629,16 @@ FormattableCommands Count: {formattableCommandsCount}",
                     string text = string.Join(" ", args[1..]);
                     if (Utils.IndexTest(args)) { return null; }
 
-                    Func<string, string> fromTextToHex = (string text) => {
+                    string fromTextToHex(string text) {
                         byte[] ba = System.Text.Encoding.Default.GetBytes(text);
                         var hexString = BitConverter.ToString(ba);
                         hexString = hexString.Replace("-", " ");
                         hexString = hexString.ToLower();
 
                         return hexString;
-                    };
+                    }
 
-                    Func<string, byte[]> fromHexToText = (string hex) => {
+                    byte[] fromHexToText(string hex) {
                         hex = hex.Replace("-", "");
                         byte[] raw = new byte[hex.Length / 2];
                         for (int i = 0; i < raw.Length; i++) {
@@ -1660,21 +1646,21 @@ FormattableCommands Count: {formattableCommandsCount}",
                         }
 
                         return raw;
-                    };
+                    }
 
-                    Func<IEnumerable<char>, bool> isHex = (IEnumerable<char> chars) => {
+                    bool isHex(IEnumerable<char> chars) {
                         bool isHex;
                         foreach (var c in chars) {
-                            isHex = ((c >= '0' && c <= '9') ||
-                                     (c >= 'a' && c <= 'f') ||
-                                     (c >= 'A' && c <= 'F'));
+                            isHex = (c >= '0' && c <= '9') ||
+                                    (c >= 'a' && c <= 'f') ||
+                                    (c >= 'A' && c <= 'F');
 
                             if (!isHex)
                                 return false;
                         }
 
                         return true;
-                    };
+                    }
 
                     string[] textList = text.Split(" ");
                     string hexWithDash = string.Join("-", textList);
@@ -1685,6 +1671,7 @@ FormattableCommands Count: {formattableCommandsCount}",
                             Utils.CopyCheck(copy, textFromHex);
                             Utils.NotifCheck(
                                 notif, new string[] { "Success!", $"The message was: {textFromHex}", "10" }, "hexSuccess"
+                                notif, ["Success!", $"The message was: {textFromHex}", "10"], "hexSuccess"
                             ); return textFromHex;
                         } catch {
                             Utils.NotifCheck(
@@ -1693,7 +1680,7 @@ FormattableCommands Count: {formattableCommandsCount}",
                                     "Something went wrong.",
                                     "An exception occured when trying to convert your text from hexadecimal.",
                                     "4"
-                                },
+                                ],
                                 "hexadecimalError"
                             ); return null;
                         }
@@ -1702,7 +1689,7 @@ FormattableCommands Count: {formattableCommandsCount}",
                             string hexFromText = fromTextToHex(text);
                             Utils.CopyCheck(copy, hexFromText);
                             Utils.NotifCheck(
-                                notif, new string[] { "Success!", $"Message copied to clipboard.", "3" }, "hexSuccess"
+                                notif, ["Success!", $"Message copied to clipboard.", "3"], "hexSuccess"
                             ); return hexFromText;
                         } catch {
                             Utils.NotifCheck(
@@ -1711,13 +1698,13 @@ FormattableCommands Count: {formattableCommandsCount}",
                                     "Something went wrong.",
                                     "An exception occured when trying to convert your text into hexadecimal.",
                                     "4"
-                                },
+                                ],
                                 "hexadecimalError"
                             ); return null;
                         }
                     }
                 },
-                aliases: new string[] { "hex" },
+                aliases: ["hex"],
                 useInAllCommand: true,
                 allCommandMode: "encodings"
             );
@@ -1727,34 +1714,34 @@ FormattableCommands Count: {formattableCommandsCount}",
                 function: (string[] args, bool copy, bool notif) => {
                     if (Utils.IndexTest(args)) { return null; }
 
-                    Func<string, string> toAscii = (string text) => {
-                        List<string> ascii = new();
+                    string toAscii(string text) {
+                        List<string> ascii = [];
                         foreach (char i in text) {
                             ascii.Add(((int)i).ToString());
                         }
 
                         return string.Join(" ", ascii);
-                    };
+                    }
 
-                    Func<string, List<int>, string> fromAscii = (string ascii, List<int> nums) => {
-                        List<string> chars = new();
+                    string fromAscii(string ascii, List<int> nums) {
+                        List<string> chars = [];
                         foreach (int i in nums) {
                             chars.Add(((char)i).ToString());
                         }
 
                         return string.Join("", chars);
-                    };
+                    }
 
-                    Action<bool, bool, string> notifAndCopy = (bool copy, bool notif, string fromAsciiText) => {
+                    void notifAndCopy(bool copy, bool notif, string fromAsciiText) {
                         Utils.CopyCheck(copy, fromAsciiText);
                         Utils.NotifCheck(
-                            notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "asciiSuccess"
+                            notif, ["Success!", "Message copied to clipboard.", "3"], "asciiSuccess"
                         );
-                    };
+                    }
 
                     string text = string.Join(" ", args[1..]);
                     if (Utils.FormatValid("0123456789 ", text)) {
-                        List<int> values = new();
+                        List<int> values = [];
                         try {
                             Utils.RegexFindAllInts(text).ForEach(x => values.Add((int)x));
                         } catch (OverflowException) {
@@ -1765,7 +1752,7 @@ FormattableCommands Count: {formattableCommandsCount}",
                             ); return null;
                         }
 
-                        List<bool> valuesAreValid = new();
+                        List<bool> valuesAreValid = [];
                         foreach (int i in values) {
                             if (i.ToString().Length == 2 | i.ToString().Length == 3) {
                                 valuesAreValid.Add(true);
@@ -1780,7 +1767,7 @@ FormattableCommands Count: {formattableCommandsCount}",
                             Utils.CopyCheck(copy, fromAsciitext);
                             Utils.NotifCheck(
                                 notif,
-                                new string[] { "Success!", $"The message was: {fromAsciitext}", "6" },
+                                ["Success!", $"The message was: {fromAsciitext}", "6"],
                                 "asciiSuccess"
                             ); return fromAsciitext;
                         } else {
@@ -1809,14 +1796,14 @@ FormattableCommands Count: {formattableCommandsCount}",
                     if (Utils.IndexTest(args)) { return null; }
 
                     string text = string.Join(" ", args[1..]);
-                    string len = $@"Character count: {text.Length.ToString()}
+                    string len = $@"Character count: {text.Length}
 Word count: {args[1..].Length}";
 
                     Utils.CopyCheck(copy, len);
-                    Utils.NotifCheck(notif, new string[] { "Success!", len, "5" }, "lengthSuccess");
+                    Utils.NotifCheck(notif, ["Success!", len, "5"], "lengthSuccess");
                     return len;
                 },
-                aliases: new string[] { "len" }
+                aliases: ["len"]
             );
 
             FormattableCommand characterDistribution = new(
@@ -1825,17 +1812,16 @@ Word count: {args[1..].Length}";
                     if (Utils.IndexTest(args)) { return null; }
 
                     string text = string.Join(" ", args[1..]);
-                    HashSet<char> uniqueChars = new();
-                    foreach (char c in text) { uniqueChars.Add(c); }
+                    HashSet<char> uniqueChars = [.. text];
 
-                    Dictionary<char, string> charDistrDict = new();
+                    Dictionary<char, string> charDistrDict = [];
                     uniqueChars.ToList().ForEach(
-                        i => charDistrDict.Add(i, $"{i}: {text.Count(f => (f == i))}\n")
+                        i => charDistrDict.Add(i, $"{i}: {text.Count(f => f == i)}\n")
                     );
 
-                    List<char> firstLetters = charDistrDict.Keys.ToList();
+                    List<char> firstLetters = [.. charDistrDict.Keys];
                     firstLetters.Sort();
-                    List<string> charDistr = new();
+                    List<string> charDistr = [];
 
                     foreach (var i in firstLetters) { charDistr.Add(charDistrDict[i]); }
                     string result = string.Join("", charDistr);
@@ -1843,13 +1829,13 @@ Word count: {args[1..].Length}";
                     Utils.CopyCheck(copy, result);
                     Utils.NotifCheck(
                         notif,
-                        new string[] {
+                        [
                             "Success!", "The character distribution has been copied to your clipboard.", "3"
-                        },
+                        ],
                         "characterDistributionSuccess"
                     ); return result;
                 },
-                aliases: new string[] { "chardistr", "chardistribution", "characterdistr" }
+                aliases: ["chardistr", "chardistribution", "characterdistr"]
             );
 
             FormattableCommand replace = new(
@@ -1872,7 +1858,7 @@ Word count: {args[1..].Length}";
                         Utils.CopyCheck(copy, result);
                         Utils.NotifCheck(
                             notif,
-                            new string[] { "Success!", "Message copied to clipboard.", "5" },
+                            ["Success!", "Message copied to clipboard.", "5"],
                             "replaceSuccess"
                         ); return null;
                     } else {
@@ -1916,12 +1902,12 @@ Word count: {args[1..].Length}";
                             string? textToSearch = kvp.Key.Groups["text"].Value;
 
                             if (character != null && textToSearch != null) {
-                                int count = textToSearch.Count(f => (f == character));
+                                int count = textToSearch.Count(f => f == character);
                                 string result = $"{character}: {count}";
 
                                 Utils.CopyCheck(copy, result);
                                 Utils.NotifCheck(
-                                    notif, new string[] { "Success!", result, "5" }, "characterCountSuccess"
+                                    notif, ["Success!", result, "5"], "characterCountSuccess"
                                 ); return result;
                             } else {
                                 return null;
@@ -1933,7 +1919,7 @@ Word count: {args[1..].Length}";
                         return null;
                     }
                 },
-                aliases: new string[] { "charcount" }
+                aliases: ["charcount"]
             );
 
             FormattableCommand lowercase = new(
@@ -1944,10 +1930,10 @@ Word count: {args[1..].Length}";
                     string lowerText = string.Join(" ", args[1..]).ToLower();
                     Utils.CopyCheck(copy, lowerText);
                     Utils.NotifCheck(
-                        notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "lowercaseSuccess"
+                        notif, ["Success!", "Message copied to clipboard.", "3"], "lowercaseSuccess"
                     ); return lowerText;
                 },
-                aliases: new string[] { "lower" }
+                aliases: ["lower"]
             );
 
             FormattableCommand mathitalic = new(
@@ -1960,11 +1946,11 @@ Word count: {args[1..].Length}";
                     Utils.CopyCheck(copy, answer);
                     Utils.NotifCheck(
                         notif,
-                        new string[] { "Success!", "Message copied to clipboard.", "3" },
+                        ["Success!", "Message copied to clipboard.", "3"],
                         "mathitalicSuccess"
                     ); return answer;
                 },
-                aliases: new string[] { "mai" },
+                aliases: ["mai"],
                 useInAllCommand: true,
                 allCommandMode: "fancy"
             );
@@ -1976,7 +1962,7 @@ Word count: {args[1..].Length}";
                     if (Utils.IndexTest(args)) { return null; }
 
                     Func<string, bool, bool, string> toMorse = (string text, bool copy, bool notif) => {
-                        List<string> morseConverted = new();
+                        List<string> morseConverted = [];
 
                         foreach (char t in text) {
                             if (Dictionaries.MorseToTextDict.ContainsKey(t.ToString())) {
@@ -1990,13 +1976,13 @@ Word count: {args[1..].Length}";
                         Utils.CopyCheck(copy, string.Join("", morseConverted));
                         Utils.NotifCheck(
                             notif,
-                            new string[] { "Success!", "Message copied to clipboard.", "3" },
+                            ["Success!", "Message copied to clipboard.", "3"],
                             "morseSuccess"
                         ); return string.Join("", morseConverted);
                     };
 
-                    Func<string, bool, bool, string> toText = (string morse, bool copy, bool notif) => {
-                        List<string> convertedText = new();
+                    string toText(string morse, bool copy, bool notif) {
+                        List<string> convertedText = [];
                         Dictionary<string, string> morseToText = Utils.InvertKeyAndValue(Dictionaries.MorseToTextDict);
                         string[] textArray = morse.Split(" ");
 
@@ -2011,10 +1997,10 @@ Word count: {args[1..].Length}";
                         Utils.CopyCheck(copy, string.Join("", convertedText));
                         Utils.NotifCheck(
                             notif,
-                            new string[] { "Success!", $"The message was: {string.Join("", convertedText)}", "7" },
+                            ["Success!", $"The message was: {string.Join("", convertedText)}", "7"],
                             "morseSuccess"
                         ); return string.Join("", convertedText);
-                    };
+                    }
 
                     if (Utils.FormatValid("-./ ", text)) {
                         return toText(text, copy, notif);
@@ -2022,7 +2008,7 @@ Word count: {args[1..].Length}";
                         return toMorse(text, copy, notif);
                     }
                 },
-                aliases: new string[] { "morsecode" },
+                aliases: ["morsecode"],
                 useInAllCommand: true,
                 allCommandMode: "encodings"
             );
@@ -2039,7 +2025,7 @@ Word count: {args[1..].Length}";
                         Utils.CopyCheck(copy, reciprocal);
                         Utils.NotifCheck(
                             notif,
-                            new string[] { "Success!", $"The reciprocal is: {reciprocal}", "3" },
+                            ["Success!", $"The reciprocal is: {reciprocal}", "3"],
                             "reciprocalSuccess"
                         ); return reciprocal;
                     } catch (OverflowException) {
@@ -2069,12 +2055,12 @@ Word count: {args[1..].Length}";
                     System.Numerics.BigInteger dividedNum =
                         ints[0] / ints[1]; System.Numerics.BigInteger remainder = ints[0] % ints[1];
 
-                    Func<string, string> returnNum = (string ans) => {
+                    string returnNum(string ans) {
                         Utils.CopyCheck(copy, ans);
                         Utils.NotifCheck(
-                            notif, new string[] { "Success!", ans, "5" }, "divideSuccess"
+                            notif, ["Success!", ans, "5"], "divideSuccess"
                         ); return ans;
-                    };
+                    }
 
                     if (remainder != 0 && ints.Count > 1) {
                         return returnNum($"Answer: {dividedNum} and Remainder: {remainder}");
@@ -2106,13 +2092,13 @@ Word count: {args[1..].Length}";
                     if (findNumberFromPercentage.IsMatch(text)) {
                         System.Text.RegularExpressions.MatchCollection matches =
                             findNumberFromPercentage.Matches(text);
-                        float percent = (float.Parse(matches[0].Groups["percent"].Value));
+                        float percent = float.Parse(matches[0].Groups["percent"].Value);
                         float number = float.Parse(matches[0].Groups["number"].Value);
 
-                        float ans = (percent / 100) * number; //* answer
+                        float ans = percent / 100 * number; //* answer
                         Utils.NotifCheck(
                             notif,
-                            new string[] { "Success!", $"{ans} is {percent}% of {number}", "5" },
+                            ["Success!", $"{ans} is {percent}% of {number}", "5"],
                             "percentageSuccess"
                         );
 
@@ -2124,10 +2110,10 @@ Word count: {args[1..].Length}";
                         float num1 = float.Parse(matches[0].Groups["num1"].Value);
                         float num2 = float.Parse(matches[0].Groups["num2"].Value);
 
-                        float ans = (num1 / num2) * 100; //* answer
+                        float ans = num1 / num2 * 100; //* answer
                         Utils.NotifCheck(
                             notif,
-                            new string[] { "Success!", $"{num1} is {ans}% of {num2}", "5" },
+                            ["Success!", $"{num1} is {ans}% of {num2}", "5"],
                             "percentageSuccess"
                         );
                         Utils.CopyCheck(copy, ans.ToString());
@@ -2140,7 +2126,7 @@ Word count: {args[1..].Length}";
                         ); return null;
                     }
                 },
-                aliases: new string[] { "percent", "%" }
+                aliases: ["percent", "%"]
             );
 
             FormattableCommand randchar = new(
@@ -2148,7 +2134,7 @@ Word count: {args[1..].Length}";
                 function: (string[] args, bool copy, bool notif) => {
                     if (Utils.IndexTest(args)) { return null; }
 
-                    string[] asciiCharacters = {
+                    string[] asciiCharacters = [
                         "a", "b", "c", "d", "e",
                         "f", "g", "h", "i", "j",
                         "k", "l", "m", "n", "o", "p",
@@ -2158,7 +2144,7 @@ Word count: {args[1..].Length}";
                         "I", "J", "K", "L", "M", "N",
                         "O", "P", "Q", "R", "S", "T",
                         "U", "V", "W", "X", "Y", "Z"
-                    };
+                    ];
 
                     string text = string.Join(" ", args[1..]);
 
@@ -2197,7 +2183,7 @@ Word count: {args[1..].Length}";
                     if (Utils.IndexTest(args)) { return null; }
 
                     string text = string.Join(" ", args[1..]);
-                    List<int> nums = new();
+                    List<int> nums = [];
                     try {
                         Utils.RegexFindAllInts(text).ForEach(num => nums.Add((int)num));
                     } catch (OverflowException) {
@@ -2208,8 +2194,7 @@ Word count: {args[1..].Length}";
                         ); return null;
                     }
 
-                    if (nums.Count > 1) {
-                        //* quick check to see if the first num is greater than second
+                    if (nums.Count > 1 && nums.Count < 3) {
                         if (nums[0] > nums[1]) {
                             Utils.NotifCheck(
                                 true,
@@ -2217,16 +2202,16 @@ Word count: {args[1..].Length}";
                                     "Huh.",
                                     "Unfortunately the minimum value cannot be higher than the max value.",
                                     "5"
-                                }, "randintError"
+                                ], "randintError"
                             ); return null;
                         }
 
-                        Random rand = new Random();
+                        Random rand = new();
                         int randint = rand.Next(nums[0], nums[1] + 1);
 
                         Utils.CopyCheck(copy, randint.ToString());
                         Utils.NotifCheck(
-                            notif, new string[] { "Success!", $"The number was: {randint}", "5" }, "randintSuccess"
+                            notif, ["Success!", $"The number was: {randint}", "5"], "randintSuccess"
                         ); return randint.ToString();
                     } else {
                         Utils.NotifCheck(
@@ -2239,7 +2224,7 @@ Word count: {args[1..].Length}";
                         ); return null;
                     }
                 },
-                aliases: new string[] { "randnum" }
+                aliases: ["randnum"]
             );
 
             FormattableCommand reverse = new(
@@ -2248,13 +2233,13 @@ Word count: {args[1..].Length}";
                     if (Utils.IndexTest(args)) { return null; }
 
                     string text = string.Join(" ", args[1..]);
-                    List<char> textList = text.ToCharArray().ToList();
+                    List<char> textList = [.. text.ToCharArray()];
 
                     textList.Reverse();
                     string answer = string.Join("", textList);
                     Utils.CopyCheck(copy, answer);
                     Utils.NotifCheck(
-                        notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "reverseSuccess"
+                        notif, ["Success!", "Message copied to clipboard.", "3"], "reverseSuccess"
                     ); return answer;
                 },
                 useInAllCommand: true,
@@ -2267,7 +2252,7 @@ Word count: {args[1..].Length}";
                     if (Utils.IndexTest(args)) { return null; }
 
                     string text = string.Join(" ", args[1..]);
-                    List<string> converted = new();
+                    List<string> converted = [];
                     char currentCase = 'u';
 
                     foreach (char i in text) {
@@ -2283,101 +2268,91 @@ Word count: {args[1..].Length}";
                     string sarcasmText = string.Join("", converted);
                     Utils.CopyCheck(copy, sarcasmText);
                     Utils.NotifCheck(
-                        notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "sarcasmSuccess"
+                        notif, ["Success!", "Message copied to clipboard.", "3"], "sarcasmSuccess"
                     ); return sarcasmText;
                 }
             );
 
             FormattableCommand sha1 = new(
                 commandName: "sha1",
-                function: (string[] args, bool copy, bool notif) => {
+                function: (string[] args, bool copy, bool notif) =>
+                {
                     string text = string.Join(" ", args[1..]);
                     if (Utils.IndexTest(args)) { return null; }
 
-                    System.Text.StringBuilder Sb = new System.Text.StringBuilder();
+                    System.Text.StringBuilder Sb = new();
+                    System.Text.Encoding enc = System.Text.Encoding.UTF8;
+                    byte[] result = System.Security.Cryptography.SHA1.HashData(enc.GetBytes(text));
 
-                    using (System.Security.Cryptography.SHA1 hash = System.Security.Cryptography.SHA1.Create()) {
-                        System.Text.Encoding enc = System.Text.Encoding.UTF8;
-                        Byte[] result = hash.ComputeHash(enc.GetBytes(text));
-
-                        foreach (Byte b in result)
-                            Sb.Append(b.ToString("x2"));
-                    }
+                    foreach (byte b in result)
+                        Sb.Append(b.ToString("x2"));
 
                     Utils.CopyCheck(copy, Sb.ToString());
                     Utils.NotifCheck(
-                        notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "sha1Success"
+                        notif, ["Success!", "Message copied to clipboard.", "3"], "sha1Success"
                     ); return Sb.ToString();
                 }
             );
 
             FormattableCommand sha256 = new(
                 commandName: "sha256",
-                function: (string[] args, bool copy, bool notif) => {
+                function: (string[] args, bool copy, bool notif) =>
+                {
                     string text = string.Join(" ", args[1..]);
                     if (Utils.IndexTest(args)) { return null; }
 
-                    System.Text.StringBuilder Sb = new System.Text.StringBuilder();
+                    System.Text.StringBuilder Sb = new();
+                    System.Text.Encoding enc = System.Text.Encoding.UTF8;
+                    byte[] result = System.Security.Cryptography.SHA256.HashData(enc.GetBytes(text));
 
-                    using (System.Security.Cryptography.SHA256 hash = System.Security.Cryptography.SHA256.Create()) {
-                        System.Text.Encoding enc = System.Text.Encoding.UTF8;
-                        Byte[] result = hash.ComputeHash(enc.GetBytes(text));
-
-                        foreach (Byte b in result)
-                            Sb.Append(b.ToString("x2"));
-                    }
+                    foreach (byte b in result)
+                        Sb.Append(b.ToString("x2"));
 
                     Utils.CopyCheck(copy, Sb.ToString());
                     Utils.NotifCheck(
-                        notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "sha256Success"
+                        notif, ["Success!", "Message copied to clipboard.", "3"], "sha256Success"
                     ); return Sb.ToString();
                 }
             );
 
             FormattableCommand sha384 = new(
                 commandName: "sha384",
-                function: (string[] args, bool copy, bool notif) => {
+                function: (string[] args, bool copy, bool notif) =>
+                {
                     string text = string.Join(" ", args[1..]);
                     if (Utils.IndexTest(args)) { return null; }
 
-                    System.Text.StringBuilder Sb = new System.Text.StringBuilder();
+                    System.Text.StringBuilder Sb = new();
+                    System.Text.Encoding enc = System.Text.Encoding.UTF8;
+                    byte[] result = System.Security.Cryptography.SHA384.HashData(enc.GetBytes(text));
 
-                    using (
-                        System.Security.Cryptography.SHA384 hash = System.Security.Cryptography.SHA384.Create()
-                    ) {
-                        System.Text.Encoding enc = System.Text.Encoding.UTF8;
-                        Byte[] result = hash.ComputeHash(enc.GetBytes(text));
-
-                        foreach (Byte b in result)
-                            Sb.Append(b.ToString("x2"));
-                    }
+                    foreach (byte b in result)
+                        Sb.Append(b.ToString("x2"));
 
                     Utils.CopyCheck(copy, Sb.ToString());
                     Utils.NotifCheck(
-                        notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "sha384Success"
+                        notif, ["Success!", "Message copied to clipboard.", "3"], "sha384Success"
                     ); return Sb.ToString();
                 }
             );
 
             FormattableCommand sha512 = new(
                 commandName: "sha512",
-                function: (string[] args, bool copy, bool notif) => {
+                function: (string[] args, bool copy, bool notif) =>
+                {
                     string text = string.Join(" ", args[1..]);
                     if (Utils.IndexTest(args)) { return null; }
 
-                    System.Text.StringBuilder Sb = new System.Text.StringBuilder();
+                    System.Text.StringBuilder Sb = new();
+                    System.Text.Encoding enc = System.Text.Encoding.UTF8;
+                    byte[] result = System.Security.Cryptography.SHA512.HashData(enc.GetBytes(text));
 
-                    using (System.Security.Cryptography.SHA512 hash = System.Security.Cryptography.SHA512.Create()) {
-                        System.Text.Encoding enc = System.Text.Encoding.UTF8;
-                        Byte[] result = hash.ComputeHash(enc.GetBytes(text));
-
-                        foreach (Byte b in result)
-                            Sb.Append(b.ToString("x2"));
-                    }
+                    foreach (byte b in result)
+                        Sb.Append(b.ToString("x2"));
 
                     Utils.CopyCheck(copy, Sb.ToString());
                     Utils.NotifCheck(
-                        notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "sha512Success"
+                        notif, ["Success!", "Message copied to clipboard.", "3"], "sha512Success"
                     ); return Sb.ToString();
                 }
             );
@@ -2387,21 +2362,19 @@ Word count: {args[1..].Length}";
                 function: (string[] args, bool copy, bool notif) => {
                     if (Utils.IndexTest(args)) { return null; }
 
-                    Func<string, string> MD5Hasher = (string input) => {
-                        using (System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create()) {
-                            byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(input);
-                            byte[] hashBytes = md5.ComputeHash(inputBytes);
+                    string MD5Hasher(string input) {
+                        byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(input);
+                        byte[] hashBytes = System.Security.Cryptography.MD5.HashData(inputBytes);
 
-                            return Convert.ToHexString(hashBytes);
-                        }
-                    };
+                        return Convert.ToHexString(hashBytes);
+                    }
 
                     string text = string.Join(" ", args[1..]);
                     string hash = MD5Hasher(text);
 
                     Utils.CopyCheck(copy, hash);
                     Utils.NotifCheck(
-                        notif, new string[] { "Success!", "Hash copied to clipboard.", "3" }, "md5Success"
+                        notif, ["Success!", "Hash copied to clipboard.", "3"], "md5Success"
                     ); return hash;
                 }
             );
@@ -2412,7 +2385,7 @@ Word count: {args[1..].Length}";
                     if (Utils.IndexTest(args)) { return null; }
 
                     string text = string.Join(" ", args[1..]);
-                    List<string> converted = new();
+                    List<string> converted = [];
                     foreach (char i in text) {
                         converted.Add(i.ToString());
                         converted.Add(" ");
@@ -2421,7 +2394,7 @@ Word count: {args[1..].Length}";
                     string answer = string.Join("", converted);
                     Utils.CopyCheck(copy, answer);
                     Utils.NotifCheck(
-                        notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "spacerSuccess"
+                        notif, ["Success!", "Message copied to clipboard.", "3"], "spacerSuccess"
                     ); return answer;
                 },
                 useInAllCommand: true,
@@ -2434,7 +2407,7 @@ Word count: {args[1..].Length}";
                     if (Utils.IndexTest(args)) { return null; }
 
                     string text = string.Join(" ", args[1..]);
-                    List<string> converted = new();
+                    List<string> converted = [];
                     foreach (char i in text) {
                         converted.Add($"||{i}");
                     }
@@ -2442,7 +2415,7 @@ Word count: {args[1..].Length}";
                     string answer = $"{string.Join("||", converted)}||";
                     Utils.CopyCheck(copy, answer);
                     Utils.NotifCheck(
-                        notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "spoilerspamSuccess"
+                        notif, ["Success!", "Message copied to clipboard.", "3"], "spoilerspamSuccess"
                     ); return answer;
                 }
             );
@@ -2459,10 +2432,10 @@ Word count: {args[1..].Length}";
 
                     Utils.CopyCheck(copy, ans);
                     Utils.NotifCheck(
-                        notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "titlecaseSuccess"
+                        notif, ["Success!", "Message copied to clipboard.", "3"], "titlecaseSuccess"
                     ); return ans;
                 },
-                aliases: new string[] { "title" },
+                aliases: ["title"],
                 useInAllCommand: true,
                 allCommandMode: "fancy"
             );
@@ -2476,10 +2449,10 @@ Word count: {args[1..].Length}";
                     string upperText = text.ToUpper();
                     Utils.CopyCheck(copy, upperText);
                     Utils.NotifCheck(
-                        notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "uppercaseSuccess"
+                        notif, ["Success!", "Message copied to clipboard.", "3"], "uppercaseSuccess"
                     ); return upperText;
                 },
-                aliases: new string[] { "upper" }
+                aliases: ["upper"]
             );
 
             FormattableCommand camelcase = new(
@@ -2490,12 +2463,11 @@ Word count: {args[1..].Length}";
                     Func<string, string> output = (string result) => {
                         Utils.CopyCheck(copy, result);
                         Utils.NotifCheck(
-                            notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "camelcaseSuccess"
+                            notif, ["Success!", "Message copied to clipboard.", "3"], "camelcaseSuccess"
                         ); return result;
                     };
 
-                    List<string> ans = new();
-                    ans.Add(args[1].ToLower());
+                    List<string> ans = [args[1].ToLower()];
 
                     try {
                         var test = args[2];
@@ -2515,16 +2487,16 @@ Word count: {args[1..].Length}";
                 function: (string[] args, bool copy, bool notif) => {
                     if (Utils.IndexTest(args)) { return null; }
 
-                    List<string> output = new();
-                    args[1..].ToList<string>().ForEach(i => output.Add(Utils.Capitalise(i)));
+                    List<string> output = [];
+                    args[1..].ToList().ForEach(i => output.Add(Utils.Capitalise(i)));
                     string result = string.Join("", output);
 
                     Utils.CopyCheck(copy, result);
                     Utils.NotifCheck(
-                        notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "pascalcaseSuccess"
+                        notif, ["Success!", "Message copied to clipboard.", "3"], "pascalcaseSuccess"
                     ); return result;
                 },
-                aliases: new string[] { "pascal" }
+                aliases: ["pascal"]
             );
 
             FormattableCommand snakecase = new(
@@ -2535,7 +2507,7 @@ Word count: {args[1..].Length}";
                     string text = string.Join("_", args[1..]).ToLower();
                     Utils.CopyCheck(copy, text);
                     Utils.NotifCheck(
-                        notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "snakecaseSuccess"
+                        notif, ["Success!", "Message copied to clipboard.", "3"], "snakecaseSuccess"
                     ); return text;
                 }
             );
@@ -2545,18 +2517,18 @@ Word count: {args[1..].Length}";
                 function: (string[] args, bool copy, bool notif) => {
                     if (Utils.IndexTest(args)) { return null; }
 
-                    List<string> pigLatin = new();
+                    List<string> pigLatin = [];
                     foreach (string word in args[1..]) {
                         if (
-                            word.StartsWith("a")
-                            | word.StartsWith("e")
-                            | word.StartsWith("i")
-                            | word.StartsWith("o")
-                            | word.StartsWith("u")
+                            word.StartsWith('a')
+                            | word.StartsWith('e')
+                            | word.StartsWith('i')
+                            | word.StartsWith('o')
+                            | word.StartsWith('u')
                         ) {
                             pigLatin.Add(word + "ay");
                         } else {
-                            List<string> lettersX = word[1..].Split().ToList(); //* all letters of word except the first
+                            List<string> lettersX = [.. word[1..].Split()]; //* all letters of word except the first
                             string firstLetter = word[0].ToString(); //* first letter of word
 
                             //* add first letter and "ay" to end of word
@@ -2569,7 +2541,7 @@ Word count: {args[1..].Length}";
 
                     Utils.CopyCheck(copy, string.Join(" ", pigLatin));
                     Utils.NotifCheck(
-                        notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "piglatinSuccess"
+                        notif, ["Success!", "Message copied to clipboard.", "3"], "piglatinSuccess"
                     ); return string.Join(" ", pigLatin); ;
                 }
             );
