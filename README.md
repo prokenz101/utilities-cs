@@ -29,8 +29,8 @@ Alternatively, download the self-contained version `utilities-cs-sc.exe` from th
 
 ### 1. With PowerToys:
 
-- Open PowerToys.
-- Type any recognized command. For example, try cursive hello world and press Ctrl + F8.
+- Open the PowerToys Run search bar (Alt + Space by default).
+- Type any recognized command. For example, try `cursive hello world` and press Ctrl + F8.
 - For more commands and details on how to use utilities-cs, check the [wiki](https://github.com/prokenz101/utilities-cs/wiki/Utilities-Wiki).
 
 ### 2. Without PowerToys:
