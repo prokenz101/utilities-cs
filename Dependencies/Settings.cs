@@ -14,15 +14,6 @@ namespace utilities_cs {
         static string settingsJsonPath = Path.Combine(Program.UtilitiesCsFolder, "settings.json");
 
         public static void SettingsMain(string[] args) {
-            string mode = args[1];
-            switch (mode) {
-                case "modify":
-                    try {
-                        string setting = args[2];
-                        string value = args[3];
-                        SettingsJSON currentSettings = SettingsModification.GetSettings();
-                        SettingsModification.ModifySetting(currentSettings, setting, value);
-                    } catch (IndexOutOfRangeException) {
                         Utils.NotifCheck(true,
                             new string[] {
                                 "Huh.",
@@ -31,8 +22,26 @@ namespace utilities_cs {
                             },
                             "settingsError"
                         );
-                    }
-                    break;
+            try {
+                string mode = args[1];
+                switch (mode) {
+                    case "modify":
+                        try {
+                            string setting = args[2];
+                            string value = args[3];
+                            SettingsJSON currentSettings = GetSettings();
+                            ModifySetting(currentSettings, setting, value);
+                        } catch (IndexOutOfRangeException) {
+                        }
+                        break;
+
+                    case "reset":
+                        CreateDirectoryAndJson();
+                        Utils.NotifCheck(
+                            true,
+                            ["Reset.", "All settings have been reset to default.", "4"],
+                            "settingsReset"
+                        ); break;
 
                 case "reset":
                     SettingsModification.CreateDirectoryAndJson();
