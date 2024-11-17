@@ -19,7 +19,7 @@ namespace utilities_cs {
             );
         }
 
-        public static MouseOperations.MouseEventFlags? stringToMouseEventFlags(string mouseButton) {
+        public static MouseOperations.MouseEventFlags? StringToMouseEventFlags(string mouseButton) {
             switch (mouseButton) {
                 case "left":
                     return MouseOperations.MouseEventFlags.LeftDown | MouseOperations.MouseEventFlags.LeftUp;
@@ -51,7 +51,6 @@ namespace utilities_cs {
                 HookManager.UnregisterHook("autoclickStop");
                 autoclickTokenSource.Cancel();
                 autoclickTokenSource.Dispose();
-            };
             }
 
             Task autoclickTask = new(
@@ -96,20 +95,20 @@ namespace utilities_cs {
 
     public class AutoclickOptions {
         [Value(0, Required = true)]
-        public string? mouseButton { get; set; }
+        public string? MouseButton { get; set; }
 
         [Option('i', "interval", Default = 0)]
-        public int interval { get; set; }
+        public int Interval { get; set; }
 
         [Option('c', "count", Default = int.MaxValue)]
-        public int count { get; set; }
+        public int Count { get; set; }
 
         public static void HandleSuccessfulParse(AutoclickOptions opts) {
-            if (opts.mouseButton == "left" | opts.mouseButton == "right" | opts.mouseButton == "middle") {
+            if (opts.MouseButton == "left" | opts.MouseButton == "right" | opts.MouseButton == "middle") {
                 Autoclick.PerformAutoclick(
-                    opts.interval,
-                    (MouseOperations.MouseEventFlags)Autoclick.stringToMouseEventFlags(opts.mouseButton!)!,
-                    opts.count
+                    opts.Interval,
+                    (MouseOperations.MouseEventFlags)Autoclick.StringToMouseEventFlags(opts.MouseButton!)!,
+                    opts.Count
                 );
             } else {
                 Utils.NotifCheck(
