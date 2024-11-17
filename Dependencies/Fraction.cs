@@ -35,7 +35,7 @@ namespace utilities_cs {
                 string text = string.Join(" ", args[2..]);
                 List<string> converted = new();
 
-                if (!(text.Contains("/"))) {
+                if (!text.Contains("/")) {
                     Utils.NotifCheck(
                         true,
                         new string[] { "An exception occured.", "There must be a / in your string.", "3" },
@@ -58,7 +58,7 @@ namespace utilities_cs {
                                 "Something went wrong.",
                                 "Either the code is broken, or you did not input the parameters correctly.",
                                 "4"
-                            }, "fractionError"
+                            ], "fractionError"
                         ); return null;
                     }
                 }
@@ -77,7 +77,7 @@ namespace utilities_cs {
                                     "Hey!",
                                     @"It seems you tried to input a character that's not supported.",
                                     "4"
-                                }, "fractionError"
+                                ], "fractionError"
                             ); return null;
                         }
                     } else {
@@ -87,7 +87,7 @@ namespace utilities_cs {
                                 "Something went wrong.",
                                 "Either the code is broken, or you did not input the parameters correctly.",
                                 "4"
-                            }, "fractionError"
+                            ], "fractionError"
                         ); return null;
                     }
                 }
@@ -95,7 +95,7 @@ namespace utilities_cs {
                 string fraction = string.Join("", converted);
                 Utils.CopyCheck(copy, fraction);
                 Utils.NotifCheck(
-                    notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "fractionSuccess"
+                    notif, ["Success!", "Message copied to clipboard.", "3"], "fractionSuccess"
                 ); return fraction;
             } else if (mode == "add" | mode == "subtract" | mode == "multiply" | mode == "divide") {
                 Regex fractionRegex = OperationFractionRegex();
@@ -121,7 +121,7 @@ namespace utilities_cs {
 
                     Utils.CopyCheck(copy, result);
                     Utils.NotifCheck(
-                        notif, new string[] { "Success!", $"The answer is: {result}", "3" }, "fractionSuccess"
+                        notif, ["Success!", $"The answer is: {result}", "3"], "fractionSuccess"
                     ); return result;
                 } else if (mixedFractionRegex.IsMatch(input)) {
                     MixedFraction mfc1 = new(
@@ -142,7 +142,7 @@ namespace utilities_cs {
 
                     Utils.CopyCheck(copy, result);
                     Utils.NotifCheck(
-                        notif, new string[] { "Success!", $"The answer is: {result}", "3" }, "fractionSuccess"
+                        notif, ["Success!", $"The answer is: {result}", "3"], "fractionSuccess"
                     ); return result;
                 } else {
                     Utils.NotifCheck(
@@ -166,7 +166,7 @@ namespace utilities_cs {
 
                     Utils.CopyCheck(copy, result);
                     Utils.NotifCheck(
-                        notif, new string[] { "Success!", $"The answer is: {result}", "4" }, "fractionSuccess"
+                        notif, ["Success!", $"The answer is: {result}", "4"], "fractionSuccess"
                     ); return result;
                 } else if (mixedFractionRegex.IsMatch(input)) {
                     string result = new MixedFraction(
@@ -178,7 +178,7 @@ namespace utilities_cs {
 
                     Utils.CopyCheck(copy, result);
                     Utils.NotifCheck(
-                        notif, new string[] { "Success!", $"The answer is: {result}", "4" }, "fractionSuccess"
+                        notif, ["Success!", $"The answer is: {result}", "4"], "fractionSuccess"
                     ); return result;
                 } else {
                     Utils.NotifCheck(
@@ -215,7 +215,7 @@ namespace utilities_cs {
 
                         Utils.CopyCheck(copy, ans);
                         Utils.NotifCheck(
-                            notif, new string[] { "Success!", $"The answer is: {ans}", "4" }, "fractionSuccess"
+                            notif, ["Success!", $"The answer is: {ans}", "4"], "fractionSuccess"
                         ); return ans;
                     } else {
                         Utils.NotifCheck(
@@ -248,7 +248,7 @@ namespace utilities_cs {
 
                         Utils.CopyCheck(copy, ans);
                         Utils.NotifCheck(
-                            notif, new string[] { "Success!", $"The answer is: {ans}", "4" }, "fractionSuccess"
+                            notif, ["Success!", $"The answer is: {ans}", "4"], "fractionSuccess"
                         ); return ans;
                     } else {
                         Utils.NotifCheck(
@@ -285,7 +285,7 @@ namespace utilities_cs {
 
                         Utils.CopyCheck(copy, result.ToString());
                         Utils.NotifCheck(
-                            notif, new string[] { "Success!", $"The answer is: {result}", "4" }, "fractionSuccess"
+                            notif, ["Success!", $"The answer is: {result}", "4"], "fractionSuccess"
                         ); return result.ToString();
                     } else {
                         Utils.NotifCheck(
@@ -321,7 +321,7 @@ namespace utilities_cs {
         public BigInteger Denominator { get; set; }
 
         public Fraction(string fraction) {
-            if (!(fraction.Contains('/'))) {
+            if (!fraction.Contains('/')) {
                 throw new NoSlashException();
             }
 
@@ -371,13 +371,13 @@ namespace utilities_cs {
         }
 
         public static Fraction Add(Fraction fc1, Fraction fc2, bool simplify = true) {
-            BigInteger lcm = LCMClass.FindLCM(new BigInteger[] { fc1.Denominator, fc2.Denominator });
+            BigInteger lcm = LCMClass.FindLCM([fc1.Denominator, fc2.Denominator]);
             BigInteger numerator = fc1.Numerator * (lcm / fc1.Denominator) + fc2.Numerator * (lcm / fc2.Denominator);
             return SimplifyIfRequired(new Fraction(numerator.ToString() + "/" + lcm.ToString()), simplify);
         }
 
         public static Fraction Subtract(Fraction fc1, Fraction fc2, bool simplify = true) {
-            BigInteger lcm = LCMClass.FindLCM(new BigInteger[] { fc1.Denominator, fc2.Denominator });
+            BigInteger lcm = LCMClass.FindLCM([fc1.Denominator, fc2.Denominator]);
             BigInteger numerator = fc1.Numerator * (lcm / fc1.Denominator) - fc2.Numerator * (lcm / fc2.Denominator);
             return SimplifyIfRequired(new Fraction(numerator.ToString() + "/" + lcm.ToString()), simplify);
         }
@@ -395,7 +395,7 @@ namespace utilities_cs {
 
         public Fraction ToSimplestForm() {
             //* get GCD of numerator and denominator
-            BigInteger gcd = HCF.FindGCD(new BigInteger[] { Numerator, Denominator }, 2);
+            BigInteger gcd = HCF.FindGCD([Numerator, Denominator], 2);
 
             Fraction fractionObtained = new(Numerator / gcd + "/" + Denominator / gcd);
             if (fractionObtained.Denominator < 0) {
