@@ -4,7 +4,7 @@ using Microsoft.Toolkit.Uwp.Notifications;
 
 namespace utilities_cs {
     public class Update {
-        public static GitHubClient client = new GitHubClient(new ProductHeaderValue("utilities-cs"));
+        public static GitHubClient client = new(new ProductHeaderValue("utilities-cs"));
 
         public static void Check(bool alertEvenIfUpdateIsNotRequired = true) {
             try {
@@ -46,22 +46,22 @@ Latest version: v1.{latestVersion}")
                     if (alertEvenIfUpdateIsNotRequired) {
                         Utils.NotifCheck(
                             true,
-                            new string[] {
+                            [
                                 "You are running the latest version of utilities-cs!",
                                 "There is nothing to update.",
                                 "4"
-                            }, "updateUpToDate"
+                            ], "updateUpToDate"
                         );
                     }
                 } else {
                     if (alertEvenIfUpdateIsNotRequired) {
                         Utils.NotifCheck(
                             true,
-                            new string[] {
+                            [
                                 "You are in the future.",
                                 "Your utilities-cs version is above the latest one on GitHub.",
                                 "4"
-                            }, "updateFuture"
+                            ], "updateFuture"
                         );
                     }
                 }
@@ -84,7 +84,7 @@ Latest version: v1.{latestVersion}")
                             "Something went wrong.",
                             "An exception occured whilst trying to check for updates.",
                             "4"
-                        }, "updateError"
+                        ], "updateError"
                     );
                 }
             }
@@ -111,11 +111,11 @@ Latest version: v1.{latestVersion}")
             } catch (ApiException) {
                 Utils.NotifCheck(
                     true,
-                    new string[] {
+                    [
                         "Unable to get information from the server.",
                         "This (could) be because you are not connected to the internet.",
                         "4"
-                    }, "updateAPIError"
+                    ], "updateAPIError"
                 );
             } catch {
                 Utils.NotifCheck(
@@ -124,7 +124,7 @@ Latest version: v1.{latestVersion}")
                         "Something went wrong.",
                         "An exception occured whilst trying to check for updates.",
                         "4"
-                    }, "updateError"
+                    ], "updateError"
                 );
             }
         }
@@ -135,11 +135,11 @@ Latest version: v1.{latestVersion}")
                     ToastNotificationManagerCompat.History.Remove("updateInstall");
                     Utils.NotifCheck(
                         true,
-                        new string[] {
+                        [
                                 "Installing the latest version.",
                                 "Opening download link in your browser.",
                                 "3"
-                        }, "updateInstalling"
+                        ], "updateInstalling"
                     );
 
                     Update.InstallLatestVersion(); break;
