@@ -1,6 +1,6 @@
 ﻿namespace utilities_cs {
     class Program {
-        public const string Version = "v1.13";
+        public const string Version = "v1.14";
         public const BuildMode buildMode = BuildMode.FrameworkDependent;
         public static string UtilitiesCsFolder = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
