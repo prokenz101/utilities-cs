@@ -1225,17 +1225,7 @@ FormattableCommands Count: {formattableCommandsCount}",
                     if (Utils.IndexTest(args)) { return null; }
 
                     string text = string.Join(" ", args[1..]);
-                    //* testing if string is a double
                     try {
-                        Convert.ToDouble(text);
-                    } catch (FormatException) {
-                        Utils.NotifCheck(
-                            true,
-                            new string[] { "Huh.", "It seems you did not input a number." },
-                            "cuberootError"
-                        ); return null;
-                    }
-
                     //* checking if there are commas in the number
                     if (text.Contains(',')) {
                         text = text.Replace(",", string.Empty);
@@ -1252,6 +1242,19 @@ FormattableCommands Count: {formattableCommandsCount}",
                         ["Success!", $"The answer is: {result}", "4"],
                         "cuberootSuccess"
                     ); return result;
+                    } catch (FormatException) {
+                        Utils.NotifCheck(
+                            true,
+                            ["Exception", "Invalid input, try 'help' for more info."],
+                            "cuberootError"
+                        ); return null;
+                    } catch (OverflowException) {
+                        Utils.NotifCheck(
+                            true,
+                            ["Exception", "Inputted value exceeds computational limits.", "3"],
+                            "rootError"
+                        ); return null;
+                    }
                 },
                 aliases: ["cbrt"]
             );
