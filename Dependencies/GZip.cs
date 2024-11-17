@@ -9,11 +9,11 @@ namespace utilities_cs {
             string text = string.Join(" ", args[2..]);
             if (mode == "to") {
                 try {
-                    string compressed = GZip.Compress(text);
+                    string compressed = Compress(text);
 
                     Utils.CopyCheck(copy, compressed);
                     Utils.NotifCheck(
-                        notif, new string[] { "Success!", "Message copied to clipboard.", "2" }, "gzipSuccess"
+                        notif, ["Success!", "Message copied to clipboard.", "2"], "gzipSuccess"
                     );
                     return compressed;
                 } catch {
@@ -27,11 +27,11 @@ namespace utilities_cs {
                 }
             } else if (mode == "from") {
                 try {
-                    string decompressed = GZip.Decompress(text);
+                    string decompressed = Decompress(text);
 
                     Utils.CopyCheck(copy, decompressed);
                     Utils.NotifCheck(
-                        notif, new string[] { "Success!", $"The text was: {decompressed}", "2" }, "gzipSuccess"
+                        notif, ["Success!", $"The text was: {decompressed}", "2"], "gzipSuccess"
                     );
                     return decompressed;
                 } catch {
@@ -41,7 +41,7 @@ namespace utilities_cs {
                             "Something went wrong.",
                             "An error occured when trying to decompress your text from GZip to ASCII.",
                             "4"
-                        },
+                        ],
                         "gzipError"
                     );
                     return null;
@@ -68,33 +68,31 @@ namespace utilities_cs {
         }
 
         public static byte[] Decompress(byte[] input) {
-            using (var source = new MemoryStream(input)) {
-                byte[] lengthBytes = new byte[4];
-                source.Read(lengthBytes, 0, 4);
+            using var source = new MemoryStream(input);
+            byte[] lengthBytes = new byte[4];
+            source.Read(lengthBytes, 0, 4);
 
-                var length = BitConverter.ToInt32(lengthBytes, 0);
-                using (var decompressionStream = new System.IO.Compression.GZipStream(source,
-                    System.IO.Compression.CompressionMode.Decompress)) {
-                    var result = new byte[length];
-                    decompressionStream.Read(result, 0, length);
-                    return result;
-                }
-            }
+            var length = BitConverter.ToInt32(lengthBytes, 0);
+            using var decompressionStream = new System.IO.Compression.GZipStream(source,
+                System.IO.Compression.CompressionMode.Decompress);
+            var result = new byte[length];
+            decompressionStream.ReadExactly(result);
+            return result;
         }
 
         public static byte[] Compress(byte[] input) {
-            using (var result = new MemoryStream()) {
-                var lengthBytes = BitConverter.GetBytes(input.Length);
-                result.Write(lengthBytes, 0, 4);
+            using var result = new MemoryStream();
+            var lengthBytes = BitConverter.GetBytes(input.Length);
+            result.Write(lengthBytes, 0, 4);
 
-                using (var compressionStream = new System.IO.Compression.GZipStream(result,
-                    System.IO.Compression.CompressionMode.Compress)) {
-                    compressionStream.Write(input, 0, input.Length);
-                    compressionStream.Flush();
-                }
-
-                return result.ToArray();
+            using (var compressionStream = new System.IO.Compression.GZipStream(result,
+                System.IO.Compression.CompressionMode.Compress))
+            {
+                compressionStream.Write(input, 0, input.Length);
+                compressionStream.Flush();
             }
+
+            return result.ToArray();
         }
     }
 }
