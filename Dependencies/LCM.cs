@@ -3,22 +3,20 @@ using System.Numerics;
 namespace utilities_cs {
     public class LCMClass {
         public static string? LCMMain(string[] args, bool copy, bool notif) {
-            if (Utils.IndexTest(args)) {
-                return null;
-            }
+            if (Utils.IndexTest(args)) { return null; }
 
             string text = string.Join(" ", args[1..]);
 
-            List<BigInteger> nums = new();
-            Utils.RegexFindAllInts(text).ForEach(x => nums.Add(x));
+            List<BigInteger> nums = [];
+            Utils.RegexFindAllInts(text).ForEach(nums.Add);
 
             try {
                 if (nums.Count > 1) {
                     BigInteger answer =
-                    LCMClass.FindLCM(nums.ToArray<BigInteger>());
+                    FindLCM([.. nums]);
                     Utils.CopyCheck(copy, answer.ToString());
                     Utils.NotifCheck(
-                        notif, new string[] { "Success!", $"The answer was {answer}.", "5" }, "lcmSuccess"
+                        notif, ["Success!", $"The answer was {answer}.", "5"], "lcmSuccess"
                     ); return answer.ToString();
                 } else {
                     Utils.NotifCheck(
@@ -63,12 +61,10 @@ namespace utilities_cs {
                 }
 
                 if (divisible) {
-                    lcmOfArrayElements = lcmOfArrayElements * divisor;
+                    lcmOfArrayElements *= divisor;
                 } else { divisor++; }
 
-                if (counter == elementArray.Length) {
-                    return lcmOfArrayElements;
-                }
+                if (counter == elementArray.Length) return lcmOfArrayElements;
             }
         }
     }
