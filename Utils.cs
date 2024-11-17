@@ -25,10 +25,10 @@ namespace utilities_cs {
             bool bypassLengthLimit = false
         ) {
 
-            string[] notifTooLong = new string[] {
+            string[] notifTooLong = [
                 "This notification was too long.",
                 "What you are looking for has probably been copied to your clipboard.",
-            };
+            ];
 
             //* Check if title and subtitle are too long
             if (title.Length > 54 && !bypassLengthLimit) {
@@ -181,7 +181,7 @@ namespace utilities_cs {
                 MatchCollection matches = re.Matches(input);
                 foreach (Match? match in matches) {
                     if (match != null) {
-                        System.Text.RegularExpressions.GroupCollection groups = match.Groups;
+                        GroupCollection groups = match.Groups;
                         BigInts.Add(System.Numerics.BigInteger.Parse(groups["num"].Value));
                     }
                 }
@@ -221,30 +221,30 @@ namespace utilities_cs {
         /// this should only be used for expressions which are designed to have only one match.
         /// </param>
         /// <returns>A dictionary of all the matches which point to their groups.</returns>
-        public static Dictionary<System.Text.RegularExpressions.Match, System.Text.RegularExpressions.GroupCollection>? RegexFind(
+        public static Dictionary<Match, GroupCollection>? RegexFind(
             string input,
             string expression,
             bool useIsMatch = false,
             Action? ifNotMatch = null
         ) {
 
-            List<Dictionary<System.Text.RegularExpressions.Match, System.Text.RegularExpressions.GroupCollection>> matchesAndGroups = new();
-            System.Text.RegularExpressions.Regex re = new(expression);
+            List<Dictionary<Match, GroupCollection>> matchesAndGroups = new();
+            Regex re = new(expression);
 
-            Action matched = () => {
-                foreach (System.Text.RegularExpressions.Match? match in re.Matches(input)) {
+            void matched() {
+                foreach (Match? match in re.Matches(input)) {
                     if (match != null) {
-                        Dictionary<System.Text.RegularExpressions.Match, System.Text.RegularExpressions.GroupCollection> matchToGroups =
+                        Dictionary<Match, GroupCollection> matchToGroups =
                             new() { { match, match.Groups } };
                         matchesAndGroups.Add(matchToGroups);
                     }
                 }
-            };
+            }
 
             if (!useIsMatch) {
-                if (re.Matches(input).Count >= 1) { matched.Invoke(); } else { ifNotMatch?.Invoke(); return null; }
+                if (re.Matches(input).Count >= 1) { matched(); } else { ifNotMatch?.Invoke(); return null; }
             } else if (useIsMatch) {
-                if (re.IsMatch(input)) { matched.Invoke(); } else { ifNotMatch?.Invoke(); return null; }
+                if (re.IsMatch(input)) { matched(); } else { ifNotMatch?.Invoke(); return null; }
             }
 
             return matchesAndGroups[0];
@@ -281,8 +281,8 @@ namespace utilities_cs {
         }
 
         public static string BulkReplace(string text, string chars, string replacementChars) {
-            List<string> charsList = chars.Split(" ").ToList<string>();
-            List<string> replacementCharsList = replacementChars.Split(" ").ToList<string>();
+            List<string> charsList = [.. chars.Split(" ")];
+            List<string> replacementCharsList = [.. replacementChars.Split(" ")];
             string result = text;
             
             foreach (string i in charsList) {
