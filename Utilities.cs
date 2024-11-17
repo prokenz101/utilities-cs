@@ -22,11 +22,11 @@
 #else
             Utils.NotifCheck(
                 true,
-                new string[] {
+                [
                     "Opened utilities-cs.",
                     "I am now in your system tray, right click me and press Exit to exit.",
                     "3"
-                }, "utilities-csOpen"
+                ], "utilities-csOpen"
             );
 
             CheckForUpdates();
@@ -45,7 +45,7 @@
                 string key = toastArgs.Argument.Split("=")[0];
                 string value = toastArgs.Argument.Split("=")[1];
                 List<KeyValuePair<string, object>>? userInput =
-                    toastArgs.UserInput.Count > 0 ? toastArgs.UserInput.ToList()
+                    toastArgs.UserInput.Count > 0 ? [.. toastArgs.UserInput]
                     : null;
 
                 switch (key) {
@@ -79,7 +79,7 @@
         }
     }
 
-    public class UtilitiesAppContext : ApplicationContext {
+    public partial class UtilitiesAppContext : ApplicationContext {
         /// <summary>
         /// The main method that is called when a command is executed.
         /// </summary>
@@ -90,7 +90,7 @@
             if (output != null) { return output; } else { return null; }
         }
 
-        private NotifyIcon trayIcon;
+        private readonly NotifyIcon trayIcon;
 
         /// <summary>
         /// Current settings of the program.
@@ -104,7 +104,7 @@
             //* making keyboard hook for ctrl + f8
             HookManager.AddHook(
                 "utilities-cs-ctrlF8",
-                new ModifierKeys[] { ModifierKeys.Control },
+                [ModifierKeys.Control],
                 Keys.F8,
                 async () => {
                     int hotkeyDelay = CurrentSettings.CopyingHotkeyDelay;
@@ -125,7 +125,7 @@
                             "Something went wrong.",
                             @"Are you opening multiple instances of utilities-cs?",
                             "4"
-                        }, "utilitiesHotkeyError"
+                        ], "utilitiesHotkeyError"
                     ); Exit();
                 }
             );
@@ -146,7 +146,7 @@
                 "Settings...", null, delegate {
                     Utils.NotifCheck(
                         true,
-                        new string[] { "Opening settings.json...", "Opening settings.json on your default editor.", "3" },
+                        ["Opening settings.json...", "Opening settings.json on your default editor.", "3"],
                         "utiliitesOpeningSettings"
                     ); SettingsModification.OpenSettingsJSON();
                 }
