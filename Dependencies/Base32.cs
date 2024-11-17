@@ -1,14 +1,12 @@
 namespace utilities_cs {
     public class Base32Convert {
         public static string? Base32ConvertMain(string[] args, bool copy, bool notif) {
-            if (Utils.IndexTest(args)) {
-                return null;
-            }
+            if (Utils.IndexTest(args)) return null;
 
             string text = string.Join(" ", args[2..]);
             string mode = args[1];
 
-            if (text.Contains("=")) {
+            if (text.Contains('=')) {
                 text = text.Replace("=", string.Empty);
             }
 
@@ -18,7 +16,7 @@ namespace utilities_cs {
                 string strToBase32 = Base32.ToBase32String(bytes)!;
 
                 Utils.CopyCheck(copy, strToBase32);
-                Utils.NotifCheck(notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "base32Success");
+                Utils.NotifCheck(notif, ["Success!", "Message copied to clipboard.", "3"], "base32Success");
                 return strToBase32;
             } else if (mode == "from") {
                 try {
@@ -28,7 +26,7 @@ namespace utilities_cs {
                     Utils.CopyCheck(copy, base32ToString);
                     Utils.NotifCheck(
                         notif,
-                        new string[] { "Success!", $"The message was: {base32ToString}", "8" },
+                        ["Success!", $"The message was: {base32ToString}", "8"],
                         "base32Success"
                     );
                     return base32ToString;
@@ -124,7 +122,7 @@ namespace utilities_cs {
             }
 
             if (outputBase32BytePosition > 0) {
-                outputBase32Byte <<= (OutByteSize - outputBase32BytePosition);
+                outputBase32Byte <<= OutByteSize - outputBase32BytePosition;
 
                 outputBase32Byte &= 0x1F;  //* 0x1F = 00011111 in binary
 
@@ -141,12 +139,11 @@ namespace utilities_cs {
         /// <returns>Returns a byte array converted from the string</returns>
 
 
-
         internal static byte[]? FromBase32String(string base32String) {
             if (base32String == null) {
                 return null;
             } else if (base32String == string.Empty) {
-                return new byte[0];
+                return [];
             }
 
             string base32StringUpperCase = base32String.ToUpperInvariant();
