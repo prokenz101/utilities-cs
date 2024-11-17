@@ -6,20 +6,20 @@ namespace utilities_cs {
             if (Utils.IndexTest(args)) { return null; }
 
             string text = string.Join(" ", args);
-            List<BigInteger> nums = new();
+            List<BigInteger> nums = [];
             Utils.RegexFindAllInts(text).ForEach(x => nums.Add(x));
 
             try {
                 if (nums.Count > 1) {
                     BigInteger answer =
                     HCF.FindGCD(
-                        nums.ToArray<BigInteger>(),
+                        [.. nums],
                         nums.ToArray().Length
                     );
 
                     Utils.CopyCheck(copy, answer.ToString());
                     Utils.NotifCheck(
-                        notif, new string[] { "Success!", $"The answer was {answer}.", "5" }, "hcfSuccess"
+                        notif, ["Success!", $"The answer was {answer}.", "5"], "hcfSuccess"
                     ); return answer.ToString();
                 } else {
                     Utils.NotifCheck(
@@ -46,18 +46,17 @@ namespace utilities_cs {
             }
         }
 
-        public static System.Numerics.BigInteger FindHCF(
-            System.Numerics.BigInteger a, System.Numerics.BigInteger b
+        public static BigInteger FindHCF(
+            BigInteger a, BigInteger b
         ) {
             if (a == 0) { return b; }
             return FindHCF(b % a, a);
         }
 
-        //* Function to find gcd of 
-        //* array of numbers
-        public static System.Numerics.BigInteger FindGCD(
-            System.Numerics.BigInteger[] arr,
-            System.Numerics.BigInteger n
+        //* Function to find gcd of array of numbers
+        public static BigInteger FindGCD(
+            BigInteger[] arr,
+            BigInteger n
         ) {
             System.Numerics.BigInteger result = arr[0];
             for (int i = 1; i < n; i++) {
