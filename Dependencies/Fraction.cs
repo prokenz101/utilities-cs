@@ -2,7 +2,32 @@ using System.Numerics;
 using System.Text.RegularExpressions;
 
 namespace utilities_cs {
-    public class Fractions {
+    public partial class Fractions {
+
+        [GeneratedRegex(@"^(?<numerator>-?\d+)\/(?<denominator>-?\d+)$")]
+        private static partial Regex FractionRegex();
+
+        [GeneratedRegex(@"^(?<wholenum>-?\d+) (?<numerator>-?\d+)\/(?<denominator>-?\d+)$")]
+        private static partial Regex MixedFractionRegex();
+
+        [GeneratedRegex(@"^(?<numerator1>-?\d+)\/(?<denominator1>-?\d+) and (?<numerator2>-?\d+)\/(?<denominator2>-?\d+)")]
+        private static partial Regex OperationFractionRegex();
+
+        [GeneratedRegex(@"^(?<wholenum1>-?\d+) (?<numerator1>-?\d+)\/(?<denominator1>-?\d+) and (?<wholenum2>-?\d+) (?<numerator2>-?\d+)\/(?<denominator2>-?\d+)")]
+        private static partial Regex OperationMixedFractionRegex();
+        
+        [GeneratedRegex(@"^(?<numerator>-?\d+)\/(?<denominator>-?\d+) to (?<conversion>\w+)$")]
+        private static partial Regex ConvertFractionRegex();
+
+        [GeneratedRegex(@"^(?<wholenum>-?\d+) (?<numerator>-?\d+)\/(?<denominator>-?\d+) to (?<conversion>\w+)$")]
+        private static partial Regex ConvertMixedFractionRegex();
+
+        [GeneratedRegex(@"^if (?<numerator>-?\d+)\/(?<denominator>-?\d+) is (?<check>\w+)$")]
+        private static partial Regex CheckFractionRegex();
+
+        [GeneratedRegex(@"^if (?<wholenum>-?\d+) (?<numerator>-?\d+)\/(?<denominator>-?\d+) is (?<check>\w+)$")]
+        private static partial Regex CheckMixedFractionRegex();
+
         public static string? FractionsMain(string[] args, bool copy, bool notif) {
             string mode = args[1];
 
@@ -73,13 +98,9 @@ namespace utilities_cs {
                     notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "fractionSuccess"
                 ); return fraction;
             } else if (mode == "add" | mode == "subtract" | mode == "multiply" | mode == "divide") {
-                Regex fractionRegex = new(
-                    @"^(?<numerator1>-?\d+)\/(?<denominator1>-?\d+) and (?<numerator2>-?\d+)\/(?<denominator2>-?\d+)"
-                );
+                Regex fractionRegex = OperationFractionRegex();
 
-                Regex mixedFractionRegex = new(
-                    @"^(?<wholenum1>-?\d+) (?<numerator1>-?\d+)\/(?<denominator1>-?\d+) and (?<wholenum2>-?\d+) (?<numerator2>-?\d+)\/(?<denominator2>-?\d+)"
-                );
+                Regex mixedFractionRegex = OperationMixedFractionRegex();
 
                 string input = string.Join(" ", args[2..]);
 
@@ -132,8 +153,8 @@ namespace utilities_cs {
                 }
 
             } else if (mode == "simplify") {
-                Regex fractionRegex = new(@"^(?<numerator>-?\d+)\/(?<denominator>-?\d+)$");
-                Regex mixedFractionRegex = new(@"^(?<wholenum>-?\d+) (?<numerator>-?\d+)\/(?<denominator>-?\d+)$");
+                Regex fractionRegex = FractionRegex();
+                Regex mixedFractionRegex = MixedFractionRegex();
                 string input = string.Join(" ", args[2..]);
 
                 if (fractionRegex.IsMatch(input)) {
@@ -167,9 +188,8 @@ namespace utilities_cs {
                     ); return null;
                 }
             } else if (mode == "convert") {
-                Regex fractionRegex = new(@"^(?<numerator>-?\d+)\/(?<denominator>-?\d+) to (?<conversion>\w+)$");
-                Regex mixedFractionRegex =
-                    new(@"^(?<wholenum>-?\d+) (?<numerator>-?\d+)\/(?<denominator>-?\d+) to (?<conversion>\w+)$");
+                Regex fractionRegex = ConvertFractionRegex();
+                Regex mixedFractionRegex = ConvertMixedFractionRegex();
                 string input = string.Join(" ", args[2..]);
 
                 if (fractionRegex.IsMatch(input)) {
@@ -245,10 +265,8 @@ namespace utilities_cs {
                     ); return null;
                 }
             } else if (mode == "check") {
-                Regex fractionRegex = new(@"^if (?<numerator>-?\d+)\/(?<denominator>-?\d+) is (?<check>\w+)$");
-                Regex mixedFractionRegex = new(
-                    @"^if (?<wholenum>-?\d+) (?<numerator>-?\d+)\/(?<denominator>-?\d+) is (?<check>\w+)$"
-                );
+                Regex fractionRegex = CheckFractionRegex();
+                Regex mixedFractionRegex = CheckMixedFractionRegex();
 
                 string input = string.Join(" ", args[2..]);
                 if (fractionRegex.IsMatch(input)) {
