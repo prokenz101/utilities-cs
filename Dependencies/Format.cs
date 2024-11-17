@@ -1,12 +1,20 @@
+using System.Text.RegularExpressions;
+
 namespace utilities_cs {
-    public static class Format {
+    public static partial class Format {
+
+        [GeneratedRegex(@"{(?<command>[^}]+)}")]
+        private static partial Regex CommandRegex();
+
+        [GeneratedRegex("{(.*?)}")]
+        private static partial Regex ReplaceRegex();
+
         public static void FormatMain(string[] args) {
             string text = string.Join(" ", args[1..]);
             if (Utils.IndexTest(args)) { return; }
 
             Dictionary<string, string> formatDict = new();
-            System.Text.RegularExpressions.Regex re =
-                new System.Text.RegularExpressions.Regex(@"{(?<command>[^}]+)}");
+            var re = CommandRegex();
 
             System.Text.RegularExpressions.MatchCollection matches = re.Matches(text);
 
@@ -38,9 +46,9 @@ namespace utilities_cs {
             Utils.NotifCheck(true, new string[] { "Success!", "Message copied to clipboard.", "3" }, "formatSuccess");
         }
 
-        static string replaceKeyInString(Dictionary<string, string> dictionary, string inputString) {
-            var regex = new System.Text.RegularExpressions.Regex("{(.*?)}");
-            var matches = regex.Matches(inputString);
+        static string ReplaceKeyInString(Dictionary<string, string> dictionary, string inputString) {
+            Regex re = ReplaceRegex();
+            var matches = re.Matches(inputString);
             foreach (System.Text.RegularExpressions.Match? match in matches) {
                 if (match != null) {
                     var valueWithoutBrackets = match.Groups[1].Value;
