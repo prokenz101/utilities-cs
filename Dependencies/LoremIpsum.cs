@@ -6,11 +6,11 @@ namespace utilities_cs {
             }
 
             //* lorem string
-            string lorem = LoremIpsum.LoremIpsumFull;
+            string lorem = LoremIpsumFull;
             if (args[1] == "all") {
                 Utils.CopyCheck(copy, lorem);
                 Utils.NotifCheck(
-                    notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "loremSuccess"
+                    notif, ["Success!", "Message copied to clipboard.", "3"], "loremSuccess"
                 ); return lorem;
             } else {
                 try {
@@ -19,11 +19,11 @@ namespace utilities_cs {
                     string[] loremArray = lorem.Split(" ");
 
                     if (numOfWords >= 1 && !(numOfWords > 10000)) {
-                        string[] result = loremArray[0..(numOfWords)];
+                        string[] result = loremArray[0..numOfWords];
 
                         Utils.CopyCheck(copy, string.Join(" ", result));
                         Utils.NotifCheck(
-                            notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "loremSuccess"
+                            notif, ["Success!", "Message copied to clipboard.", "3"], "loremSuccess"
                         ); return string.Join(" ", result);
                     } else if (numOfWords > 10000) {
                         Utils.NotifCheck(
