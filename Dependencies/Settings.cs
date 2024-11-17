@@ -14,14 +14,6 @@ namespace utilities_cs {
         static string settingsJsonPath = Path.Combine(Program.UtilitiesCsFolder, "settings.json");
 
         public static void SettingsMain(string[] args) {
-                        Utils.NotifCheck(true,
-                            new string[] {
-                                "Huh.",
-                                "It seems you did not input a setting/value.",
-                                "3"
-                            },
-                            "settingsError"
-                        );
             try {
                 string mode = args[1];
                 switch (mode) {
@@ -32,6 +24,14 @@ namespace utilities_cs {
                             SettingsJSON currentSettings = GetSettings();
                             ModifySetting(currentSettings, setting, value);
                         } catch (IndexOutOfRangeException) {
+                            Utils.NotifCheck(true,
+                                [
+                                    "Exception",
+                                    "Invalid input, try 'help' for more info.",
+                                    "3"
+                                ],
+                                "settingsError"
+                            );
                         }
                         break;
 
@@ -87,14 +87,13 @@ They cannot both be true at the same time."
                             ["Exception", "Invalid mode given, try 'help' for more info.", "3"],
                             "settingsError"
                         ); break;
-                    }
-
-                default:
-                    Utils.NotifCheck(
-                        true,
-                        new string[] { "Huh.", "It seems that was not a valid mode.", "3" },
-                        "settingsError"
-                    ); break;
+                }
+            } catch (IndexOutOfRangeException) {
+                Utils.NotifCheck(
+                    true,
+                    ["Exception", "No input, try 'help' for more info.", "3"],
+                    "settingsError"
+                );
             }
         }
 
@@ -114,11 +113,11 @@ They cannot both be true at the same time."
             Action mutuallyExclusive = () => {
                 Utils.NotifCheck(
                     true,
-                    new string[] {
-                        "You can't do that unfortunately.",
+                    [
+                        "Exception",
                         @"'disableClipboardManipulation' and 'autoPaste' are mutually exclusive.",
-                        "7"
-                    }, "settingsError"
+                        "5"
+                    ], "settingsError"
                 );
             };
 
@@ -219,7 +218,7 @@ They cannot both be true at the same time."
             } catch {
                 Utils.NotifCheck(
                     true,
-                    new string[] { "Huh", "It seems you did not input the parameters correctly.", "3" },
+                    ["Exception", "Invalid parameters inputted.", "3"],
                     "settingsError"
                 ); return null;
             }

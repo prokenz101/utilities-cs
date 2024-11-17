@@ -66,7 +66,7 @@ namespace utilities_cs {
             } catch (IndexOutOfRangeException) {
                 NotifCheck(
                     sendNotif,
-                    new string[] { "Huh.", "It seems you did not specify the parameters correctly.", "3" },
+                    ["Exception", "Invalid parameters inputted, try 'help' for more info.", "3"],
                     "indexTestError"
                 );
 

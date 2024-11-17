@@ -19,9 +19,11 @@ namespace utilities_cs {
                 } catch {
                     Utils.NotifCheck(
                         true,
-                        new string[] {
-                            "Something went wrong.", "An error occured when trying to convert your text to GZip.", "4"
-                        }, "gzipError"
+                        [
+                            "Exception",
+                            "Something went wrong while trying to convert your text to GZip.",
+                            "4"
+                        ], "gzipError"
                     );
                     return null;
                 }
@@ -37,9 +39,9 @@ namespace utilities_cs {
                 } catch {
                     Utils.NotifCheck(
                         true,
-                        new string[] {
-                            "Something went wrong.",
-                            "An error occured when trying to decompress your text from GZip to ASCII.",
+                        [
+                            "Exception",
+                            "Something went wrong while trying to decompress your text from GZip to ASCII.",
                             "4"
                         ],
                         "gzipError"
@@ -49,7 +51,7 @@ namespace utilities_cs {
             } else {
                 Utils.NotifCheck(
                     true,
-                    new string[] { "Huh.", "It seems you did not input a valid mode.", "4" },
+                    ["Exception", "Invalid mode, try 'help' for more info.", "4"],
                     "gzipError"
                 ); return null;
             }

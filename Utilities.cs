@@ -121,9 +121,9 @@
                 onFail: () => {
                     Utils.NotifCheck(
                         true,
-                        new string[] {
-                            "Something went wrong.",
-                            @"Are you opening multiple instances of utilities-cs?",
+                        [
+                            "Exception",
+                            @"App is already running, multiple instances are not supported.",
                             "4"
                         ], "utilitiesHotkeyError"
                     ); Exit();

@@ -35,7 +35,7 @@ namespace utilities_cs {
                         output = "errored";
                         Utils.NotifCheck(
                             true,
-                            new string[] { "Huh.", "Perhaps that was not a real command.", "4" },
+                            ["Exception", "Invalid command, try 'help' for more info.", "4"],
                             "formatError"
                         ); formatDict[cmd] = output;
                     } else { formatDict[cmd] = output; }

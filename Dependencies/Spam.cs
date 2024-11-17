@@ -28,9 +28,9 @@ namespace utilities_cs {
                     } else {
                         Utils.NotifCheck(
                             true,
-                            new string[] {
-                                "Huh.",
-                                "It seems that spam configuration does not exist.",
+                            [
+                                "Exception",
+                                "Invalid spam configuration, try 'help' for more info.",
                                 "4"
                             ], "spamConfigNotFoundError"
                         );
@@ -76,9 +76,9 @@ namespace utilities_cs {
                         } else {
                             Utils.NotifCheck(
                                 true,
-                                new string[] {
-                                    "Huh.",
-                                    "It seems there are no registered spam configurations to clear.",
+                                [
+                                    "Exception",
+                                    "No registered spam configurations to clear",
                                     "3"
                                 ], "spamClearError"
                             ); return;
@@ -86,8 +86,8 @@ namespace utilities_cs {
                     } else {
                         Utils.NotifCheck(
                             true,
-                            new string[] {
-                                "Huh.",
+                            [
+                                "No configurations available",
                                 "There are no currently saved spam configurations.",
                                 "4"
                             ], "spamError"
@@ -97,9 +97,9 @@ namespace utilities_cs {
             } catch {
                 Utils.NotifCheck(
                     true,
-                    new string[] {
-                        "Something went wrong.", "An exception occured while trying to run this command.", "4"
-                    }, "spamRunError"
+                    [
+                        "Exception", "Something went wrong.", "4"
+                    ], "spamRunError"
                 ); return;
             }
 
@@ -303,16 +303,16 @@ You can now run it using ""spam run <configName>""")
             {
                 Utils.NotifCheck(
                     true,
-                    new string[] {
-                        "Huh.", "Perhaps the number you inputted was not a number.", "3"
-                    }, "spamError"
+                    [
+                        "Exception", "Invalid input, try 'help' for more info.", "3"
+                    ], "spamError"
                 );
             }
 
             if (value == "notifClicked") {
                 new ToastContentBuilder()
-                    .AddText("Huh.")
-                    .AddText(@"It seems you clicked on the notification without hitting a button or inputting anything.
+                    .AddText("Exception")
+                    .AddText(@"You have clicked on the notification without hitting a button or inputting anything.
 This means that the spam config will be aborted.").Show(toast => toast.Tag = "spam");
                 return;
             }
@@ -403,9 +403,9 @@ This means that the spam config will be aborted.").Show(toast => toast.Tag = "sp
                     } catch (NullReferenceException) {
                         Utils.NotifCheck(
                             true,
-                            new string[] {
+                            [
+                                "Exception",
                                 "Something went wrong.",
-                                "An exception occured while trying to start spamming.",
                                 "4"
                             ], "spamError"
                         ); ClearData(); break;
@@ -428,9 +428,9 @@ This means that the spam config will be aborted.").Show(toast => toast.Tag = "sp
                     } catch (NullReferenceException) {
                         Utils.NotifCheck(
                             true,
-                            new string[] {
+                            [
+                                "Exception",
                                 "Something went wrong.",
-                                "An exception occured while trying to start spamming.",
                                 "4"
                             ], "spamError"
                         ); ClearData(); break;
@@ -509,10 +509,10 @@ This means that the spam config will be aborted.").Show(toast => toast.Tag = "sp
                     } catch {
                         Utils.NotifCheck(
                             true,
-                            new string[] {
-                                "Huh.", "Something went wrong while spamming.", "3"
-                            }, "spamError"
-                        ); clearData(); return;
+                            [
+                                "Exception", "Something went wrong while spamming.", "3"
+                            ], "spamError"
+                        ); ClearData(); return;
                     }
                 }, spamToken
             );

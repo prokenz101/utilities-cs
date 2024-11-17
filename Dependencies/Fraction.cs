@@ -38,7 +38,7 @@ namespace utilities_cs {
                 if (!text.Contains("/")) {
                     Utils.NotifCheck(
                         true,
-                        new string[] { "An exception occured.", "There must be a / in your string.", "3" },
+                        ["An exception occured.", "There must be a / in your string.", "3"],
                         "fractionError"
                     ); return null;
                 }
@@ -54,9 +54,9 @@ namespace utilities_cs {
                     } else {
                         Utils.NotifCheck(
                             true,
-                            new string[] {
-                                "Something went wrong.",
-                                "Either the code is broken, or you did not input the parameters correctly.",
+                            [
+                                "Exception",
+                                "Invalid parameters, try 'help' for more info.",
                                 "4"
                             ], "fractionError"
                         ); return null;
@@ -73,9 +73,9 @@ namespace utilities_cs {
                         } else {
                             Utils.NotifCheck(
                                 true,
-                                new string[] {
-                                    "Hey!",
-                                    @"It seems you tried to input a character that's not supported.",
+                                [
+                                    "Exception",
+                                    @"Unsupported character inputted, see wiki for more info.",
                                     "4"
                                 ], "fractionError"
                             ); return null;
@@ -83,9 +83,9 @@ namespace utilities_cs {
                     } else {
                         Utils.NotifCheck(
                             true,
-                            new string[] {
-                                "Something went wrong.",
-                                "Either the code is broken, or you did not input the parameters correctly.",
+                            [
+                                "Exception",
+                                "Invalid parameters, try 'help' for more info.",
                                 "4"
                             ], "fractionError"
                         ); return null;
@@ -147,7 +147,7 @@ namespace utilities_cs {
                 } else {
                     Utils.NotifCheck(
                         true,
-                        new string[] { "Huh.", "It seems you did not follow the syntax correctly.", "3" },
+                        ["Exception", "Invalid syntax, try 'help' for more info.", "3"],
                         "fractionError"
                     ); return null;
                 }
@@ -183,7 +183,7 @@ namespace utilities_cs {
                 } else {
                     Utils.NotifCheck(
                         true,
-                        new string[] { "Huh.", "It seems you did not follow the syntax correctly.", "3" },
+                        ["Exception", "Invalid syntax, try 'help' for more info.", "3"],
                         "fractionError"
                     ); return null;
                 }
@@ -220,7 +220,7 @@ namespace utilities_cs {
                     } else {
                         Utils.NotifCheck(
                             true,
-                            new string[] { "Huh.", "It seems you did not input a valid conversion.", "3" },
+                            ["Exception", "Invalid input, try 'help' for more info.", "3"],
                             "fractionError"
                         ); return null;
                     }
@@ -253,14 +253,14 @@ namespace utilities_cs {
                     } else {
                         Utils.NotifCheck(
                             true,
-                            new string[] { "Huh.", "It seems you did not input a valid conversion.", "3" },
+                            ["Exception", "Invalid input, try 'help' for more info.", "3"],
                             "fractionError"
                         ); return null;
                     }
                 } else {
                     Utils.NotifCheck(
                         true,
-                        new string[] { "Huh.", "It seems you did not follow the syntax correctly.", "3" },
+                        ["Exception", "Invalid syntax, try 'help' for more info.", "3"],
                         "fractionError"
                     ); return null;
                 }
@@ -290,27 +290,27 @@ namespace utilities_cs {
                     } else {
                         Utils.NotifCheck(
                             true,
-                            new string[] { "Huh.", "It seems you did not input a valid checking mode.", "3" },
+                            ["Exception", "Invalid input, try 'help' for more info.", "3"],
                             "fractionError"
                         ); return null;
                     }
                 } else if (mixedFractionRegex.IsMatch(input)) {
                     Utils.NotifCheck(
                         true,
-                        new string[] {
-                            "Huh.", "It seems this mode does not support Mixed Fractions.", "3"
-                        }, "fractionError"
+                        [
+                            "Exception", "Mode does not support Mixed Fractions", "3"
+                        ], "fractionError"
                     ); return null;
                 } else {
                     Utils.NotifCheck(
                         true,
-                        new string[] { "Huh.", "It seems you did not follow the syntax correctly.", "3" },
+                        ["Exception", "Invalid syntax, try 'help' for more info.", "3"],
                         "fractionError"
                     ); return null;
                 }
             } else {
                 Utils.NotifCheck(
-                    true, new string[] { "Huh.", "It seems that is not a valid mode.", "3" }, "fractionError"
+                    true, ["Exception", "Invalid mode, try 'help' for more info.", "3"], "fractionError"
                 ); return null;
             }
         }
@@ -426,7 +426,7 @@ namespace utilities_cs {
         public BigInteger Denominator { get; set; }
 
         public MixedFraction(BigInteger wholeNumber, string fraction) {
-            if (!(fraction.Contains('/'))) { throw new Fraction.NoSlashException(); }
+            if (!fraction.Contains('/')) { throw new Fraction.NoSlashException(); }
             string[] parts = fraction.Split("/");
 
             WholeNumber = wholeNumber;

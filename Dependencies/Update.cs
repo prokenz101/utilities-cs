@@ -69,20 +69,20 @@ Latest version: v1.{latestVersion}")
                 if (alertEvenIfUpdateIsNotRequired) {
                     Utils.NotifCheck(
                         true,
-                        new string[] {
+                        [
                             "Unable to get information from the server.",
-                            "This (could) be because you are not connected to the internet.",
+                            "Check your internet connection and try again.",
                             "4"
-                        }, "updateAPIError"
+                        ], "updateAPIError"
                     );
                 }
             } catch {
                 if (alertEvenIfUpdateIsNotRequired) {
                     Utils.NotifCheck(
                         true,
-                        new string[] {
-                            "Something went wrong.",
-                            "An exception occured whilst trying to check for updates.",
+                        [
+                            "Exception",
+                            "Something went wrong while checking for updates.",
                             "4"
                         ], "updateError"
                     );
@@ -120,9 +120,9 @@ Latest version: v1.{latestVersion}")
             } catch {
                 Utils.NotifCheck(
                     true,
-                    new string[] {
-                        "Something went wrong.",
-                        "An exception occured whilst trying to check for updates.",
+                    [
+                        "Exception",
+                        "Something went wrong while checking for updates.",
                         "4"
                     ], "updateError"
                 );

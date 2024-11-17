@@ -48,9 +48,9 @@ namespace utilities_cs {
                     } catch {
                         Utils.NotifCheck(
                             true,
-                            new string[] {
-                                "Something went wrong.",
-                                "Looks like something went wrong when trying to convert your text to Base85.",
+                            [
+                                "Exception",
+                                "Something went wrong while trying to convert your text to Base85.",
                                 "4"
                             ],
                             "base85Error"
@@ -73,9 +73,9 @@ namespace utilities_cs {
                     } catch {
                         Utils.NotifCheck(
                             true,
-                            new string[] {
-                                "Something went wrong.",
-                                "Looks like something went wrong when trying to convert your text from Base85.",
+                            [
+                                "Exception",
+                                "Something went wrong while trying to convert your text from Base85.",
                                 "4"
                             ],
                             "base85Error"
@@ -85,7 +85,7 @@ namespace utilities_cs {
                 default:
                     Utils.NotifCheck(
                         true,
-                        new string[] { "Huh.", "Perhaps that was not an actual mode.", "3" },
+                        ["Exception", "Invalid mode, try 'help' for more info.", "3"],
                         "base85Error"
                     ); return null;
             }

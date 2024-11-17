@@ -21,22 +21,15 @@ namespace utilities_cs {
                 } else {
                     Utils.NotifCheck(
                         true,
-                        new string[] { "Something went wrong.", "You need to input at least two numbers.", "4" },
+                        ["Exception", "Invalid input, try 'help' for more info.", "4"],
                         "lcmError"
                     );
                     return null;
                 }
             } catch {
                 Utils.NotifCheck(
-                    true,
-                    new string[] {
-                        "Huh.",
-                        "It seems you did not input a number. Try 'lcm 15 70' as an example.",
-                        "8"
-                    },
-                    "lcmError"
-                );
-                return null;
+                    true, ["Exception", "Invalid input, try 'help' for more info.", "4"], "lcmError"
+                ); return null;
             }
         }
 

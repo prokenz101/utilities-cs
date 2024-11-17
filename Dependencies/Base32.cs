@@ -33,7 +33,7 @@ namespace utilities_cs {
                 } catch (ArgumentException) {
                     Utils.NotifCheck(
                         true,
-                        new string[] { "Huh.", "Are you sure that text was actual Base32?", "3" },
+                        ["Exception", "Invalid Base32 input, try 'help' for more info.", "3"],
                         "base32Error"
                     );
                     return null;
@@ -41,11 +41,11 @@ namespace utilities_cs {
             } else {
                 Utils.NotifCheck(
                     true,
-                    new string[] {
-                                "Huh.",
-                                "It seems you did not input a proper mode for Base32 to convert to.",
-                                "4"
-                    },
+                    [
+                        "Exception",
+                        "Invalid mode, try 'help' for more info.",
+                        "4"
+                    ],
                     "base32Error"
                 );
                 return null;

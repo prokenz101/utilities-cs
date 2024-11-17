@@ -10,9 +10,9 @@ namespace utilities_cs {
                 .WithParsed(AutoclickOptions.HandleSuccessfulParse)
                 .WithNotParsed(errs => Utils.NotifCheck(
                     true,
-                    new string[] {
-                        "Huh.",
-                        "Perhaps the parameters were not inputted correctly.",
+                    [
+                        "Exception",
+                        "Invalid parameters, try 'help' for more info.",
                         "4"
                     ], "autoclickError"
                 )
@@ -83,7 +83,7 @@ namespace utilities_cs {
                 () => {
                     Utils.NotifCheck(
                         true,
-                        new string[] { "Huh.", "Perhaps you already have an autoclicker running", "4" },
+                        ["Exception", "Another autoclicker is already running.", "4"],
                         "autoclickHotkeyError"
                     );
                 }
@@ -113,9 +113,9 @@ namespace utilities_cs {
             } else {
                 Utils.NotifCheck(
                     true,
-                    new string[] {
-                        "Hey!",
-                        "The mousebutton can only be \"left\", \"right\" or \"middle\".",
+                    [
+                        "Exception",
+                        "Invalid mouse button, try 'help' for more info.",
                         "4"
                     ], "autoclickError"
                 );

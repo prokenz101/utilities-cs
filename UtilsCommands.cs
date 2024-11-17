@@ -49,9 +49,9 @@ namespace utilities_cs {
             } else {
                 Utils.NotifCheck(
                     true,
-                    new string[] {
-                        "Welp.", "It seems utilities couldn't understand what command you were trying to use.", "4"
-                    }, "executeCommandError"
+                    [
+                        "Exception", "Invalid command, try 'help' for more info.", "4"
+                    ], "executeCommandError"
                 ); return null;
             }
         }
@@ -397,7 +397,7 @@ namespace utilities_cs {
                     } else {
                         Utils.NotifCheck(
                             true,
-                            new string[] { "Huh.", "It seems that is not a valid mode.", "3" },
+                            ["Exception", "Invalid mode, try 'help' for more info.", "3"],
                             "updateError"
                         );
                     }
@@ -447,8 +447,8 @@ namespace utilities_cs {
                         } else {
                             Utils.NotifCheck(
                                 true,
-                                new string[] { "Huh.", @"It seems that command does not exist.
-Opening Wiki anyway.", "3" },
+                                [ "Exception", @"Invalid command.
+Opening wiki anyway...", "3" ],
                                 "wikiError"
                             );
 
@@ -473,7 +473,7 @@ Opening Wiki anyway.", "3" },
                                 () => {
                                     Utils.NotifCheck(
                                         true,
-                                        new string[] { "Huh.", "The parameters were not inputted properly.", "3" },
+                                        ["Exception", "Invalid parameters, try 'help' for more info.", "3"],
                                         "notificationCommandError"
                                     );
                                 }
@@ -514,7 +514,7 @@ Opening Wiki anyway.", "3" },
                             () => {
                                 Utils.NotifCheck(
                                     true,
-                                    new string[] { "Huh.", "It seems the parameters were not given properly.", "3" },
+                                    ["Exception", "Invalid parameters, try 'help' for more info.", "3"],
                                     "remindCommandError"
                                 );
                             }
@@ -555,9 +555,9 @@ Opening Wiki anyway.", "3" },
                                 new Microsoft.Toolkit.Uwp.Notifications.ToastContentBuilder()
                                     .AddText("Reminder!");
 
-                            string timeEquals1 = $"Hey! You set a reminder for 1 {word} and it's time!";
-                            string timeNotEqualTo1 = $"Hey! You set a reminder for {time} {word}s and it's time!";
-                            string timeWithMessage = $"Hey! Your reminder was: {reminderText}";
+                            string timeEquals1 = $"You set a reminder for 1 {word}.";
+                            string timeNotEqualTo1 = $"You set a reminder for {time} {word}s.";
+                            string timeWithMessage = $"Your reminder was: {reminderText}";
 
                             if (time == 1 && reminderText == string.Empty) {
                                 customReminderToast.AddText(timeEquals1);
@@ -962,9 +962,9 @@ FormattableCommands Count: {formattableCommandsCount}",
                     } else {
                         Utils.NotifCheck(
                             true,
-                            new string[] {
-                                "Welp.",
-                                "It seems that utilities could not understand what word you were trying to copypaste.",
+                            [
+                                "Exception",
+                                "Invalid input, try 'help' for more info.",
                                 "3"
                             ], "copypasteError"
                         ); return null;
@@ -1063,7 +1063,7 @@ FormattableCommands Count: {formattableCommandsCount}",
                     } catch {
                         Utils.NotifCheck(
                             true,
-                            new string[] { "Huh.", "It seems that the number you inputted was not a number.", "4" },
+                            ["Exception", "Invalid input, try 'help' for more info.", "4"],
                             "factorialError"
                         ); return null;
                     }
@@ -1086,7 +1086,7 @@ FormattableCommands Count: {formattableCommandsCount}",
                             () => {
                                 Utils.NotifCheck(
                                     true,
-                                    new string[] { "Huh.", "It seems you did not follow the syntax correctly.", "4" },
+                                    ["Exception", "Invalid syntax, try 'help' for more info.", "4"],
                                     "raiseError"
                                 ); cancel = true;
                             }
@@ -1117,7 +1117,7 @@ FormattableCommands Count: {formattableCommandsCount}",
                                 ); return result.ToString();
                             } catch (OverflowException) {
                                 Utils.NotifCheck(
-                                    true, new string[] { "Error!", "Perhaps the exponent was too large.", "3" },
+                                    true, ["Exception", "Inputted values exceed computational limits.", "3"],
                                     "raiseError"
                                 ); return null;
                             }
@@ -1125,7 +1125,7 @@ FormattableCommands Count: {formattableCommandsCount}",
                     } else {
                         Utils.NotifCheck(
                             true,
-                            new string[] { "Huh.", "It seems you did not input the parameters correctly." },
+                            ["Exception", "Invalid parameters, try 'help' for more info."],
                             "raiseError"
                         ); return null;
                     }
@@ -1157,22 +1157,22 @@ FormattableCommands Count: {formattableCommandsCount}",
                             } catch (FormatException) {
                                 Utils.NotifCheck(
                                     true,
-                                    new string[] { "Huh.", "It seems you did not input aa proper number.", "3" },
+                                    ["Exception", "Invalid input, try 'help' for more info.", "3"],
                                     "rootError"
                                 ); return null;
                             } catch (OverflowException) {
                                 Utils.NotifCheck(
                                     true,
-                                    new string[] { "Huh.", "Perhaps the number you inputted was too large.", "3" },
+                                    ["Exception", "Inputted value exceeds computational limits.", "3"],
                                     "rootError"
                                 ); return null;
                             }
                         } else {
                             Utils.NotifCheck(
                                 true,
-                                new string[] {
-                                    "Huh.", "It seems that you did not follow the syntax correctly.", "3"
-                                }, "rootError"
+                                [
+                                    "Exception", "Invalid syntax, try 'help' for more info.", "3"
+                                ], "rootError"
                             ); return null;
                         }
                     } else if (args[1] == "get") {
@@ -1368,7 +1368,6 @@ FormattableCommands Count: {formattableCommandsCount}",
 
                                 uint[] pi = new uint[(int)digits];
 
-                                pi[i] = (x[x.Length - 1] / 10);
                                 for (int j = 0; j < x.Length; j++) { x[j] = 20; }
 
                                 for (int i = 0; i < digits; i++) {
@@ -1412,16 +1411,16 @@ FormattableCommands Count: {formattableCommandsCount}",
                     } catch (FormatException) {
                         Utils.NotifCheck(
                             true,
-                            new string[] {
-                                "Something went wrong.", "Perhaps the number you inputted was not a real number.", "5"
-                            }, "piError"
+                            [
+                                "Exception", "Invalid input, try 'help' for more info.", "5"
+                            ], "piError"
                         ); return null;
                     } catch {
                         Utils.NotifCheck(
                             true,
-                            new string[] {
-                                "Something went wrong.", "An exception has occured.", "4"
-                            }, "piError"
+                            [
+                                "Exception", "Something went wrong.", "4"
+                            ], "piError"
                         ); return null;
                     }
                 }
@@ -1455,7 +1454,7 @@ FormattableCommands Count: {formattableCommandsCount}",
 
                     Utils.CopyCheck(copy, answer);
                     Utils.NotifCheck(
-                        notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "flipSuccess"
+                        notif, ["Success!", "Message copied to clipboard.", "3"], "flipSuccess"
                     ); return answer;
                 },
                 aliases: ["flipped", "upside-down"],
@@ -1510,11 +1509,11 @@ FormattableCommands Count: {formattableCommandsCount}",
                     } else {
                         Utils.NotifCheck(
                             true,
-                            new string[] {
+                            [
                                 "Error!",
                                 $"For performance reasons, permutation calculations can only be used on {limit} or less characters.",
                                 "3"
-                            }, "permutationsError"
+                            ], "permutationsError"
                         ); return null;
                     }
                 },
@@ -1597,9 +1596,9 @@ FormattableCommands Count: {formattableCommandsCount}",
                     } catch (FormatException) {
                         Utils.NotifCheck(
                             true,
-                            new string[] {
-                                "Something went wrong.", "Perhaps the number you entered was not a number.", "3"
-                            },
+                            [
+                                "Exception", "Invalid input, try 'help' for more info.", "3"
+                            ],
                             "primeFactorsError"
                         ); return null;
                     }
@@ -1688,15 +1687,14 @@ FormattableCommands Count: {formattableCommandsCount}",
                             string textFromHex = System.Text.Encoding.ASCII.GetString(fromHexToText(hexWithDash));
                             Utils.CopyCheck(copy, textFromHex);
                             Utils.NotifCheck(
-                                notif, new string[] { "Success!", $"The message was: {textFromHex}", "10" }, "hexSuccess"
                                 notif, ["Success!", $"The message was: {textFromHex}", "10"], "hexSuccess"
                             ); return textFromHex;
                         } catch {
                             Utils.NotifCheck(
                                 true,
-                                new string[] {
-                                    "Something went wrong.",
-                                    "An exception occured when trying to convert your text from hexadecimal.",
+                                [
+                                    "Exception",
+                                    "Something went wrong while trying to convert your text from hexadecimal.",
                                     "4"
                                 ],
                                 "hexadecimalError"
@@ -1712,9 +1710,9 @@ FormattableCommands Count: {formattableCommandsCount}",
                         } catch {
                             Utils.NotifCheck(
                                 true,
-                                new string[] {
-                                    "Something went wrong.",
-                                    "An exception occured when trying to convert your text into hexadecimal.",
+                                [
+                                    "Exception",
+                                    "Something went wrong while trying to convert your text into hexadecimal.",
                                     "4"
                                 ],
                                 "hexadecimalError"
@@ -1765,7 +1763,7 @@ FormattableCommands Count: {formattableCommandsCount}",
                         } catch (OverflowException) {
                             Utils.NotifCheck(
                                 true,
-                                new string[] { "Something went wrong.", "Perhaps the number was too large.", "3" },
+                                ["Exception", "Number too large", "3"],
                                 "asciiError"
                             ); return null;
                         }
@@ -1880,7 +1878,7 @@ Word count: {args[1..].Length}";
                     } else {
                         Utils.NotifCheck(
                             true,
-                            new string[] { "Huh.", "It seems you did not follow the syntax correctly." },
+                            ["Exception", "Invalid syntax, try 'help' for more info."],
                             "replaceError"
                         ); return null;
                     }
@@ -1901,9 +1899,9 @@ Word count: {args[1..].Length}";
                         ifNotMatch: () => {
                             Utils.NotifCheck(
                                 true,
-                                new string[] {
-                                    "Something went wrong.", "Perhaps you did not follow the syntax correctly.", "3"
-                                },
+                                [
+                                    "Exception", "Invalid syntax, try 'help' for more info.", "3"
+                                ],
                                 "characterCountError"
                             );
                             failed = true;
@@ -2047,13 +2045,13 @@ Word count: {args[1..].Length}";
                     } catch (OverflowException) {
                         Utils.NotifCheck(
                             true,
-                            new string[] { "Something went wrong.", "Perhaps the number was too large.", "3" },
+                            ["Exception", "Inputted numbers exceed computational limits.", "3"],
                             "reciprocalError"
                         ); return null;
                     } catch (FormatException) {
                         Utils.NotifCheck(
                             true,
-                            new string[] { "Something went wrong.", "Are you sure that was a number?" },
+                            ["Exception", "Invalid input, try 'help' for more info."],
                             "reciprocalError"
                         ); return null;
                     }
@@ -2085,7 +2083,7 @@ Word count: {args[1..].Length}";
                     } else {
                         Utils.NotifCheck(
                             true,
-                            new string[] { "Something went wrong.", "You need to input atleast two numbers.", "3" },
+                            ["Exception", "Invalid input, try 'help' for more info.", "3"],
                             "divideError"
                         );
                         return null;
@@ -2135,7 +2133,7 @@ Word count: {args[1..].Length}";
                     } else {
                         Utils.NotifCheck(
                             true,
-                            new string[] { "Huh.", "It seems you did not input the parameters correctly.", "3" },
+                            ["Exception", "Invalid parameters, try 'help' for more info.", "3"],
                             "percentageError"
                         ); return null;
                     }
@@ -2198,7 +2196,7 @@ Word count: {args[1..].Length}";
                     } catch (OverflowException) {
                         Utils.NotifCheck(
                             true,
-                            new string[] { "Something went wrong.", "Perhaps the number you entered was too large.", "3" },
+                            ["Exception", "Number was too large", "3"],
                             "randintError"
                         ); return null;
                     }
@@ -2207,9 +2205,9 @@ Word count: {args[1..].Length}";
                         if (nums[0] > nums[1]) {
                             Utils.NotifCheck(
                                 true,
-                                new string[] {
-                                    "Huh.",
-                                    "Unfortunately the minimum value cannot be higher than the max value.",
+                                [
+                                    "Exception",
+                                    "Upper limit of range must be greater than lower limit.",
                                     "5"
                                 ], "randintError"
                             ); return null;
@@ -2225,11 +2223,8 @@ Word count: {args[1..].Length}";
                     } else {
                         Utils.NotifCheck(
                             true,
-                            new string[] {
-                                "Are you sure those were numbers?",
-                                "Something went wrong while getting the numbers from the parameters you inputted.",
-                                "4"
-                            }, "randintError"
+                            ["Exception", "Invalid input, try 'help' for more info.", "4"],
+                            "randintError"
                         ); return null;
                     }
                 },

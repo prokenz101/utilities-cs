@@ -9,7 +9,9 @@ namespace utilities_cs {
                 Force.ForceCommand(commandName);
                 Utils.NotifCheck(true, ["Success!", "That command has been forced.", "3"], "forceSuccess");
             } else {
-                Utils.NotifCheck(true, new string[] { "Huh.", "That command does not exist.", "3" }, "forceError");
+                Utils.NotifCheck(
+                    true, ["Exception", "Invalid command, try 'help' for more info.", "3"], "forceError"
+                );
             }
         }
 
@@ -23,7 +25,9 @@ namespace utilities_cs {
                     "unforceSuccess"
                 ); Force.UnForceCommand();
             } else {
-                Utils.NotifCheck(true, new string[] { "Huh.", "That command was never forced.", "3" }, "unforceError");
+                Utils.NotifCheck(
+                    true, ["Exception", "Cannot un-force command that is not forced.", "3"], "unforceError"
+                );
             }
         }
 

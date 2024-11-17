@@ -28,22 +28,20 @@ namespace utilities_cs {
                     } else if (numOfWords > 10000) {
                         Utils.NotifCheck(
                             true,
-                            new string[] {
-                                        "That's a bit too far.", "The limit to getting lorem values is 10,000.", "4"
-                            },
+                            ["Exception", "The limit to getting lorem values is 10,000.", "4"],
                             "loremError"
                         ); return null;
                     } else {
                         Utils.NotifCheck(
                             true,
-                            new string[] { "Hey!", "You can't get a zero or negative amount of words.", "4" },
+                            ["Exception", "Invalid input, try 'help' for more info.", "4"],
                             "loremError"
                         ); return null;
                     }
                 } catch {
                     Utils.NotifCheck(
                         true,
-                        new string[] { "Huh.", "It seems you did not input the parameters correctly.", "4" },
+                        ["Exception", "Invalid parameters, try 'help' for more info.", "4"],
                         "loremError"
                     ); return null;
                 }
