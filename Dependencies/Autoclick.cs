@@ -6,15 +6,15 @@ namespace utilities_cs {
         public static void Autoclicker(string[] args) {
             Thread.Sleep(100);
 
-            CommandLine.Parser.Default.ParseArguments<AutoclickOptions>(args[1..])
-                .WithParsed(opts => AutoclickOptions.HandleSuccessfulParse(opts))
+            Parser.Default.ParseArguments<AutoclickOptions>(args[1..])
+                .WithParsed(AutoclickOptions.HandleSuccessfulParse)
                 .WithNotParsed(errs => Utils.NotifCheck(
                     true,
                     new string[] {
                         "Huh.",
                         "Perhaps the parameters were not inputted correctly.",
                         "4"
-                    }, "autoclickError"
+                    ], "autoclickError"
                 )
             );
         }
@@ -37,14 +37,14 @@ namespace utilities_cs {
             var autoclickTokenSource = new CancellationTokenSource();
             var autoclickToken = autoclickTokenSource.Token;
 
-            Action stopAutoclicker = () => {
+            void stopAutoclicker() {
                 Utils.NotifCheck(
                     true,
-                    new string[] {
+                    [
                         "Stopped the autoclicker.",
                         "The autoclicker has been stopped successfully.",
                         "4"
-                    },
+                    ],
                     "autoclickStop"
                 );
 
@@ -52,8 +52,9 @@ namespace utilities_cs {
                 autoclickTokenSource.Cancel();
                 autoclickTokenSource.Dispose();
             };
+            }
 
-            Task autoclickTask = new Task(
+            Task autoclickTask = new(
                 () => {
                     Action performAutoclick = () => {
                         MouseOperations.MouseEvent(mouseButton);
@@ -77,7 +78,7 @@ namespace utilities_cs {
             //* Stop hotkey (Ctrl + F7)
             HookManager.AddHook(
                 "autoclickStop",
-                new ModifierKeys[] { ModifierKeys.Control },
+                [ModifierKeys.Control],
                 Keys.F7,
                 stopAutoclicker,
                 () => {
@@ -117,7 +118,7 @@ namespace utilities_cs {
                         "Hey!",
                         "The mousebutton can only be \"left\", \"right\" or \"middle\".",
                         "4"
-                    }, "autoclickError"
+                    ], "autoclickError"
                 );
             }
         }
