@@ -280,6 +280,13 @@ namespace utilities_cs {
             }
         }
 
+        /// <summary>
+        /// Replaces all instances of each character in the string "chars" with the character at the same index in the string "replacementChars".
+        /// </summary>
+        /// <param name="text">The text to be modified.</param>
+        /// <param name="chars">The characters to be replaced. Each character should be separated by a space.</param>
+        /// <param name="replacementChars">The characters to replace with. Each character should be separated by a space.</param>
+        /// <returns>The modified text.</returns>
         public static string BulkReplace(string text, string chars, string replacementChars) {
             List<string> charsList = [.. chars.Split(" ")];
             List<string> replacementCharsList = [.. replacementChars.Split(" ")];
