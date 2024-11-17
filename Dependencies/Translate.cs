@@ -9,9 +9,9 @@ namespace utilities_cs {
             { new() { "tojapanese", "japanese", "j" }, "ja" }
         };
         public static Dictionary<string, Action<string>> englishDict = new() {
-            { "toenglish", toEnglish },
-            { "english", toEnglish },
-            { "e", toEnglish }
+            { "toenglish", ToEnglish },
+            { "english", ToEnglish },
+            { "e", ToEnglish }
         };
 
         public static void TranslateMain(string[] args) {
@@ -19,31 +19,29 @@ namespace utilities_cs {
             string text = string.Join('+', args[2..]);
 
             //* checking if lang is english
-
-            foreach (var englishLangAliases in Translate.englishDict.Keys) {
+            foreach (var englishLangAliases in englishDict.Keys) {
                 if (lang == englishLangAliases) {
-                    Translate.toEnglish(text);
+                    Translate.ToEnglish(text);
                     return;
                 }
             }
 
             //* if lang is not english, then use toOtherLang()
-
-            foreach (var langAliases in Translate.languages.Keys) {
+            foreach (var langAliases in languages.Keys) {
                 if (langAliases.Contains(lang)) {
-                    Translate.toOtherLang(Translate.languages[langAliases], text);
+                    ToOtherLang(languages[langAliases], text);
                     break;
                 }
             }
         }
 
-        public static void toEnglish(string text) {
+        static void ToEnglish(string text) {
             System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(
                 "cmd", $"/c start https://translate.google.com/?sl=auto^&tl=en^&text={text}^&op=translate"
             ) { CreateNoWindow = true });
         }
 
-        public static void toOtherLang(string lang, string text) {
+        static void ToOtherLang(string lang, string text) {
             System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(
                 "cmd", $"/c start https://translate.google.com/?sl=en^&tl={lang}^&text={text}^&op=translate"
             ) { CreateNoWindow = true });
