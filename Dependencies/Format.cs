@@ -10,8 +10,8 @@ namespace utilities_cs {
         private static partial Regex ReplaceRegex();
 
         public static void FormatMain(string[] args) {
-            string text = string.Join(" ", args[1..]);
             if (Utils.IndexTest(args)) { return; }
+            string text = string.Join(" ", args[1..]);
 
             Dictionary<string, string> formatDict = new();
             var re = CommandRegex();
@@ -42,8 +42,8 @@ namespace utilities_cs {
                 }
             }
 
-            Utils.CopyCheck(true, replaceKeyInString(formatDict, text));
-            Utils.NotifCheck(true, new string[] { "Success!", "Message copied to clipboard.", "3" }, "formatSuccess");
+            Utils.CopyCheck(true, ReplaceKeyInString(formatDict, text));
+            Utils.NotifCheck(true, ["Success!", "Message copied to clipboard.", "3"], "formatSuccess");
         }
 
         static string ReplaceKeyInString(Dictionary<string, string> dictionary, string inputString) {
@@ -54,8 +54,8 @@ namespace utilities_cs {
                     var valueWithoutBrackets = match.Groups[1].Value;
                     var valueWithBrackets = match.Value;
 
-                    if (dictionary.ContainsKey(valueWithoutBrackets))
-                        inputString = inputString.Replace(valueWithBrackets, dictionary[valueWithoutBrackets]);
+                    if (dictionary.TryGetValue(valueWithoutBrackets, out var replacementValue))
+                        inputString = inputString.Replace(valueWithBrackets, replacementValue);
                 }
             }
 
