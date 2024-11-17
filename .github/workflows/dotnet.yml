@@ -16,12 +16,12 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 8.0.x
+        dotnet-version: 9.0.x
     - name: Publish project as framework-dependent
       run: dotnet publish -c Release --self-contained false
     - name: Rename output file (framework-dependent)
-      run: mv D:\a\utilities-cs\utilities-cs\bin\Release\net8.0-windows10.0.17763.0\win-x64\publish\utilities-cs.exe D:\a\utilities-cs\utilities-cs\bin\Release\net8.0-windows10.0.17763.0\win-x64\publish\utilities-cs-fd.exe
+      run: mv D:\a\utilities-cs\utilities-cs\bin\Release\net9.0-windows10.0.17763.0\win-x64\publish\utilities-cs.exe D:\a\utilities-cs\utilities-cs\bin\Release\net9.0-windows10.0.17763.0\win-x64\publish\utilities-cs-fd.exe
     - uses: actions/upload-artifact@v3.0.0
       with:
         name: framework-dependent
-        path: D:\a\utilities-cs\utilities-cs\bin\Release\net8.0-windows10.0.17763.0\win-x64\publish\utilities-cs-fd.exe
+        path: D:\a\utilities-cs\utilities-cs\bin\Release\net9.0-windows10.0.17763.0\win-x64\publish\utilities-cs-fd.exe
