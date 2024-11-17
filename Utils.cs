@@ -1,5 +1,14 @@
+using System.Text.RegularExpressions;
+
 namespace utilities_cs {
-    public class Utils {
+    public partial class Utils {
+
+        [GeneratedRegex(@"(?<num>-?\d+)+")]
+        private static partial Regex FindAllIntsRegex();
+
+        [GeneratedRegex(@"-?\d+\.(?:9){6,}")]
+        private static partial Regex RoundIfNumberIsNearEnoughRegex();
+
         /// <summary>
         /// The primary notification method, used to send a Windows Toast Notification.
         /// </summary>
@@ -165,13 +174,12 @@ namespace utilities_cs {
         public static List<System.Numerics.BigInteger> RegexFindAllInts(string input) {
             input = input.Replace(",", "");
 
-            List<System.Numerics.BigInteger> BigInts = new();
-            System.Text.RegularExpressions.Regex re =
-                new System.Text.RegularExpressions.Regex(@"(?<num>-?\d+)+");
+            List<System.Numerics.BigInteger> BigInts = [];
+            Regex re = FindAllIntsRegex();
 
             if (re.Matches(input).Count >= 1) {
-                System.Text.RegularExpressions.MatchCollection matches = re.Matches(input);
-                foreach (System.Text.RegularExpressions.Match? match in matches) {
+                MatchCollection matches = re.Matches(input);
+                foreach (Match? match in matches) {
                     if (match != null) {
                         System.Text.RegularExpressions.GroupCollection groups = match.Groups;
                         BigInts.Add(System.Numerics.BigInteger.Parse(groups["num"].Value));
@@ -263,7 +271,7 @@ namespace utilities_cs {
         /// If the number was not rounded off, it returns the same number.s
         /// </returns>
         public static double RoundIfNumberIsNearEnough(double num) {
-            System.Text.RegularExpressions.Regex re = new(@"-?\d+\.(?:9){6,}");
+            Regex re = RoundIfNumberIsNearEnoughRegex();
 
             if (re.Matches(num.ToString()).Count == 1) {
                 return Math.Round(num);
