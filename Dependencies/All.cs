@@ -14,7 +14,7 @@ namespace utilities_cs {
             } else {
                 Utils.NotifCheck(
                     true,
-                    new string[] { "Huh.", "It seems you did not input a valid category.", "4" },
+                    ["Exception", "Invalid category inputted, try 'help' for more info.", "4"],
                     "allError"
                 );
                 return null;
