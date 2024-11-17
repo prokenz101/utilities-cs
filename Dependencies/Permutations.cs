@@ -8,13 +8,11 @@ namespace utilities_cs {
         private static void Swap(ref char a, ref char b) {
             if (a == b) return;
 
-            var temp = a;
-            a = b;
-            b = temp;
+            (b, a) = (a, b);
         }
 
         public void GetPer(char[] list) {
-            HashSet<string> permutations = new();
+            HashSet<string> permutations = [];
 
             int x = list.Length - 1;
             GetPer(list, 0, x);
