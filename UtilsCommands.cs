@@ -2159,32 +2159,27 @@ Word count: {args[1..].Length}";
 
                     string text = string.Join(" ", args[1..]);
 
-                    //* testing if text is a number
                     try {
-                        int.Parse(text);
+                        Random rand = new();
+                        List<string> randomChar = [];
+
+                        foreach (int i in Enumerable.Range(1, int.Parse(text))) {
+                            randomChar.Add(asciiCharacters[rand.Next(0, asciiCharacters.Length - 1)]);
+                        }
+
+                        string ans = string.Join("", randomChar);
+                        Utils.CopyCheck(copy, ans);
+                        Utils.NotifCheck(notif, ["Success!", "Text copied to clipboard.", "3"], "randcharSuccess");
+                        return ans;
+                    } catch (OverflowException) {
+                        Utils.NotifCheck(
+                            true, ["Exception", "Number was too large", "3"], "randcharError"
+                        ); return null;
                     } catch {
                         Utils.NotifCheck(
-                            true,
-                            new string[] {
-                                "Something went wrong.",
-                                "Either the number you entered was not a number, or it was too large.",
-                                "5"
-                            },
-                            "randcharError"
-                        );
+                            true, ["Exception", "Something went wrong.", "3"], "randcharError"
+                        ); return null;
                     }
-
-                    Random rand = new Random();
-                    List<string> randomChar = new();
-
-                    foreach (int i in Enumerable.Range(1, int.Parse(text))) {
-                        randomChar.Add(asciiCharacters[rand.Next(0, asciiCharacters.Length - 1)]);
-                    }
-
-                    string ans = string.Join("", randomChar);
-                    Utils.CopyCheck(copy, ans);
-                    Utils.NotifCheck(notif, new string[] { "Success!", "Text copied to clipboard.", "3" }, "randcharSuccess");
-                    return ans;
                 }
             );
 
