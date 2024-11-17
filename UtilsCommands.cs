@@ -455,7 +455,8 @@ Opening Wiki anyway.", "3" },
                             System.Diagnostics.Process.Start(process);
                         }
                     }
-                }
+                },
+                aliases: ["wiki"]
             );
 
             RegularCommand notification = new(
