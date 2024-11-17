@@ -28,12 +28,14 @@ namespace utilities_cs {
                         }
 
                         if (UtilitiesAppContext.CurrentSettings.EscapeBase85OutputText) {
-                            string? escapedBase85 = FormattableCommand.FindAndExecute("escape", new string[] { "escape", encoded }, false, false);
+                            string? escapedBase85 = FormattableCommand.FindAndExecute(
+                                "escape", ["escape", encoded], false, false
+                            );
                             if (escapedBase85 != null) {
                                 Utils.CopyCheck(copy, escapedBase85);
                                 Utils.NotifCheck(
                                     notif,
-                                    new string[] { "Success!", "Message copied to clipboard.", "3" },
+                                    ["Success!", "Message copied to clipboard.", "3"],
                                     "base85Success"
                                 ); return escapedBase85;
                             }
@@ -41,7 +43,7 @@ namespace utilities_cs {
 
                         Utils.CopyCheck(copy, encoded);
                         Utils.NotifCheck(
-                            notif, new string[] { "Success!", "Message copied to clipboard.", "3" }, "base85Success"
+                            notif, ["Success!", "Message copied to clipboard.", "3"], "base85Success"
                         ); return encoded;
                     } catch {
                         Utils.NotifCheck(
@@ -50,7 +52,7 @@ namespace utilities_cs {
                                 "Something went wrong.",
                                 "Looks like something went wrong when trying to convert your text to Base85.",
                                 "4"
-                            },
+                            ],
                             "base85Error"
                         ); return null;
                     }
@@ -65,7 +67,7 @@ namespace utilities_cs {
                         Utils.CopyCheck(copy, decoded);
                         Utils.NotifCheck(
                             true,
-                            new string[] { "Success!", "Message copied to clipboard.", "3" },
+                            ["Success!", "Message copied to clipboard.", "3"],
                             "base85Success"
                         ); return decoded;
                     } catch {
@@ -75,7 +77,7 @@ namespace utilities_cs {
                                 "Something went wrong.",
                                 "Looks like something went wrong when trying to convert your text from Base85.",
                                 "4"
-                            },
+                            ],
                             "base85Error"
                         ); return null;
                     }
@@ -113,7 +115,7 @@ namespace utilities_cs {
         private uint _tuple = 0;
         private int _linePos = 0;
 
-        private uint[] pow85 = { 85 * 85 * 85 * 85, 85 * 85 * 85, 85 * 85, 85, 1 };
+        private readonly uint[] pow85 = [85 * 85 * 85 * 85, 85 * 85 * 85, 85 * 85, 85, 1];
 
         /// <summary>
         /// Decodes an ASCII85 encoded string into the original binary data
@@ -130,10 +132,10 @@ namespace utilities_cs {
 
             // strip prefix and suffix if present
             if (s.StartsWith(PrefixMark)) {
-                s = s.Substring(PrefixMark.Length);
+                s = s[PrefixMark.Length..];
             }
             if (s.EndsWith(SuffixMark)) {
-                s = s.Substring(0, s.Length - SuffixMark.Length);
+                s = s[..^SuffixMark.Length];
             }
 
             MemoryStream ms = new MemoryStream();
@@ -170,7 +172,7 @@ namespace utilities_cs {
                 }
 
                 if (processChar) {
-                    _tuple += ((uint)(c - _asciiOffset) * pow85[count]);
+                    _tuple += (uint)(c - _asciiOffset) * pow85[count];
                     count++;
                     if (count == _encodedBlock.Length) {
                         DecodeBlock();
