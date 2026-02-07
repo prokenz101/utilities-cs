@@ -2,6 +2,8 @@ namespace utilities_cs {
     public class SettingsModification {
         public static SettingsJSON defaultSettings = new SettingsJSON {
             DisableNotifications = false,
+            DisableStartupNotification = false,
+            DisableUpdateReminder = false,
             DisableClipboardManipulation = false,
             PermutationsCalculationLimit = 6,
             EscapeBase85OutputText = true,
@@ -101,6 +103,23 @@ They cannot both be true at the same time."
             try {
                 string jsonString = File.ReadAllText(settingsJsonPath);
                 SettingsJSON settings = System.Text.Json.JsonSerializer.Deserialize<SettingsJSON>(jsonString)!;
+                
+                //* Making sure all settings exist in case of new settings being added
+                using var document = System.Text.Json.JsonDocument.Parse(jsonString);
+                var root = document.RootElement;
+                bool needsRewrite = false;
+
+                foreach (var property in typeof(SettingsJSON).GetProperties()) {
+                    if (!root.TryGetProperty(property.Name, out _)) {
+                        property.SetValue(settings, property.GetValue(defaultSettings));
+                        needsRewrite = true;
+                    }
+                }
+
+                if (needsRewrite) {
+                    string updatedJson = System.Text.Json.JsonSerializer.Serialize(settings);
+                    File.WriteAllText(settingsJsonPath, updatedJson);
+                }
                 return settings;
             } catch {
                 CreateDirectoryAndJson();
@@ -109,7 +128,7 @@ They cannot both be true at the same time."
             }
         }
 
-        public static void ModifySetting(SettingsJSON currentSettings, string setting, string value) {
+        public static void ModifySetting(SettingsJSON currentSettings, string setting, string value, bool notify = true) {
             Action mutuallyExclusive = () => {
                 Utils.NotifCheck(
                     true,
@@ -124,6 +143,14 @@ They cannot both be true at the same time."
             switch (setting.ToLower()) {
                 case "disablenotifications":
                     currentSettings.DisableNotifications = Convert.ToBoolean(ConvertToBoolOrInt("bool", value));
+                    break;
+
+                case "disablestartupnotification":
+                    currentSettings.DisableStartupNotification = Convert.ToBoolean(ConvertToBoolOrInt("bool", value));
+                    break;
+
+                case "disableupdatereminder":
+                    currentSettings.DisableUpdateReminder = Convert.ToBoolean(ConvertToBoolOrInt("bool", value));
                     break;
 
                 case "disableclipboardmanipulation":
@@ -164,19 +191,21 @@ They cannot both be true at the same time."
 
             }
 
-            string jsonString = System.Text.Json.JsonSerializer.Serialize<SettingsJSON>(currentSettings);
+            string jsonString = System.Text.Json.JsonSerializer.Serialize(currentSettings);
             try {
                 File.WriteAllText(settingsJsonPath, jsonString);
             } catch (DirectoryNotFoundException) {
                 CreateDirectoryAndJson();
             }
 
-            UtilitiesAppContext.CurrentSettings = SettingsModification.GetSettings();
-            Utils.NotifCheck(
-                true,
-                ["Modified.", $"'{setting}' has been changed to {value}.", "4"],
-                "settingsModifiedSuccess"
-            );
+            UtilitiesAppContext.CurrentSettings = GetSettings();
+            if (notify) {
+                Utils.NotifCheck(
+                    true,
+                    ["Modified.", $"'{setting}' has been changed to {value}.", "4"],
+                    "settingsModifiedSuccess"
+                );
+            }
         }
 
         public static void OpenSettingsJSON() {
@@ -199,11 +228,11 @@ They cannot both be true at the same time."
         }
 
         public static void CreateDirectoryAndJson() {
-            string jsonString = System.Text.Json.JsonSerializer.Serialize<SettingsJSON>(defaultSettings);
+            string jsonString = System.Text.Json.JsonSerializer.Serialize(defaultSettings);
             Directory.CreateDirectory(Program.UtilitiesCsFolder);
             File.WriteAllText(settingsJsonPath, jsonString);
 
-            UtilitiesAppContext.CurrentSettings = SettingsModification.GetSettings();
+            UtilitiesAppContext.CurrentSettings = GetSettings();
         }
 
         static object? ConvertToBoolOrInt(string boolOrInt, string value) {
@@ -227,6 +256,8 @@ They cannot both be true at the same time."
 
     public class SettingsJSON {
         public bool DisableNotifications { get; set; }
+        public bool DisableStartupNotification { get; set; }
+        public bool DisableUpdateReminder { get; set; }
         public bool DisableClipboardManipulation { get; set; }
         public int PermutationsCalculationLimit { get; set; }
         public bool EscapeBase85OutputText { get; set; }

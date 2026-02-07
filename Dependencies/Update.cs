@@ -17,10 +17,13 @@ namespace utilities_cs {
                     latestVersion = latestRelease.Result.TagName[3..];
                 } catch { throw new ApiException(); }
 
-                if (double.Parse(latestVersion) > double.Parse(currentVersion)) {
+                if (
+                    (!UtilitiesAppContext.CurrentSettings.DisableUpdateReminder | alertEvenIfUpdateIsNotRequired)
+                    && double.Parse(latestVersion) > double.Parse(currentVersion)
+                ) {
                     ToastContentBuilder toast = new ToastContentBuilder()
                         .AddText("There is a new version of utilities-cs available!")
-                        .AddText($@"Your version: v1.{currentVersion}
+                        .AddText($@"Current version: v1.{currentVersion}
 Latest version: v1.{latestVersion}")
 
                         .AddButton(
@@ -38,6 +41,10 @@ Latest version: v1.{latestVersion}")
                         toast.AddButton(
                             new ToastButton().SetContent("Later").AddArgument("update", "later").SetBackgroundActivation()
                         );
+
+                        toast.AddButton(
+                            new ToastButton().SetContent("Don't show again").AddArgument("update", "dontshowagain").SetBackgroundActivation()
+                        );
                     }
 
                     Utils.NotifCheck(toast, "updateInstall", clearToast: false, 4);
@@ -48,7 +55,7 @@ Latest version: v1.{latestVersion}")
                             true,
                             [
                                 "You are running the latest version of utilities-cs!",
-                                "There is nothing to update.",
+                                "Current version: v1." + currentVersion + "\nLatest version: v1." + latestVersion,
                                 "4"
                             ], "updateUpToDate"
                         );
@@ -136,19 +143,25 @@ Latest version: v1.{latestVersion}")
                     Utils.NotifCheck(
                         true,
                         [
-                                "Installing the latest version.",
-                                "Opening download link in your browser.",
-                                "3"
+                            "Installing the latest version.",
+                            "Opening download link in your browser.",
+                            "3"
                         ], "updateInstalling"
                     );
 
-                    Update.InstallLatestVersion(); break;
+                    InstallLatestVersion(); break;
 
                 case "cancel":
                     ToastNotificationManagerCompat.History.Remove("updateInstall"); break;
 
                 case "later":
                     ToastNotificationManagerCompat.History.Remove("updateInstall"); break;
+
+                case "dontshowagain":
+                    ToastNotificationManagerCompat.History.Remove("updateInstall");
+                    SettingsJSON currentSettings = SettingsModification.GetSettings();
+                    SettingsModification.ModifySetting(currentSettings, "DisableUpdateReminder", "true", false);
+                    break;
             }
         }
     }

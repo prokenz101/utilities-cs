@@ -1,7 +1,7 @@
 ﻿namespace utilities_cs {
     class Program {
-        public const string Version = "v1.14";
-        public const BuildMode buildMode = BuildMode.FrameworkDependent;
+        public const string Version = "v1.15";
+        public const BuildMode buildMode = BuildMode.SelfContained;
         public static string UtilitiesCsFolder = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             "utilities-cs"
@@ -20,14 +20,16 @@
             string? copied_text = UtilitiesAppContext.Utilities(args);
             if (copied_text != null) { Console.WriteLine(copied_text); }
 #else
-            Utils.NotifCheck(
-                true,
-                [
-                    "Opened utilities-cs.",
-                    "I am now in your system tray, right click me and press Exit to exit.",
-                    "3"
-                ], "utilities-csOpen"
-            );
+            if (!UtilitiesAppContext.CurrentSettings.DisableStartupNotification) {
+                Utils.NotifCheck(
+                    true,
+                    [
+                        "Opened utilities-cs.",
+                        "I am now in your system tray, right click me and press Exit to exit.",
+                        "3"
+                    ], "utilities-csOpen"
+                );
+            }
 
             CheckForUpdates();
 
