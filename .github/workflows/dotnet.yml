@@ -19,6 +19,8 @@ jobs:
         dotnet-version: 10.0.x
     - name: Publish project as framework-dependent
       run: dotnet publish -c Release --no-self-contained
+    - name: List publish directory contents
+      run: dir D:\a\utilities-cs\utilities-cs\bin\Release
     - name: Rename output file (framework-dependent)
       run: mv D:\a\utilities-cs\utilities-cs\bin\Release\net10.0-windows10.0.17763.0\win-x64\publish\utilities-cs.exe D:\a\utilities-cs\utilities-cs\bin\Release\net9.0-windows10.0.17763.0\win-x64\publish\utilities-cs-fd.exe
     - uses: actions/upload-artifact@v4.0.0
