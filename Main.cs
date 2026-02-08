@@ -1,7 +1,11 @@
 ﻿namespace utilities_cs {
     class Program {
-        public const string Version = "v1.15";
+        public const string Version = "v1.16";
+    #if UTILITIES_SELF_CONTAINED
         public const BuildMode buildMode = BuildMode.SelfContained;
+    #else
+        public const BuildMode buildMode = BuildMode.FrameworkDependent;
+    #endif
         public static string UtilitiesCsFolder = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             "utilities-cs"
