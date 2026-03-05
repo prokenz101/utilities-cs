@@ -268,7 +268,7 @@ namespace utilities_cs {
         /// <param name="num">The number to be rounded off to, or not.</param>
         /// <returns>
         /// A double based on if the number was rounded or not.
-        /// If the number was not rounded off, it returns the same number.s
+        /// If the number was not rounded off, it returns the same number.
         /// </returns>
         public static double RoundIfNumberIsNearEnough(double num) {
             Regex re = RoundIfNumberIsNearEnoughRegex();

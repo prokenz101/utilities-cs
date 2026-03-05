@@ -17,13 +17,13 @@ namespace utilities_cs {
 
         public static void UnforceMain(string[] args) {
             //* check if command is enabled
-            if (Force.AreAnyForced()) {
+            if (AreAnyForced()) {
                 //* disable command
                 Utils.NotifCheck(
                     true,
                     ["Success!", $"The {Force.forced!.CommandName} command has been un-forced.", "3"],
                     "unforceSuccess"
-                ); Force.UnForceCommand();
+                ); UnForceCommand();
             } else {
                 Utils.NotifCheck(
                     true, ["Exception", "Cannot un-force command that is not forced.", "3"], "unforceError"
