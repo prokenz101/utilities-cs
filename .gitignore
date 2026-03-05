@@ -6,3 +6,4 @@ build.ps1
 debug-build.ps1
 settings.json
 line-counter.exe
+.editorconfig
