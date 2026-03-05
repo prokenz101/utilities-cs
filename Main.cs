@@ -18,6 +18,7 @@
         static void Main(string[] args) {
             RegisterCommands.RegisterAllRCommands();
             RegisterCommands.RegisterAllFCommands();
+            Unit.RegisterUnits();
 
 #if UTILITIES_DEBUG
             //* Debug Mode

@@ -801,6 +801,12 @@ FormattableCommands Count: {formattableCommandsCount}",
                 aliases: ["ascii85", "b85"]
             );
 
+            FormattableCommand convert = new(
+                commandName: "convert",
+                function: Converter.ConvertMain,
+                aliases: ["con", "conv"]
+            );
+
             FormattableCommand urlencode = new(
                 commandName: "urlencode",
                 function: (string[] args, bool copy, bool notif) => {
