@@ -2,7 +2,7 @@ using System.Text.RegularExpressions;
 
 namespace utilities_cs {
     public partial class Converter {
-        [GeneratedRegex(@"(?<amount>^-?\d+(\.\d+)?) (?<fromunit>[a-zA-Z0-9-.Ωµμ ]+(\^-?\d+(\.\d+)?)?([*·][a-zA-Z0-9-.Ωµμ ]+(\^-?\d+(\.\d+)?)?)*((\/[a-zA-Z0-9-.Ωµμ ]+(\^-?\d+(\.\d+)?)?([*·][a-zA-Z0-9-.Ωµμ ]+(\^-?\d+(\.\d+)?)?)*)?)( of [a-zA-Z]+)?) to (?<tounit>[a-zA-Z0-9-.Ωµμ ]+(\^-?\d+(\.\d+)?)?([*·][a-zA-Z0-9-.Ωµμ ]+(\^-?\d+(\.\d+)?)?)*((\/[a-zA-Z0-9-.Ωµμ ]+(\^-?\d+(\.\d+)?)?([*·][a-zA-Z0-9-.Ωµμ ]+(\^-?\d+(\.\d+)?)?)*)?)( of [a-zA-Z]+)?)")]
+        [GeneratedRegex(@"(?<amount>^-?\d+(\.\d+)?) (?<fromunit>[a-zA-Z0-9-.Ωµμ ]+(\^-?\d+(\.\d+)?)?([*·×][a-zA-Z0-9-.Ωµμ ]+(\^-?\d+(\.\d+)?)?)*((\/[a-zA-Z0-9-.Ωµμ ]+(\^-?\d+(\.\d+)?)?([*·×][a-zA-Z0-9-.Ωµμ ]+(\^-?\d+(\.\d+)?)?)*)?)( [Oo][Ff] [a-zA-Z]+)?) [Tt][Oo] (?<tounit>[a-zA-Z0-9-.Ωµμ ]+(\^-?\d+(\.\d+)?)?([*·×][a-zA-Z0-9-.Ωµμ ]+(\^-?\d+(\.\d+)?)?)*((\/[a-zA-Z0-9-.Ωµμ ]+(\^-?\d+(\.\d+)?)?([*·×][a-zA-Z0-9-.Ωµμ ]+(\^-?\d+(\.\d+)?)?)*)?)( [Oo][Ff] [a-zA-Z]+)?)")]
         private static partial Regex ParseUnitRegex();
         
         public static string? ConvertMain(string[] args, bool copy, bool notif) {
@@ -162,7 +162,7 @@ namespace utilities_cs {
             Platinum = 4,
             Palladium = 5
         }
-        [GeneratedRegex(@"(?<unit>[a-zA-Z0-9-. ]+(\^-?\d+(\.\d+)?)?([*·][a-zA-Z0-9-. ]+(\^-?\d+(\.\d+)?)?)*((\/[a-zA-Z0-9-. ]+(\^-?\d+(\.\d+)?)?([*·][a-zA-Z0-9-. ]+(\^-?\d+(\.\d+)?)?)*)?)) of (?<commodity>\w+)")]
+        [GeneratedRegex(@"(?<unit>[a-zA-Z0-9-. ]+(\^-?\d+(\.\d+)?)?([*·×][a-zA-Z0-9-. ]+(\^-?\d+(\.\d+)?)?)*((\/[a-zA-Z0-9-. ]+(\^-?\d+(\.\d+)?)?([*·×][a-zA-Z0-9-. ]+(\^-?\d+(\.\d+)?)?)*)?)) [Oo][Ff] (?<commodity>\w+)")]
         private static partial Regex ParseCommodityRegex();
 
         public Unit(
