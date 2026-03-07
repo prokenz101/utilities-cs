@@ -804,7 +804,7 @@ FormattableCommands Count: {formattableCommandsCount}",
             FormattableCommand convert = new(
                 commandName: "convert",
                 function: Converter.ConvertMain,
-                aliases: ["con", "conv"]
+                aliases: ["con", "conv", "c"]
             );
 
             FormattableCommand urlencode = new(
