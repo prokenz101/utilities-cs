@@ -314,7 +314,7 @@ namespace utilities_cs {
 
             //* Time
             new Unit("min", 60.0, [0, 0, 1, 0, 0, 0, 0, 0], ["minute", "minutes"]);
-            new Unit("hr", 3600.0, [0, 0, 1, 0, 0, 0, 0, 0], ["hour", "hours"]);
+            new Unit("h", 3600.0, [0, 0, 1, 0, 0, 0, 0, 0], ["hr", "hour", "hours"]);
             new Unit("week", 604800.0, [0, 0, 1, 0, 0, 0, 0, 0], ["weeks"], SIPrefix.NotSymbol);
             new Unit("day", 86400.0, [0, 0, 1, 0, 0, 0, 0, 0], ["days"], SIPrefix.NotSymbol);
             new Unit("yr", 31536000.0, [0, 0, 1, 0, 0, 0, 0, 0], ["year", "years", "calendar year", "calendar years"]);
