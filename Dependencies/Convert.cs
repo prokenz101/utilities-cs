@@ -616,8 +616,8 @@ namespace utilities_cs {
 
                 return invalid();
 
-            } else if (compoundSymbols.Contains('*')) {
-                string[] parts = compoundSymbols.Split('*');
+            } else if (compoundSymbols.Contains('*') || compoundSymbols.Contains('·') || compoundSymbols.Contains('×')) {
+                string[] parts = compoundSymbols.Split(['*', '·', '×']);
                 Unit? initial = ParseCompoundUnit(parts[0]);
 
                 if (initial is not null) {
