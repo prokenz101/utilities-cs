@@ -41,7 +41,11 @@ namespace utilities_cs {
         }
 
         public static double? ConvertUnits(double value, Unit fromUnit, Unit toUnit) {
-            if (!AreDimensionsCompatible(fromUnit.Dimensions, toUnit.Dimensions)) {
+            if (
+                !AreDimensionsCompatible(fromUnit.Dimensions, toUnit.Dimensions)
+                || fromUnit.Unittype == Unit.UnitType.Physical && toUnit.Unittype != Unit.UnitType.Physical
+                || fromUnit.Unittype != Unit.UnitType.Physical && toUnit.Unittype == Unit.UnitType.Physical
+            ) {
                 Utils.NotifCheck(true, ["Exception", "Units are not compatible for conversion.", "3"], "convertError");
                 return null;
             }
@@ -465,7 +469,9 @@ namespace utilities_cs {
                 "",
                 0,
                 newDims,
-                null
+                null,
+                a.SiPrefix,
+                a.Unittype
             ) {
                 Symbol = a.Symbol + "·" + b.Symbol,
                 ConversionFactor = a.ConversionFactor * b.ConversionFactor,
@@ -482,7 +488,9 @@ namespace utilities_cs {
                 "",
                 0,
                 newDims,
-                null
+                null,
+                a.SiPrefix,
+                a.Unittype
             ) {
                 Symbol = a.Symbol + "/" + b.Symbol,
                 ConversionFactor = a.ConversionFactor / b.ConversionFactor,
@@ -499,7 +507,9 @@ namespace utilities_cs {
                 $"{unit.Symbol}^{exponent}",
                 Math.Pow(unit.ConversionFactor, exponent),
                 newDims,
-                null
+                null,
+                unit.SiPrefix,
+                unit.Unittype
             );
         }
 
