@@ -4,7 +4,7 @@ namespace utilities_cs {
     public partial class Converter {
         [GeneratedRegex(@"(?<amount>^-?\d+(\.\d+)?) (?<fromunit>[a-zA-Z0-9-.Ωµμ ]+(\^-?\d+(\.\d+)?)?([*·×][a-zA-Z0-9-.Ωµμ ]+(\^-?\d+(\.\d+)?)?)*((\/[a-zA-Z0-9-.Ωµμ ]+(\^-?\d+(\.\d+)?)?([*·×][a-zA-Z0-9-.Ωµμ ]+(\^-?\d+(\.\d+)?)?)*)?)( [Oo][Ff] [a-zA-Z]+)?) [Tt][Oo] (?<tounit>[a-zA-Z0-9-.Ωµμ ]+(\^-?\d+(\.\d+)?)?([*·×][a-zA-Z0-9-.Ωµμ ]+(\^-?\d+(\.\d+)?)?)*((\/[a-zA-Z0-9-.Ωµμ ]+(\^-?\d+(\.\d+)?)?([*·×][a-zA-Z0-9-.Ωµμ ]+(\^-?\d+(\.\d+)?)?)*)?)( [Oo][Ff] [a-zA-Z]+)?)")]
         private static partial Regex ParseUnitRegex();
-        
+
         public static string? ConvertMain(string[] args, bool copy, bool notif) {
             if (Utils.IndexTest(args)) return null;
 
@@ -183,13 +183,14 @@ namespace utilities_cs {
             AliasSymbols = aliasSymbols;
             SiPrefix = siPrefix;
             Unittype = unitType;
+
             Units[symbol] = this;
             if (aliasSymbols != null) {
                 foreach (var alias in aliasSymbols)
                     Units[alias] = this;
             }
         }
-        public static Dictionary<string, Unit> Units = new();
+        public static Dictionary<string, Unit> Units = [];
         public static Dictionary<string, double[]> SIConversion = new() {
             //* Long prefix -> 1
             //* Short prefix -> 0
