@@ -1027,7 +1027,7 @@ FormattableCommands Count: {formattableCommandsCount}",
                     Utils.NotifCheck(notif, ["Success!", "Message copied to clipboard.", "3"], "epSuccess");
                     return result;
                 },
-                aliases: ["ep"],
+                aliases: ["ep", "exp"],
                 useInAllCommand: true,
                 allCommandMode: "fancy"
             );
