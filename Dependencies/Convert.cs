@@ -34,7 +34,7 @@ namespace utilities_cs {
             } else {
                 Utils.NotifCheck(
                     true,
-                    ["Exception", "Invalid format. Use 'help' for more info.", "3"],
+                    ["Exception", "Invalid format. Use 'help convert' for more info.", "3"],
                     "convertError"
                 ); return null;
             }
@@ -156,7 +156,8 @@ namespace utilities_cs {
         public UnitType Unittype { get; set; }
         public enum SIPrefix {
             Symbol = 1,
-            NotSymbol = 0
+            NotSymbol = 0,
+            PrefixDisallowed = -1
         }
         public enum UnitType {
             Physical = 0,
@@ -459,6 +460,26 @@ namespace utilities_cs {
 
             //* Data
             new Unit("B", 8.0, [0, 0, 0, 0, 0, 0, 0, 1], ["byte", "bytes"]);
+            new Unit("bps", 1.0, [0, 0, -1, 0, 0, 0, 0, 1], ["bit per second", "bits per second"]);
+            new Unit("Bps", 8.0, [0, 0, -1, 0, 0, 0, 0, 1], ["byte per second", "bytes per second"]);
+
+            //? No choice but to hardcode these since "iB" and "ib" are not valid symbols
+            new Unit("KiB", 8192, [0, 0, 0, 0, 0, 0, 0, 1], ["kibibyte", "kibibytes"], SIPrefix.PrefixDisallowed);
+            new Unit("Kib", 1024, [0, 0, 0, 0, 0, 0, 0, 1], ["kibibit", "kibibits"], SIPrefix.PrefixDisallowed);
+            new Unit("MiB", 8388608, [0, 0, 0, 0, 0, 0, 0, 1], ["mebibyte", "mebibytes"], SIPrefix.PrefixDisallowed);
+            new Unit("Mib", 1048576, [0, 0, 0, 0, 0, 0, 0, 1], ["mebibit", "mebibits"], SIPrefix.PrefixDisallowed);
+            new Unit("GiB", 8589934592, [0, 0, 0, 0, 0, 0, 0, 1], ["gibibyte", "gibibytes"], SIPrefix.PrefixDisallowed);
+            new Unit("Gib", 1073741824, [0, 0, 0, 0, 0, 0, 0, 1], ["gibibit", "gibibits"], SIPrefix.PrefixDisallowed);
+            new Unit("TiB", 8796093022208, [0, 0, 0, 0, 0, 0, 0, 1], ["tebibyte", "tebibytes"], SIPrefix.PrefixDisallowed);
+            new Unit("Tib", 1099511627776, [0, 0, 0, 0, 0, 0, 0, 1], ["tebibit", "tebibits"], SIPrefix.PrefixDisallowed);
+            new Unit("PiB", 9007199254740990, [0, 0, 0, 0, 0, 0, 0, 1], ["pebibyte", "pebibytes"], SIPrefix.PrefixDisallowed);
+            new Unit("Pib", 1125899906842620, [0, 0, 0, 0, 0, 0, 0, 1], ["pebibit", "pebibits"], SIPrefix.PrefixDisallowed);
+            new Unit("EiB", 9223372036854770000, [0, 0, 0, 0, 0, 0, 0, 1], ["exbibyte", "exbibytes"], SIPrefix.PrefixDisallowed);
+            new Unit("Eib", 1152921504606840000, [0, 0, 0, 0, 0, 0, 0, 1], ["exbibit", "exbibits"], SIPrefix.PrefixDisallowed);
+            new Unit("ZiB", 944473296573928e7, [0, 0, 0, 0, 0, 0, 0, 1], ["zebibyte", "zebibytes"], SIPrefix.PrefixDisallowed);
+            new Unit("Zib", 11805916207174e8, [0, 0, 0, 0, 0, 0, 0, 1], ["zebibit", "zebibits"], SIPrefix.PrefixDisallowed);
+            new Unit("YiB", 967140655691703e10, [0, 0, 0, 0, 0, 0, 0, 1], ["yobibyte", "yobibytes"], SIPrefix.PrefixDisallowed);
+            new Unit("Yib", 120892581961462e10, [0, 0, 0, 0, 0, 0, 0, 1], ["yobibit", "yobibits"], SIPrefix.PrefixDisallowed);
         }
 
         public static Unit Multiply(Unit a, Unit b) {
@@ -515,34 +536,39 @@ namespace utilities_cs {
         }
 
         public static Unit? Parse(string symbol) {
-            var succession = "";
-
-            for (int i = 0; i < symbol.Length; i++) {
-                char c = symbol[i];
-
-                succession += c;
-                if (SIConversion.ContainsKey(succession)) {
-                    string remaining = symbol[(i + 1)..];
-                    if (Units.TryGetValue(remaining, out Unit? val)) {
-                        bool isSymbol = val.Symbol == remaining;
-                        //* If we are dealing with symbol, then only allow short SI prefixes
-
-                        if (((SIConversion[succession][0] == 0 && isSymbol && Units[remaining].SiPrefix == SIPrefix.Symbol) || SIConversion[succession][0] == 1) && !Converter.IsPureTemperature(Units[remaining])) {
-                            return new Unit(
-                                symbol,
-                                Units[remaining].ConversionFactor * SIConversion[succession][1],
-                                Units[remaining].Dimensions,
-                                null
-                            ) {
-                                Symbol = symbol
-                            };
-                        }
-                    }
-                }
-            }
 
             if (Units.TryGetValue(symbol, out Unit? value)) {
                 return value;
+            } else {
+                var succession = "";
+
+                for (int i = 0; i < symbol.Length; i++) {
+                    char c = symbol[i];
+
+                    succession += c;
+                    if (SIConversion.ContainsKey(succession)) {
+                        string remaining = symbol[(i + 1)..];
+                        if (Units.TryGetValue(remaining, out Unit? val)) {
+                            bool isSymbol = val.Symbol == remaining;
+                            //* If we are dealing with symbol, then only allow short SI prefixes
+
+                            if (
+                                ((SIConversion[succession][0] == 0 && isSymbol && Units[remaining].SiPrefix == SIPrefix.Symbol) || SIConversion[succession][0] == 1
+                                && !Converter.IsPureTemperature(Units[remaining]))
+                                && !(val.SiPrefix == SIPrefix.PrefixDisallowed)
+                            ) {
+                                return new Unit(
+                                    symbol,
+                                    Units[remaining].ConversionFactor * SIConversion[succession][1],
+                                    Units[remaining].Dimensions,
+                                    null
+                                ) {
+                                    Symbol = symbol
+                                };
+                            }
+                        }
+                    }
+                }
             }
 
             //* Check if it's a currency code

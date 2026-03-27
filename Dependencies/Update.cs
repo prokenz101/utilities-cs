@@ -65,8 +65,8 @@ Latest version: v1.{latestVersion}")
                         Utils.NotifCheck(
                             true,
                             [
-                                "You are in the future.",
-                                "Your utilities-cs version is above the latest one on GitHub.",
+                                "You are running a pre-release version.",
+                                "Current version: v1." + currentVersion + "\nLatest version: v1." + latestVersion,
                                 "4"
                             ], "updateFuture"
                         );
