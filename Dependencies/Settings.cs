@@ -129,6 +129,34 @@ They cannot both be true at the same time."
         }
 
         public static void ModifySetting(SettingsJSON currentSettings, string setting, string value, bool notify = true) {
+            bool modified = false;
+
+            int? invalidParam(string message = "Invalid parameters inputted.") {
+                modified = false;
+                Utils.NotifCheck(
+                    true,
+                    ["Exception", message, "3"],
+                    "settingsError"
+                ); return null;
+            }
+
+            object? ConvertToBoolOrInt(string boolOrInt, string value) {
+                try {
+                    if (boolOrInt == "bool") {
+                        modified = true;
+                        return Convert.ToBoolean(value);
+                    } else if (boolOrInt == "int") {
+                        modified = true;
+                        return int.Parse(value);
+                    } else {
+                        modified = false;
+                        return null;
+                    }
+                } catch {
+                    return invalidParam();
+                }
+            }
+
             Action mutuallyExclusive = () => {
                 Utils.NotifCheck(
                     true,
@@ -142,69 +170,95 @@ They cannot both be true at the same time."
 
             switch (setting.ToLower()) {
                 case "disablenotifications":
+                    modified = true;
                     currentSettings.DisableNotifications = Convert.ToBoolean(ConvertToBoolOrInt("bool", value));
                     break;
 
                 case "disablestartupnotification":
+                    modified = true;
                     currentSettings.DisableStartupNotification = Convert.ToBoolean(ConvertToBoolOrInt("bool", value));
                     break;
 
                 case "disableupdatereminder":
+                    modified = true;
                     currentSettings.DisableUpdateReminder = Convert.ToBoolean(ConvertToBoolOrInt("bool", value));
                     break;
 
                 case "disableclipboardmanipulation":
                     if (!currentSettings.AutoPaste) {
+                        modified = true;
                         currentSettings.DisableClipboardManipulation = Convert.ToBoolean(ConvertToBoolOrInt("bool", value));
                     } else {
                         mutuallyExclusive.Invoke();
                         return;
-                    } break;
+                    }
+                    break;
 
                 case "permutationscalculationlimit":
-                    currentSettings.PermutationsCalculationLimit = int.Parse(ConvertToBoolOrInt("int", value)!.ToString()!);
+                    int lim = int.Parse(ConvertToBoolOrInt("int", value)!.ToString()!);
+                    if (lim > 0) {
+                        currentSettings.PermutationsCalculationLimit = lim;
+                        modified = true;
+                    } else {
+                        invalidParam();
+                    }
                     break;
 
                 case "escapebase85outputtext":
+                    modified = true;
                     currentSettings.EscapeBase85OutputText = Convert.ToBoolean(ConvertToBoolOrInt("bool", value));
                     break;
 
                 case "copyinghotkeydelay":
-                    currentSettings.CopyingHotkeyDelay = int.Parse(ConvertToBoolOrInt("int", value)!.ToString()!);
+                    int delay = int.Parse(ConvertToBoolOrInt("int", value)!.ToString()!);
+                    if (delay >= 0) {
+                        currentSettings.CopyingHotkeyDelay = delay;
+                        modified = true;
+                    } else {
+                        invalidParam();
+                    }
                     break;
 
                 case "autopaste":
                     if (!currentSettings.DisableClipboardManipulation) {
+                        modified = true;
                         currentSettings.AutoPaste = Convert.ToBoolean(ConvertToBoolOrInt("bool", value));
                     } else {
                         mutuallyExclusive.Invoke();
                         return;
-                    } break;
+                    }
+                    break;
 
                 case "pressescape":
+                    modified = true;
                     currentSettings.PressEscape = Convert.ToBoolean(ConvertToBoolOrInt("bool", value));
                     break;
 
                 case "allcommandhidenames":
+                    modified = true;
                     currentSettings.AllCommandHideNames = Convert.ToBoolean(ConvertToBoolOrInt("bool", value));
                     break;
 
             }
 
-            string jsonString = System.Text.Json.JsonSerializer.Serialize(currentSettings);
-            try {
-                File.WriteAllText(settingsJsonPath, jsonString);
-            } catch (DirectoryNotFoundException) {
-                CreateDirectoryAndJson();
             }
 
-            UtilitiesAppContext.CurrentSettings = GetSettings();
-            if (notify) {
+            if (modified) {
+                string jsonString = System.Text.Json.JsonSerializer.Serialize(currentSettings);
+                try {
+                    File.WriteAllText(settingsJsonPath, jsonString);
+                } catch (DirectoryNotFoundException) {
+                    CreateDirectoryAndJson();
+                }
+
+                UtilitiesAppContext.CurrentSettings = GetSettings();
                 Utils.NotifCheck(
-                    true,
+                    notify,
                     ["Modified.", $"'{setting}' has been changed to {value}.", "4"],
                     "settingsModifiedSuccess"
                 );
+            } else {
+                invalidParam();
             }
         }
 
@@ -235,23 +289,6 @@ They cannot both be true at the same time."
             UtilitiesAppContext.CurrentSettings = GetSettings();
         }
 
-        static object? ConvertToBoolOrInt(string boolOrInt, string value) {
-            try {
-                if (boolOrInt == "bool") {
-                    return Convert.ToBoolean(value);
-                } else if (boolOrInt == "int") {
-                    return int.Parse(value);
-                } else {
-                    return null;
-                }
-            } catch {
-                Utils.NotifCheck(
-                    true,
-                    ["Exception", "Invalid parameters inputted.", "3"],
-                    "settingsError"
-                ); return null;
-            }
-        }
     }
 
     public class SettingsJSON {
