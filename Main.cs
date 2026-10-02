@@ -1,6 +1,6 @@
 ﻿namespace utilities_cs {
     class Program {
-        public const string Version = "v1.17.3";
+        public const string Version = "v1.17.4";
 #if UTILITIES_SELF_CONTAINED
         public const BuildMode buildMode = BuildMode.SelfContained;
 #else
