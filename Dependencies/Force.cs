@@ -4,13 +4,14 @@ namespace utilities_cs {
 
         public static void ForceMain(string[] args) {
             string commandName = args[1];
+            bool notif = Convert.ToBoolean(args.ElementAtOrDefault(2) ?? "true");
 
             if (FormattableCommand.FormattableCommandExists(commandName)) {
-                Force.ForceCommand(commandName);
-                Utils.NotifCheck(true, ["Success!", "That command has been forced.", "3"], "forceSuccess");
+                ForceCommand(commandName);
+                Utils.NotifCheck(notif, ["Success!", "That command has been forced.", "3"], "forceSuccess");
             } else {
                 Utils.NotifCheck(
-                    true, ["Exception", "Invalid command, try 'help' for more info.", "3"], "forceError"
+                    notif, ["Exception", "Invalid command, try 'help' for more info.", "3"], "forceError"
                 );
             }
         }
@@ -21,7 +22,7 @@ namespace utilities_cs {
                 //* disable command
                 Utils.NotifCheck(
                     true,
-                    ["Success!", $"The {Force.forced!.CommandName} command has been un-forced.", "3"],
+                    ["Success!", $"The {forced!.CommandName} command has been un-forced.", "3"],
                     "unforceSuccess"
                 ); UnForceCommand();
             } else {

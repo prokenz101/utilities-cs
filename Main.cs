@@ -1,11 +1,11 @@
 ﻿namespace utilities_cs {
     class Program {
         public const string Version = "v1.17.3";
-    #if UTILITIES_SELF_CONTAINED
+#if UTILITIES_SELF_CONTAINED
         public const BuildMode buildMode = BuildMode.SelfContained;
-    #else
+#else
         public const BuildMode buildMode = BuildMode.FrameworkDependent;
-    #endif
+#endif
         public static string UtilitiesCsFolder = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             "utilities-cs"
@@ -19,6 +19,11 @@
             RegisterCommands.RegisterAllRCommands();
             RegisterCommands.RegisterAllFCommands();
             Unit.RegisterUnits();
+
+            if (UtilitiesAppContext.CurrentSettings.PermanentForce != "none"
+                && UtilitiesAppContext.CurrentSettings.PermanentForce != null) {
+                Command.ExecuteCommand(["force", UtilitiesAppContext.CurrentSettings.PermanentForce, "false"]);
+            }
 
 #if UTILITIES_DEBUG
             //* Debug Mode
@@ -63,7 +68,8 @@
                     case "remind":
                         if (value == "dismiss") {
                             Microsoft.Toolkit.Uwp.Notifications.ToastNotificationManagerCompat.History.Remove("reminder");
-                        } break;
+                        }
+                        break;
                 }
             };
 

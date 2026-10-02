@@ -10,7 +10,8 @@ namespace utilities_cs {
             CopyingHotkeyDelay = 25,
             AutoPaste = false,
             PressEscape = true,
-            AllCommandHideNames = false
+            AllCommandHideNames = false,
+            PermanentForce = "none"
         };
 
         static string settingsJsonPath = Path.Combine(Program.UtilitiesCsFolder, "settings.json");
@@ -18,6 +19,7 @@ namespace utilities_cs {
         public static void SettingsMain(string[] args) {
             try {
                 string mode = args[1];
+                if (mode == "set") mode = "modify"; //* Alias for modify as "set"
                 switch (mode) {
                     case "modify":
                         try {
@@ -103,7 +105,7 @@ They cannot both be true at the same time."
             try {
                 string jsonString = File.ReadAllText(settingsJsonPath);
                 SettingsJSON settings = System.Text.Json.JsonSerializer.Deserialize<SettingsJSON>(jsonString)!;
-                
+
                 //* Making sure all settings exist in case of new settings being added
                 using var document = System.Text.Json.JsonDocument.Parse(jsonString);
                 var root = document.RootElement;
@@ -239,7 +241,19 @@ They cannot both be true at the same time."
                     currentSettings.AllCommandHideNames = Convert.ToBoolean(ConvertToBoolOrInt("bool", value));
                     break;
 
-            }
+                case "permanentforce":
+                    if (value.Equals("none", StringComparison.OrdinalIgnoreCase)) {
+                        modified = true;
+                        currentSettings.PermanentForce = value;
+                        Force.UnForceCommand();
+                    } else if (Command.Exists(value)) {
+                        modified = true;
+                        currentSettings.PermanentForce = value;
+                        Command.ExecuteCommand(["force", value, "false"]);
+                    } else {
+                        invalidParam(message: "Unknown command.");
+                    }
+                    break;
 
             }
 
@@ -302,5 +316,6 @@ They cannot both be true at the same time."
         public bool AutoPaste { get; set; }
         public bool PressEscape { get; set; }
         public bool AllCommandHideNames { get; set; }
+        public string? PermanentForce { get; set; }
     }
 }
