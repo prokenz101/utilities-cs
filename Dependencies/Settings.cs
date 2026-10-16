@@ -1,6 +1,6 @@
 namespace utilities_cs {
     public class SettingsModification {
-        public static SettingsJSON defaultSettings = new SettingsJSON {
+        public static SettingsJSON defaultSettings = new() {
             DisableNotifications = false,
             DisableStartupNotification = false,
             DisableUpdateReminder = false,
@@ -15,7 +15,7 @@ namespace utilities_cs {
             CurrencyCache = [],
         };
 
-        static string settingsJsonPath = Path.Combine(Program.UtilitiesCsFolder, "settings.json");
+        static readonly string settingsJsonPath = Path.Combine(Program.UtilitiesCsFolder, "settings.json");
 
         public static void SettingsMain(string[] args) {
             try {
@@ -173,24 +173,24 @@ They cannot both be true at the same time."
 
             switch (setting.ToLower()) {
                 case "disablenotifications":
-                    modified = true;
                     currentSettings.DisableNotifications = Convert.ToBoolean(ConvertToBoolOrInt("bool", value));
+                    modified = true;
                     break;
 
                 case "disablestartupnotification":
-                    modified = true;
                     currentSettings.DisableStartupNotification = Convert.ToBoolean(ConvertToBoolOrInt("bool", value));
+                    modified = true;
                     break;
 
                 case "disableupdatereminder":
-                    modified = true;
                     currentSettings.DisableUpdateReminder = Convert.ToBoolean(ConvertToBoolOrInt("bool", value));
+                    modified = true;
                     break;
 
                 case "disableclipboardmanipulation":
                     if (!currentSettings.AutoPaste) {
-                        modified = true;
                         currentSettings.DisableClipboardManipulation = Convert.ToBoolean(ConvertToBoolOrInt("bool", value));
+                        modified = true;
                     } else {
                         mutuallyExclusive.Invoke();
                         return;
@@ -208,8 +208,8 @@ They cannot both be true at the same time."
                     break;
 
                 case "escapebase85outputtext":
-                    modified = true;
                     currentSettings.EscapeBase85OutputText = Convert.ToBoolean(ConvertToBoolOrInt("bool", value));
+                    modified = true;
                     break;
 
                 case "copyinghotkeydelay":
@@ -224,8 +224,8 @@ They cannot both be true at the same time."
 
                 case "autopaste":
                     if (!currentSettings.DisableClipboardManipulation) {
-                        modified = true;
                         currentSettings.AutoPaste = Convert.ToBoolean(ConvertToBoolOrInt("bool", value));
+                        modified = true;
                     } else {
                         mutuallyExclusive.Invoke();
                         return;
@@ -233,13 +233,13 @@ They cannot both be true at the same time."
                     break;
 
                 case "pressescape":
-                    modified = true;
                     currentSettings.PressEscape = Convert.ToBoolean(ConvertToBoolOrInt("bool", value));
+                    modified = true;
                     break;
 
                 case "allcommandhidenames":
-                    modified = true;
                     currentSettings.AllCommandHideNames = Convert.ToBoolean(ConvertToBoolOrInt("bool", value));
+                    modified = true;
                     break;
 
                 case "permanentforce":

@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.RegularExpressions;
 
 namespace utilities_cs {
@@ -574,7 +575,6 @@ namespace utilities_cs {
         }
 
         public static Unit? Parse(string symbol) {
-
             if (Units.TryGetValue(symbol, out Unit? value)) {
                 return value;
             } else {
@@ -618,7 +618,7 @@ namespace utilities_cs {
             try {
                 using var client = new HttpClient();
                 var response = client.GetStringAsync("https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies.min.json").Result;
-                var currencies = System.Text.Json.JsonDocument.Parse(response);
+                var currencies = JsonDocument.Parse(response);
                 if (currencies.RootElement.TryGetProperty(symbol.ToLower(), out _)) {
                     return new Unit(symbol.ToLower(), 1.0, [0, 0, 0, 0, 0, 0, 0, 0], null, SIPrefix.Symbol, UnitType.Currency);
                 }
