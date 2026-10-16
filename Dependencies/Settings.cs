@@ -11,7 +11,8 @@ namespace utilities_cs {
             AutoPaste = false,
             PressEscape = true,
             AllCommandHideNames = false,
-            PermanentForce = "none"
+            PermanentForce = "none",
+            CurrencyCache = [],
         };
 
         static string settingsJsonPath = Path.Combine(Program.UtilitiesCsFolder, "settings.json");
@@ -255,6 +256,11 @@ They cannot both be true at the same time."
                     }
                     break;
 
+                case "currencycache":
+                    currentSettings.CurrencyCache = [.. currentSettings.CurrencyCache!, .. new string[] { value }];
+                    string currentCache = string.Join(", ", currentSettings.CurrencyCache!);
+                    modified = true;
+                    break;
             }
 
             if (modified) {
@@ -317,5 +323,6 @@ They cannot both be true at the same time."
         public bool PressEscape { get; set; }
         public bool AllCommandHideNames { get; set; }
         public string? PermanentForce { get; set; }
+        public string[]? CurrencyCache { get; set; }
     }
 }

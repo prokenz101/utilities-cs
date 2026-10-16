@@ -59,16 +59,45 @@ namespace utilities_cs {
                         return null;
                     }
 
-                    using HttpClient client = new();
-                    var response = client.GetStringAsync($"https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/{fromMarketSymbol}.min.json");
-                    var rates = System.Text.Json.JsonDocument.Parse(response.Result);
+                    if (
+                        Unit.CachedCurrencies is not null
+                        && Unit.CachedCurrencies.TryGetValue(fromMarketSymbol, out JsonDocument? rate)
+                    ) {
+                        if (
+                            rate.RootElement.TryGetProperty(fromMarketSymbol, out var fromRates)
+                            && fromRates.TryGetProperty(toMarketSymbol, out var duplicate)
+                            && fromRates.TryGetProperty(toMarketSymbol, out var toRateElement)
+                            && toRateElement.ValueKind == JsonValueKind.Number
+                        ) {
+                            if (fromUnit.Unittype == Unit.UnitType.Currency) fromUnit.Symbol = fromUnit.Symbol.ToUpper();
+                            if (toUnit.Unittype == Unit.UnitType.Currency) toUnit.Symbol = toUnit.Symbol.ToUpper();
+                            return value * fromUnit.ConversionFactor * toRateElement.GetDouble() / toUnit.ConversionFactor;
+                        }
+                    } else {
+                        using HttpClient client = new();
+                        var response = client.GetStringAsync($"https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/{fromMarketSymbol}.min.json");
+                        var rates = JsonDocument.Parse(response.Result);
 
-                    if (rates.RootElement.TryGetProperty(fromMarketSymbol, out var fromRates)
-                        && fromRates.TryGetProperty(toMarketSymbol, out var toRateElement)
-                        && toRateElement.ValueKind == System.Text.Json.JsonValueKind.Number) {
-                        if (fromUnit.Unittype == Unit.UnitType.Currency) fromUnit.Symbol = fromUnit.Symbol.ToUpper();
-                        if (toUnit.Unittype == Unit.UnitType.Currency) toUnit.Symbol = toUnit.Symbol.ToUpper();
-                        return value * fromUnit.ConversionFactor * toRateElement.GetDouble() / toUnit.ConversionFactor;
+
+                        if (rates.RootElement.TryGetProperty(fromMarketSymbol, out var fromRates)
+                            && fromRates.TryGetProperty(toMarketSymbol, out var toRateElement)
+                            && toRateElement.ValueKind == JsonValueKind.Number
+                        ) {
+                            SettingsModification.ModifySetting(
+                                UtilitiesAppContext.CurrentSettings,
+                                "currencycache",
+                                fromMarketSymbol,
+                                notify: false
+                            );
+                            Unit.CachedCurrencies = Unit.GetCurrencyCacheDict();
+
+                            if (fromUnit.Unittype == Unit.UnitType.Currency)
+                                fromUnit.Symbol = fromUnit.Symbol.ToUpper();
+                            if (toUnit.Unittype == Unit.UnitType.Currency)
+                                toUnit.Symbol = toUnit.Symbol.ToUpper();
+
+                            return value * fromUnit.ConversionFactor * toRateElement.GetDouble() / toUnit.ConversionFactor;
+                        }
                     }
 
                     Utils.NotifCheck(true, ["Exception", $"Market rate not found: {fromMarketSymbol.ToUpper()} -> {toMarketSymbol.ToUpper()}", "3"], "convertError");
@@ -154,6 +183,15 @@ namespace utilities_cs {
         //* [Mass, Length, Time, Electric Current, Temperature, Amount of Substance, Luminous Intensity]
         public SIPrefix SiPrefix { get; set; }
         public UnitType Unittype { get; set; }
+        public static Dictionary<string, JsonDocument>? CachedCurrencies = GetCurrencyCacheDict();
+        private static readonly System.Threading.Timer _autoRefresh = new(_ => {
+            //* Refreshes the currency every hour, and disposes of the old JSON out of memory
+            try {
+                var fresh = GetCurrencyCacheDict();
+                var old = Interlocked.Exchange(ref CachedCurrencies, fresh);
+                if (old != null) foreach (var doc in old.Values) doc.Dispose();
+            } catch { }
+        }, null, TimeSpan.FromHours(1), TimeSpan.FromHours(1));
         public enum SIPrefix {
             Symbol = 1,
             NotSymbol = 0,
@@ -571,6 +609,11 @@ namespace utilities_cs {
                 }
             }
 
+            //* Check if it's a cached currency code
+            if (CachedCurrencies is not null && CachedCurrencies.ContainsKey(symbol.ToLower())) {
+                return new Unit(symbol.ToLower(), 1.0, [0, 0, 0, 0, 0, 0, 0, 0], null, SIPrefix.Symbol, UnitType.Currency);
+            }
+
             //* Check if it's a currency code
             try {
                 using var client = new HttpClient();
@@ -676,6 +719,24 @@ namespace utilities_cs {
             } else {
                 return Parse(compoundSymbols);
             }
+        }
+
+        public static Dictionary<string, JsonDocument>? GetCurrencyCacheDict() {
+            string[]? currenciesToCache = UtilitiesAppContext.CurrentSettings.CurrencyCache;
+
+            if (currenciesToCache is [_, ..]) { //* Checks if the array is not null and has at least one currency
+                Dictionary<string, JsonDocument> currencies = [];
+                using HttpClient client = new();
+
+                foreach (string currency in currenciesToCache) {
+                    var response = client.GetStringAsync($"https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/{currency}.min.json");
+                    currencies.Add(currency, JsonDocument.Parse(response.Result));
+                }
+
+                return currencies;
+            }
+
+            return null;
         }
     }
 }
