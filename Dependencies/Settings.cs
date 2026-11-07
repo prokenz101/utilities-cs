@@ -258,7 +258,6 @@ They cannot both be true at the same time."
 
                 case "currencycache":
                     currentSettings.CurrencyCache = [.. currentSettings.CurrencyCache!, .. new string[] { value }];
-                    string currentCache = string.Join(", ", currentSettings.CurrencyCache!);
                     modified = true;
                     break;
             }
