@@ -84,12 +84,14 @@ namespace utilities_cs {
                             && fromRates.TryGetProperty(toMarketSymbol, out var toRateElement)
                             && toRateElement.ValueKind == JsonValueKind.Number
                         ) {
-                            SettingsModification.ModifySetting(
-                                UtilitiesAppContext.CurrentSettings,
-                                "currencycache",
-                                fromMarketSymbol,
-                                notify: false
-                            );
+                            if (!UtilitiesAppContext.CurrentSettings.CurrencyCache.Contains(fromMarketSymbol)) {
+                                SettingsModification.ModifySetting(
+                                    UtilitiesAppContext.CurrentSettings,
+                                    "currencycache",
+                                    fromMarketSymbol,
+                                    notify: false
+                                );
+                            }
                             Unit.CachedCurrencies = Unit.GetCurrencyCacheDict();
 
                             if (fromUnit.Unittype == Unit.UnitType.Currency)
@@ -728,10 +730,12 @@ namespace utilities_cs {
                 Dictionary<string, JsonDocument> currencies = [];
                 using HttpClient client = new();
 
-                foreach (string currency in currenciesToCache) {
-                    var response = client.GetStringAsync($"https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/{currency}.min.json");
-                    currencies.Add(currency, JsonDocument.Parse(response.Result));
-                }
+                try {
+                    foreach (string currency in currenciesToCache) {
+                        var response = client.GetStringAsync($"https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/{currency}.min.json");
+                        currencies.Add(currency, JsonDocument.Parse(response.Result));
+                    }
+                } catch { } //* Failed request, probably due to no internet, so ignore caching
 
                 return currencies;
             }
