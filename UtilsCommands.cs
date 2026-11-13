@@ -1618,17 +1618,17 @@ FormattableCommands Count: {formattableCommandsCount}",
                     if (Utils.IndexTest(args)) { return null; }
 
                     string text = string.Join(" ", args[1..]);
-                    List<System.Numerics.BigInteger> nums = Utils.RegexFindAllInts(text);
+                    List<double> nums = Utils.RegexFindAllDoubles(text);
 
                     if (nums.Count > 1) {
                         //* find sum of all nums in "nums"
-                        System.Numerics.BigInteger sum = 0;
-                        foreach (System.Numerics.BigInteger num in nums) {
+                        double sum = 0;
+                        foreach (double num in nums) {
                             sum += num;
                         }
 
                         //* find average of sum
-                        System.Numerics.BigInteger average = sum / nums.Count;
+                        double average = Utils.RoundIfNumberIsNearEnough(sum / nums.Count);
 
                         Utils.CopyCheck(copy, average.ToString());
                         Utils.NotifCheck(
