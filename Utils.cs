@@ -9,6 +9,7 @@ namespace utilities_cs {
         [GeneratedRegex(@"(?<num>-?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?)")]
         private static partial Regex FindAllDoublesRegex();
 
+        [GeneratedRegex(@"-?\d+\.(?<precision>\d*?)(?:9{5,}|0{5,})")]
         private static partial Regex RoundIfNumberIsNearEnoughRegex();
 
         /// <summary>
@@ -291,8 +292,8 @@ namespace utilities_cs {
         }
 
         /// <summary>
-        /// A method that returns a rounded-version of a number if it is close enough to a whole number.
-        /// 5.999999998 -> 6, 5.5 = 5.5.
+        /// A method that returns a rounded-version of a number if it is close enough to a simpler decimal.
+        /// 5.999998 -> 6, 1.59999999999 -> 1.6, 0.300000000004 -> 0.3, 5.5 = 5.5.
         /// </summary>
         /// <param name="num">The number to be rounded off to, or not.</param>
         /// <returns>
@@ -301,9 +302,11 @@ namespace utilities_cs {
         /// </returns>
         public static double RoundIfNumberIsNearEnough(double num) {
             Regex re = RoundIfNumberIsNearEnoughRegex();
+            Match match = re.Match(num.ToString("R", System.Globalization.CultureInfo.InvariantCulture));
 
-            if (re.Matches(num.ToString()).Count == 1) {
-                return Math.Round(num);
+            if (match.Success) {
+                int decimalPlaces = Math.Min(match.Groups["precision"].Length, 15);
+                return Math.Round(num, decimalPlaces);
             } else {
                 return num;
             }
