@@ -6,7 +6,9 @@ namespace utilities_cs {
         [GeneratedRegex(@"(?<num>-?\d+)+")]
         private static partial Regex FindAllIntsRegex();
 
-        [GeneratedRegex(@"-?\d+\.(?:9){6,}")]
+        [GeneratedRegex(@"(?<num>-?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?)")]
+        private static partial Regex FindAllDoublesRegex();
+
         private static partial Regex RoundIfNumberIsNearEnoughRegex();
 
         /// <summary>
@@ -188,6 +190,33 @@ namespace utilities_cs {
             }
 
             return BigInts;
+        }
+
+        /// <summary>
+        /// Returns all doubles from a string using Regex.
+        /// </summary>
+        /// <param name="input">The string which is to be searched for doubles.</param>
+        /// <returns>A list of all doubles that were captured by the Regex.</returns>
+        public static List<double> RegexFindAllDoubles(string input) {
+            input = input.Replace(",", "");
+
+            List<double> Doubles = [];
+            Regex re = FindAllDoublesRegex();
+
+            if (re.Matches(input).Count >= 1) {
+                MatchCollection matches = re.Matches(input);
+                foreach (Match? match in matches) {
+                    if (match != null) {
+                        GroupCollection groups = match.Groups;
+                        Doubles.Add(double.Parse(
+                            groups["num"].Value,
+                            System.Globalization.CultureInfo.InvariantCulture
+                        ));
+                    }
+                }
+            }
+
+            return Doubles;
         }
 
         /// <summary>
